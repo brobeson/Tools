@@ -7,7 +7,7 @@
 "
 " also, the windows version doesn't run both the system vimrc and my vimrc,
 " hence i need to explicitly run it here.
-if has(win32)
+if has("win32")
 	" reconfigure the runtimepath
 	set rtp-=$HOME\vimfiles
 	set rtp-=$HOME\vimfiles/after
