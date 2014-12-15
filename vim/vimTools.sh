@@ -27,22 +27,43 @@ fi
 # determine the copy direction based on the action:
 # export: repository -> user's vim
 # import: user's vim -> repository
+
+# export from the repository to a user's vim home
 if [[ $action == export ]]
 then
+	if [[ -e $homeDir/$vimDir ]]
+	then
+		if [[ ! -d $homeDir/$vimDir ]]
+		then
+			echo "$homeDir/$vimDir already exists, but is not a directory"
+			exit 1
+		fi
+	else
+		mkdir $homeDir/$vimDir
+	fi
 	cp -f vimrc $homeDir/$vimrc
 	cp -rf vim/* $homeDir/$vimDir/
+
+# import from a user's vim home to the repository
 elif [[ $action == import ]]
 then
-	cp -f $homeDir/$vimrc ./
-	cp -rf $homeDir/$vimDir/* ./vim/
+	if [[ -e $homeDir/$vimrc ]]
+	then
+		cp -f $homeDir/$vimrc ./vimrc
+	else
+		echo "cannot import $homeDir/$vimrc because it does not exist"
+	fi
+
+	if [[ -e $homeDir/$vimDir ]]
+	then
+		cp -rf $homeDir/$vimDir/* ./vim/
+	else
+		echo "cannot import $homeDir/$vimDir because it does not exist"
+	fi
+
+# report an unknown action request
 else
 	echo "unknown action"
 	exit 1
 fi
 
-# copy the vimrc
-#cp -f vimrc ~/.vimrc
-
-# TODO	check that ~/.vim exists and create it if necessary
-# copy the vim folder
-#cp -rf vim/* ~/.vim/
