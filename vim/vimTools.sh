@@ -1,10 +1,26 @@
 #!/bin/bash
 
+# print information about how to use the script
+PrintHelp()
+{
+	echo "Import Vim scripts to the repository, or export them from the repository."
+	echo "The scripts are imported from, or exported to, the user's vim directory."
+	echo "On Linux, this is ~/.vim/ and ~/.vimrc. On Windows, this is"
+	echo "C:\Users\<username>\vimfiles and C:\Users\<username>\_vimrc."
+	echo
+	echo "Usage: vimTools.sh export|import"
+	echo
+	echo "Action Descriptions"
+	echo "    export    Export scripts from the repository to your Vim directory."
+	echo "    import    Import scripts from your Vim directory to the repository."
+	echo
+}
+
 # check the correct # of parameters
 if [[ $# < 1 ]]
 then
-	echo "you need to tell me what to do!"
-	exit 1
+	PrintHelp
+	exit 0
 fi
 action=$1
 
@@ -63,7 +79,7 @@ then
 
 # report an unknown action request
 else
-	echo "unknown action"
+	PrintHelp
 	exit 1
 fi
 
