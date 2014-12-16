@@ -10,7 +10,7 @@
 if exists("b:loaded_latex")
 	finish
 endif
-let b:loaded_latex= 1
+let b:loaded_latex = 1
 
 " save cpoptions and reset to avoid problems in the script
 let s:save_cpo = &cpo

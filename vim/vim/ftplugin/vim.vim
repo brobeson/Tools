@@ -7,10 +7,10 @@
 "  - add functionality to comment and uncomment a range of lines
 
 " check if this plugin (or one with the same name) has already been loaded
-if exists("b:loaded_vim_power")
+if exists("b:loaded_vim")
 	finish
 endif
-let b:loaded_vim_power = 1
+let b:loaded_vim = 1
 
 " save cpoptions and reset to avoid problems in the script
 let s:save_cpo = &cpo
