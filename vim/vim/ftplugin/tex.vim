@@ -105,7 +105,7 @@ noremenu <script> &Latex.&Uncomment <SID>Uncomment
 " define the function to comment a range of lines
 if !exists("*s:Comment")
 	function s:Comment() range
-		for line in range(0, a:lastline - a:firstline)
+		for line in range(a:firstline, a:lastline)
 			normal 0i%
 			normal j
 		endfor
@@ -117,7 +117,7 @@ endif
 " define the function to uncomment a range of lines
 if !exists("*s:Uncomment")
 	function s:Uncomment() range
-		for line in range(0, a:lastline - a:firstline)
+		for line in range(a:firstline, a:lastline)
 			normal 0xj
 		endfor
 		call cursor(a:firstline, 1)
