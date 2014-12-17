@@ -261,11 +261,26 @@ noremenu <script> &C++.&Uncomment <SID>Uncomment
 " define the function to comment a range of lines
 if !exists("*s:Comment")
 	function s:Comment() range
+		" determine the smallest column at which text begins the lines in the
+		" range.
+		let column = 1000
 		for line in range(a:firstline, a:lastline)
-			normal 0i//
-			normal j
+			let text = getline(line)
+			let newColumn = match(text, '\S')
+			if newColumn < column
+				let column = newColumn
+			endif
 		endfor
-		call cursor(a:firstline, 1)
+
+		" now go back through the lines, inserting the comment characters at
+		" that minimum column.
+		for line in range(a:firstline, a:lastline)
+			let oldLine = getline(line)
+			let newLine = strpart(oldLine, 0, column) . "//" . strpart(oldLine, column)
+			call setline(line, newLine)
+		endfor
+
+		" tell the user how many lines were commented
 		echo a:lastline - a:firstline + 1 "lines commented"
 	endfunction
 endif
@@ -273,9 +288,7 @@ endif
 " define the function to uncomment a range of lines
 if !exists("*s:Uncomment")
 	function s:Uncomment() range
-		" this seems a bit less efficient than the analog of Comment(),
-		" which would be to walk the lines, executing 'normal 0xxj'.
-		" however, this is the cleanest way i found to uncomment the
+		" this is the cleanest way i found to uncomment the
 		" lines without incurring problems if folding is enabled.
 		for line in range(a:firstline, a:lastline)
 			call setline(line, substitute(getline(line), '\/\/', '', ''))
