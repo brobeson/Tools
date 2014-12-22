@@ -55,7 +55,7 @@ if [[ $action == export ]]
 then
 	if [[ $platform == $windowsPlatform ]]
 	then
-		/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe ./vimrc $homeDir/$vimrc -o ./vimrc
+		/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe ./vimrc $homeDir/$vimrc -o $homeDir/$vimrc
 	fi
 
 	if [[ ! -e $homeDir/$vimDir ]]
@@ -66,7 +66,7 @@ then
 	then
 		if [[ $platform == $windowsPlatform ]]
 		then
-			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe ./vim/ $homeDir/$vimDir/ -o ./vim/
+			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe ./vim/ $homeDir/$vimDir/ -o $homeDir/$vimDir/
 		fi
 	else
 		echo "$homeDir/$vimDir already exists, but is not a directory"
