@@ -152,34 +152,8 @@ if !exists("*CppFoldText")
 		let firstLine = getline(v:foldstart)
 		let foldText = 'NO FOLD TEXT DEFINED'
 
-		" commented code.  this format is inspired by the fact that my
-		" employer uses clang-format. it's set up so that if I use // to
-		" comment multiple lines of code, clang-format will indent it all to
-		" align with code above.  so this:
-		"
-		"//  void foo::bar()
-		"//  {}
-		"
-		" will become this:
-		"
-		"  //  void foo::bar()
-		"  //  {}
-		"
-		" i want clang-format to leave it alone.  then i stumbled on the
-		" idea that with this, I can fold up the commented code!
-		if match(firstLine, '^\s*\/\*\s*commented code') == 0
-			" the fold text should be:
-			" <aligning white space>// n (N) lines of commented code:   <first line of commented code>
-			" where n is the actual number of code lines and N is the number
-			" of lines, plus 2 for the /* and */ comment lines. n makes it
-			" easy to see how many lines of actual code are folded, while N
-			" makes it easy to know how many lines of text are folded (for
-			" range ops in vim).
-			let lineCount = v:foldend - v:foldstart - 1
-			let foldText = substitute(firstLine, '\/\*\s*commented code.*', '// ', '')
-			let foldText .= printf("%d (%d)", lineCount, lineCount + 2) . " lines of commented code:   "
-			let foldText .= substitute(getline(v:foldstart + 1), '^\s*', '', '')
-		elseif match(firstLine, '^\s*#if\(def\)\?\s*0') == 0
+		" 'commented' code via #if 0, or #ifdef 0
+		if match(firstLine, '^\s*#if\(def\)\?\s*0') == 0
 			let codeLine = getline(v:foldstart + 1)
 			let spaceCount = match(codeLine, '\S')
 			let foldText = repeat(' ', spaceCount) . "[ commented code ]  "
@@ -287,44 +261,39 @@ noremenu <script> &C++.&Uncomment <SID>Uncomment
 " define the function to comment a range of lines
 if !exists("*s:Comment")
 	function s:Comment() range
-		" TODO	look for any lines in the range that are already commented
-		call cursor(a:lastline, 1)
-		let comment = repeat(' ', indent(a:firstline)) . "*/"
-		execute ":normal! o"
-		call setline(".", comment)
-		call cursor(a:firstline, 1)
-		let comment = repeat(' ', indent(a:firstline)) . "/* commented code"
-		execute ":normal! O"
-		call setline(".", comment)
-		execute ":normal! zc"
+		" determine the smallest column at which text begins the lines in the
+		" range.
+		let column = 1000
+		for line in range(a:firstline, a:lastline)
+			let text = getline(line)
+			let newColumn = match(text, '\S')
+			if newColumn < column
+				let column = newColumn
+			endif
+		endfor
+
+		" now go back through the lines, inserting the comment characters at
+		" that minimum column.
+		for line in range(a:firstline, a:lastline)
+			let oldLine = getline(line)
+			let newLine = strpart(oldLine, 0, column) . "//" . strpart(oldLine, column)
+			call setline(line, newLine)
+		endfor
+
+		" tell the user how many lines were commented
+		echo a:lastline - a:firstline + 1 "lines commented"
 	endfunction
 endif
 
 " define the function to uncomment a range of lines
 if !exists("*s:Uncomment")
-	function s:Uncomment()
-		" be sure the fold is open
-		execute ":normal! zO"
-
-		" search back for the open comment token, then search forward for the
-		" close comment token.
-		let originalLine = line(".")
-		let endLine = search('^\s*\*/', 'cW')
-		let startLine = search('^\s*\/\*\s*commented code', 'bcW')
-
-		" we only modify the buffer if there is a closing comment token.
-		if (endLine != 0) && (startLine != 0)
-			execute ":normal! dd"
-			call cursor(endLine - 1, 1)
-			execute ":normal! dd"
-			if (originalLine == startLine)
-				call cursor(originalLine, 1)
-			elseif (originalLine == endLine)
-				call cursor(originalLine - 2, 1)
-			else
-				call cursor(originalLine - 1, 1)
-			endif
-		endif
+	function s:Uncomment() range
+		" this is the cleanest way i found to uncomment the
+		" lines without incurring problems if folding is enabled.
+		for line in range(a:firstline, a:lastline)
+			call setline(line, substitute(getline(line), '\/\/', '', ''))
+		endfor
+		echo a:lastline - a:firstline + 1 "lines uncommented"
 	endfunction
 endif
 "}}}
