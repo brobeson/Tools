@@ -55,7 +55,7 @@ if [[ $action == export ]]
 then
 	if [[ $platform == $windowsPlatform ]]
 	then
-		/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe --auto ./vimrc $homeDir/$vimrc -o ./vimrc
+		/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe ./vimrc $homeDir/$vimrc -o ./vimrc
 	fi
 
 	if [[ ! -e $homeDir/$vimDir ]]
@@ -66,7 +66,7 @@ then
 	then
 		if [[ $platform == $windowsPlatform ]]
 		then
-			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe --auto ./vim/ $homeDir/$vimDir/ -o ./vim/
+			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe ./vim/ $homeDir/$vimDir/ -o ./vim/
 		fi
 	else
 		echo "$homeDir/$vimDir already exists, but is not a directory"
@@ -80,7 +80,7 @@ then
 	then
 		if [[ $platform == $windowsPlatform ]]
 		then
-			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe --auto $homeDir/$vimrc ./vimrc -o ./vimrc
+			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe $homeDir/$vimrc ./vimrc -o ./vimrc
 		fi
 	else
 		echo "cannot import $homeDir/$vimrc because it does not exist"
@@ -90,7 +90,7 @@ then
 	then
 		if [[ $platform == $windowsPlatform ]]
 		then
-			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe --auto $homeDir/$vimDir/ ./vim/ -o ./vim/
+			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe $homeDir/$vimDir/ ./vim/ -o ./vim/
 		fi
 	else
 		echo "cannot import $homeDir/$vimDir because it does not exist"
