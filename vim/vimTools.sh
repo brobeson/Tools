@@ -28,16 +28,22 @@ action=$1
 # windows uses C:\Users\<username>\ which translates to /c/Users/<username> on git bash.
 # linus uses /home/<username>.
 # note that git bash apparently does not support the =~ operator, thus the == used here.
+windowsPlatform=Windows
+linuxPlatform=Linux
 homeDir=~
 if [[ $homeDir == /c/Users/* ]]
 then
 	# ms windows
 	vimDir=vimfiles
 	vimrc=_vimrc
+	platform=$windowsPlatform
+	#mergeTool='/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe'
+	#echo $mergeTool
 else
 	# linux
 	vimDir=.vim
 	vimrc=.vimrc
+	platform=$linuxPlatform
 fi
 
 # determine the copy direction based on the action:
@@ -47,32 +53,45 @@ fi
 # export from the repository to a user's vim home
 if [[ $action == export ]]
 then
-	if [[ -e $homeDir/$vimDir ]]
+	if [[ $platform == $windowsPlatform ]]
 	then
-		if [[ ! -d $homeDir/$vimDir ]]
-		then
-			echo "$homeDir/$vimDir already exists, but is not a directory"
-			exit 1
-		fi
-	else
+		/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe ./vimrc $homeDir/$vimrc -o ./vimrc
+	fi
+
+	if [[ ! -e $homeDir/$vimDir ]]
+	then
 		mkdir $homeDir/$vimDir
 	fi
-	cp -f vimrc $homeDir/$vimrc
-	cp -rf vim/* $homeDir/$vimDir/
+	if [[ -d $homeDir/$vimDir ]]
+	then
+		if [[ $platform == $windowsPlatform ]]
+		then
+			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe ./vim/ $homeDir/$vimDir/ -o ./vim/
+		fi
+	else
+		echo "$homeDir/$vimDir already exists, but is not a directory"
+	fi
 
 # import from a user's vim home to the repository
 elif [[ $action == import ]]
 then
+	# TODO	the linux platform
 	if [[ -e $homeDir/$vimrc ]]
 	then
-		cp -f $homeDir/$vimrc ./vimrc
+		if [[ $platform == $windowsPlatform ]]
+		then
+			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe $homeDir/$vimrc ./vimrc -o ./vimrc
+		fi
 	else
 		echo "cannot import $homeDir/$vimrc because it does not exist"
 	fi
 
 	if [[ -e $homeDir/$vimDir ]]
 	then
-		cp -rf $homeDir/$vimDir/* ./vim/
+		if [[ $platform == $windowsPlatform ]]
+		then
+			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe $homeDir/$vimDir/ ./vim/ -o ./vim/
+		fi
 	else
 		echo "cannot import $homeDir/$vimDir because it does not exist"
 	fi
