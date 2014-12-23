@@ -56,6 +56,8 @@ then
 	if [[ $platform == $windowsPlatform ]]
 	then
 		/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe ./vimrc $homeDir/$vimrc -o $homeDir/$vimrc
+	else
+		kdiff3 ./vimrc $homeDir/$vimrc -o $homeDir/$vimrc
 	fi
 
 	if [[ ! -e $homeDir/$vimDir ]]
@@ -67,6 +69,8 @@ then
 		if [[ $platform == $windowsPlatform ]]
 		then
 			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe ./vim/ $homeDir/$vimDir/ -o $homeDir/$vimDir/
+		else
+			kdiff3 ./vim/ $homeDir/$vimDir/ -o $homeDir/$vimDir/
 		fi
 	else
 		echo "$homeDir/$vimDir already exists, but is not a directory"
@@ -75,12 +79,13 @@ then
 # import from a user's vim home to the repository
 elif [[ $action == import ]]
 then
-	# TODO	the linux platform
 	if [[ -e $homeDir/$vimrc ]]
 	then
 		if [[ $platform == $windowsPlatform ]]
 		then
 			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe $homeDir/$vimrc ./vimrc -o ./vimrc
+		else
+			kdiff3 $homeDir/$vimrc ./vimrc -o ./vimrc
 		fi
 	else
 		echo "cannot import $homeDir/$vimrc because it does not exist"
@@ -91,6 +96,8 @@ then
 		if [[ $platform == $windowsPlatform ]]
 		then
 			/c/Program\ Files\ \(x86\)/KDiff3/kdiff3.exe $homeDir/$vimDir/ ./vim/ -o ./vim/
+		else
+			kdiff3 $homeDir/$vimDir/ ./vim/ -o ./vim/
 		fi
 	else
 		echo "cannot import $homeDir/$vimDir because it does not exist"
