@@ -107,6 +107,7 @@ highlight Underlined   cterm=none ctermfg=darkcyan                      gui=unde
 
 " custom groups
 highlight htmlAttributeNameGrp cterm=none ctermfg=darkcyan gui=none      guifg=#9cdcfe guibg=bg
+highlight htmlAttribValueGrp   cterm=none ctermfg=gray     gui=none      guifg=#c8c8c8 guibg=bg
 highlight htmlEntityGrp        cterm=none ctermfg=darkcyan gui=none      guifg=#00a0a0 guibg=bg
 highlight urlGrp               cterm=none ctermfg=darkcyan gui=underline guifg=#569cd6 guibg=bg
 
