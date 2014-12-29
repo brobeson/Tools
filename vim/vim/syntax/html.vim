@@ -40,8 +40,8 @@ if syntax_file == "original"
     "syn match htmlError "[<>&]"
 
     " tags
-    syn region  htmlString   contained start=+"+ end=+"+ contains=htmlSpecialChar,javaScriptExpression,@htmlPreproc
-    syn region  htmlString   contained start=+'+ end=+'+ contains=htmlSpecialChar,javaScriptExpression,@htmlPreproc
+    "syn region  htmlString   contained start=+"+ end=+"+ contains=htmlSpecialChar,javaScriptExpression,@htmlPreproc
+    "syn region  htmlString   contained start=+'+ end=+'+ contains=htmlSpecialChar,javaScriptExpression,@htmlPreproc
     "syn match   htmlValue    contained "=[\t ]*[^'" \t>][^ \t>]*"hs=s+1   contains=javaScriptExpression,@htmlPreproc
     "syn region  htmlEndTag             start=+</+      end=+>+ contains=htmlTagN,htmlTagError
     "syn region  htmlTag                start=+<[^/]+   end=+>+ fold contains=htmlTagN,htmlString,htmlArg,htmlValue,htmlTagError,htmlEvent,htmlCssDefinition,@htmlPreproc,@htmlArgCluster
@@ -201,16 +201,16 @@ if syntax_file == "original"
 
 	syn cluster htmlJavaScript      add=@htmlPreproc
 
-	if main_syntax != 'java' || exists("java_css")
-	    " embedded style sheets
-	    syn keyword htmlArg           contained media
-	    syn include @htmlCss syntax/css.vim
-	    unlet b:current_syntax
-	    syn region cssStyle start=+<style+ keepend end=+</style>+ contains=@htmlCss,htmlTag,htmlEndTag,htmlCssStyleComment,@htmlPreproc
-	    syn match htmlCssStyleComment contained "\(<!--\|-->\)"
-	    syn region htmlCssDefinition matchgroup=htmlArg start='style="' keepend matchgroup=htmlString end='"' contains=css.*Attr,css.*Prop,cssComment,cssLength,cssColor,cssURL,cssImportant,cssError,cssString,@htmlPreproc
-	    HtmlHiLink htmlStyleArg htmlString
-	endif
+	"if main_syntax != 'java' || exists("java_css")
+	"    " embedded style sheets
+	"    syn keyword htmlArg           contained media
+	"    syn include @htmlCss syntax/css.vim
+	"    unlet b:current_syntax
+	"    syn region cssStyle start=+<style+ keepend end=+</style>+ contains=@htmlCss,htmlTag,htmlEndTag,htmlCssStyleComment,@htmlPreproc
+	"    syn match htmlCssStyleComment contained "\(<!--\|-->\)"
+	"    syn region htmlCssDefinition matchgroup=htmlArg start='style="' keepend matchgroup=htmlString end='"' contains=css.*Attr,css.*Prop,cssComment,cssLength,cssColor,cssURL,cssImportant,cssError,cssString,@htmlPreproc
+	"    HtmlHiLink htmlStyleArg htmlString
+	"endif
 
 	if main_syntax == "html"
 	    " synchronizing (does not always work if a comment includes legal
@@ -271,7 +271,7 @@ if syntax_file == "original"
 	    "HtmlHiLink htmlPreProcAttrName    PreProc
 	    "HtmlHiLink htmlPreProcAttrError   Error
 	    "HtmlHiLink htmlSpecial            Special
-	    HtmlHiLink htmlString             String
+	    "HtmlHiLink htmlString             String
 	    "HtmlHiLink htmlComment            Comment
 	    "HtmlHiLink htmlCommentPart        Comment
 	    "HtmlHiLink htmlValue              String
@@ -282,20 +282,20 @@ if syntax_file == "original"
 
 	    HtmlHiLink javaScript             Special
 	    HtmlHiLink javaScriptExpression   javaScript
-	    HtmlHiLink htmlCssStyleComment    Comment
-	    HtmlHiLink htmlCssDefinition      Special
-	endif
+	    "HtmlHiLink htmlCssStyleComment    Comment
+	    "HtmlHiLink htmlCssDefinition      Special
+	"endif
 
-	delcommand HtmlHiLink
-
-	let b:current_syntax = "html"
-
-	if main_syntax == 'html'
-	    unlet main_syntax
-	endif
-
-	let &cpo = s:cpo_save
-	unlet s:cpo_save
+"	delcommand HtmlHiLink
+"
+"	let b:current_syntax = "html"
+"
+"	if main_syntax == 'html'
+"	    unlet main_syntax
+"	endif
+"
+"	let &cpo = s:cpo_save
+"	unlet s:cpo_save
 	" vim: ts=8
 
 else
@@ -334,13 +334,14 @@ else
 		syntax case match
 	endif
 
-    syntax match  htmlError   /[<>&]/
+    syntax match htmlError /[<>&]/
 
-	" comments {{{
+	" comments & server side directives {{{
 	" a source about html 4 comments: http://www.htmlhelp.com/reference/wilbur/misc/comment.html
 	syntax region html4Comment    contained start=/--/   end=/--/
-	syntax region html4CommentTag           start=/<!/   end=/>/    contains=html4Comment
-	syntax region html5Comment              start=/<!--/ end=/-->/
+	syntax region html4CommentTag           start=/<!/   end=/>/    contains=html4Comment,htmlServerSide
+	syntax region html5Comment              start=/<!--/ end=/-->/  contains=htmlServerSide
+	syntax match  htmlServerSide  contained "#\(config\|echo\|elif\|else\|endif\|exec\|flastmod\|fsize\|include\|if\|printenv\|set\)"
 	" }}}
 
 	" tags {{{
@@ -366,7 +367,7 @@ else
     syntax keyword html5TagName contained main mark menu menuitem meter nav output progress rp rt
     syntax keyword html5TagName contained ruby s section source summary time track u video wbr
 
-    syntax region htmlTag	  start=/<[^\/!]/ end=/>/ fold contains=htmlTagName,html4DepTagName,html5TagName,html5DepTagName,htmlAttr,html5AttribValue,htmlEventName,html5DebEventName,html5EventName,html5EvtHandler
+    syntax region htmlTag	  start=/<[^\/!]/ end=/>/ fold contains=htmlTagName,html4DepTagName,html5TagName,html5DepTagName,htmlAttr,html5AttribValue,htmlEventName,html5DebEventName,html5EventName,html5EvtHandler,htmlCssAttr
     syntax region htmlEndTag  start=/<\//     end=/>/      contains=htmlTagName,html5TagName,html5DepTagName
 	" }}}
 
@@ -481,6 +482,12 @@ else
 	syntax match htmlEntity /&\(reg\|spades\|trade\|u[Aa]rr\|yen\);/
 	" }}}
 
+	" embedded CSS {{{
+	syntax include @htmlCss syntax/css.vim
+	syntax region htmlCssTag  start=/<style/  keepend end=/<\/style>/ contains=@htmlCss,htmlTagName,htmlAttr,html5AttribValue
+	syntax region htmlCssAttr contained start=/style="/ keepend end=/"/         contains=@htmlCss,htmlAttrName
+	" }}}
+
     " The default highlighting. {{{
 	" I have a few custom groups, based on Visual Studio 2013's dark color
 	" scheme. These line link those custom groups to built in groups. That
@@ -505,6 +512,7 @@ else
 	highlight default link htmlDocTypeAttr  htmlAttrName
 	highlight default link htmlEntity       htmlEntityGrp
 	highlight default link htmlError        Error
+	highlight default link htmlServerSide   PreProc
 
 	" highlighting for html 5
     if html_version == 5
