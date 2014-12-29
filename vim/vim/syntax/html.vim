@@ -45,10 +45,11 @@ syntax match htmlError /[<>&]/
 
 " comments & server side directives {{{
 " a source about html 4 comments: http://www.htmlhelp.com/reference/wilbur/misc/comment.html
-syntax region html4Comment    contained start=/--/   end=/--/
-syntax region html4CommentTag           start=/<!/   end=/>/    contains=html4Comment,htmlServerSide
-syntax region html5Comment              start=/<!--/ end=/-->/  contains=htmlServerSide
-syntax match  htmlServerSide  contained "#\(config\|echo\|elif\|else\|endif\|exec\|flastmod\|fsize\|include\|if\|printenv\|set\)"
+syntax match  htmlServerSide      contained /<!#\(config\|echo\|elif\|else\|endif\|exec\|flastmod\|fsize\|include\|if\|printenv\|set\)/ms=s+2
+syntax match  htmlServerSideError contained /\s\+#\(config\|echo\|elif\|else\|endif\|exec\|flastmod\|fsize\|include\|if\|printenv\|set\)/
+syntax region html4Comment        contained start=/--/   end=/--/
+syntax region html4CommentTag               start=/<!/   end=/>/    contains=html4Comment,htmlServerSide
+syntax region html5Comment                  start=/<!--/ end=/-->/  contains=htmlServerSide
 " }}}
 
 " tags {{{
@@ -74,8 +75,9 @@ syntax keyword html5TagName contained embed figcaption figure footer header hgro
 syntax keyword html5TagName contained main mark menu menuitem meter nav output progress rp rt
 syntax keyword html5TagName contained ruby s section source summary time track u video wbr
 
-syntax region htmlTag	  start=/<[^\/!]/ end=/>/ fold contains=htmlTagName,html4DepTagName,html5TagName,html5DepTagName,htmlAttr,html5AttribValue,htmlEventName,html5DebEventName,html5EventName,html5EvtHandler,htmlCssAttr
-syntax region htmlEndTag  start=/<\//     end=/>/      contains=htmlTagName,html5TagName,html5DepTagName
+syntax cluster htmlTagNames contains=htmlTagName,html4DepTagName,html5DepTagName,html5TagName
+syntax region  htmlTag      start=/<[^\/!]/ end=/>/ fold contains=@htmlTagNames,@htmlAttributes,@htmlEvents
+syntax region  htmlEndTag   start=/<\//     end=/>/      contains=@htmlTagNames
 " }}}
 
 " events {{{
@@ -100,7 +102,9 @@ syntax keyword html5EventName contained onshow onstalled onstorage onsuspend ont
 syntax keyword html5EventName contained ontoggle onvolumechange onwaiting onwheel
 
 " event handlers
-syntax match html5EvtHandler contained /=\s*\(".*()"\|'.*()'\|[^'" \t>]\+()\)/ms=s+1
+syntax match htmlEvtHandler contained /=\s*\(".*()"\|'.*()'\|[^'" \t>]\+()\)/ms=s+1
+
+syntax cluster htmlEvents contains=htmlEventName,html5DepEventName,html5EventName,htmlEvtHandler
 " }}}
 
 " attributes {{{
@@ -115,14 +119,14 @@ syntax keyword htmlAttrName contained target title type usemap value width xmlns
 syntax match   htmlAttrName contained /\<\(accept-charset\|http-equiv\)\>/
 
 " attributes deprecated in HTML 5
-syntax keyword html4DepAttrName contained align alink alt archive axis background bgcolor
-syntax keyword html4DepAttrName contained border cellpadding cellspacing char charoff classid
-syntax keyword html4DepAttrName contained code codebase codetype color compact declare face
-syntax keyword html4DepAttrName contained frame frameborder hspace link longdesc marginheight
-syntax keyword html4DepAttrName contained marginwidth nohref noresize noshade nowrap object
-syntax keyword html4DepAttrName contained profile rev rules scheme scrolling standby summary
-syntax keyword html4DepAttrName contained text valign valuetype vlink vspace
-syntax match   html4DepAttrName contained /\<xml:space\>/
+syntax keyword html5DepAttrName contained align alink alt archive axis background bgcolor
+syntax keyword html5DepAttrName contained border cellpadding cellspacing char charoff classid
+syntax keyword html5DepAttrName contained code codebase codetype color compact declare face
+syntax keyword html5DepAttrName contained frame frameborder hspace link longdesc marginheight
+syntax keyword html5DepAttrName contained marginwidth nohref noresize noshade nowrap object
+syntax keyword html5DepAttrName contained profile rev rules scheme scrolling standby summary
+syntax keyword html5DepAttrName contained text valign valuetype vlink vspace
+syntax match   html5DepAttrName contained /\<xml:space\>/
 
 " attribute names introduced in HTML 5
 syntax keyword html5AttrName contained async autocomplete autofocus autoplay autosize challenge
@@ -142,15 +146,17 @@ syntax match htmlAttr contained /\<.\+\>=/me=e-1 contains=htmlAttrName,html5DepA
 
 " attribute values
 syntax match html5AttribValue contained /=\s*\(".*"\|'.*'\|[^'" \t>]\+\)/ms=s+1
+
+syntax cluster htmlAttributes contains=htmlAttrName,html5DepAttrName,html5AttrName,html5AttribValue,htmlAttr
 " }}}
 
 " doctype {{{
 syntax match   htmlDocTypeName  contained /!DOCTYPE/
-syntax keyword htmlDocTypeAttr  contained html
+syntax keyword html5DocTypeAttr contained html
 syntax keyword html4DocTypeAttr contained public
 syntax match   html4DtdStr      contained /\c\"-\/\/W3C\/\/DTD \(HTML 4\.01\|HTML 4\.01 Transitional\|HTML 4\.01 Frameset\|XHTML 1\.0 Strict\|XHTML 1\.0 Transitional\|XHTML 1\.0 Frameset\|XHTML 1\.1\)\/\/EN\"/
 syntax match   html4DtdUrl      contained /\c\"http:\/\/www\.w3\.org\/TR\/\(html4\/strict\|html4\/loose\|html4\/frameset\|xhtml1\/DTD\/xhtml1-strict\|xhtml1\/DTD\/xhtml1-transitional\|xhtml1\/DTD\/xhtml1-frameset\|xhtml11\/DTD\/xhtml11\)\.dtd\"/
-syntax region  htmlDocType                start=/\%^[\s\n]*<!/ end=/>/ contains=htmlDocTypeName,htmlDocTypeAttr,html4DocTypeAttr,html4DtdStr,html4DtdUrl
+syntax region  htmlDocType                start=/\%^[\s\n]*<!/ end=/>/ contains=htmlDocTypeName,html5DocTypeAttr,html4DocTypeAttr,html4DtdStr,html4DtdUrl
 " }}}
 
 " entities and diactrical marks {{{
@@ -191,8 +197,9 @@ syntax match htmlEntity /&\(reg\|spades\|trade\|u[Aa]rr\|yen\);/
 
 " embedded CSS {{{
 syntax include @htmlCss syntax/css.vim
-syntax region htmlCssTag  start=/<style/  keepend end=/<\/style>/ contains=@htmlCss,htmlTagName,htmlAttr,html5AttribValue
-syntax region htmlCssAttr contained start=/style="/ keepend end=/"/         contains=@htmlCss,htmlAttrName
+syntax region  htmlCssTag            start=/<style/  keepend end=/<\/style>/ contains=@htmlCss,htmlTagName,htmlAttr,html5AttribValue
+syntax region  htmlCssAttr contained start=/style="/ keepend end=/"/         contains=@htmlCss,htmlAttrName
+syntax cluster @htmlAttributes add=htmlCssAttr
 " }}}
 
 " The default highlighting. {{{
@@ -205,50 +212,53 @@ syntax region htmlCssAttr contained start=/style="/ keepend end=/"/         cont
 highlight default link htmlAttributeNameGrp Keyword
 highlight default link htmlAttribValueGrp   Keyword
 highlight default link htmlEntityGrp        Constant
-highlight default link urlGrp               String
+highlight default link htmlUrlGrp           String
 
 " highlighting for everything common between html 4 and 5
-highlight default link html5Comment     Comment
-highlight default link htmlDocTypeName	Statement
-highlight default link htmlTagName		Statement
-highlight default link htmlAttrName		htmlAttributeNameGrp
-highlight default link htmlEventName	htmlAttributeNameGrp
-"highlight defautl link htmlAttr
-highlight default link html4DepTagName  Error
-highlight default link html4DepAttrName Error
-highlight default link htmlDocTypeAttr  htmlAttrName
-highlight default link htmlEntity       htmlEntityGrp
-highlight default link htmlError        Error
-highlight default link htmlServerSide   PreProc
+highlight default link html4Comment        Comment
+highlight default link html4CommentTag     Comment
+highlight default link html4DepAttrName    Error
+highlight default link html5Comment        Comment
+highlight default link htmlAttrName		   htmlAttributeNameGrp
+highlight default link htmlDocTypeName	   Statement
+highlight default link htmlEntity          htmlEntityGrp
+highlight default link htmlError           Error
+highlight default link htmlEventName	   htmlAttributeNameGrp
+highlight default link htmlEvtHandler      Function
+highlight default link htmlServerSide      PreProc
+highlight default link htmlServerSideError Error
+highlight default link htmlTagName		   Statement
 
-"" highlighting for html 5
-"if html_version == 5
-"	highlight default link html4DocTypeAttr	 Error
-"	highlight default link html4DtdStr       Error
-"	highlight default link html4DtdUrl       Error
-"	highlight default link html5DepTagName   Error
-"	highlight default link html5DepAttrName  Error
-"	highlight default link html5DepEventName Error
-"	highlight default link html5TagName	     htmlTagName
-"	highlight default link html5AttrName     htmlAttrName
-"	highlight default link html5AttribValue  Function
-"	highlight default link html5EvtHandler   Function
-"	highlight default link html5EventName	 htmlAttributeNameGrp
-"
-"" highlighting for html 4 (or anything else really)
-"else
-"	highlight default link html4DocTypeAttr	 htmlAttrName
-"	highlight default link html4DtdStr       String
-"	highlight default link html4DtdUrl       urlGrp
-"	highlight default link html5DepTagName   htmlTagName
-"	highlight default link html5DepAttrName  htmlAttrName
-"	highlight default link html5DepEventName htmlAttrName
-"	highlight default link html5TagName      Error
-"	highlight default link html5AttrName     Error
-"	highlight default link html5AttribValue  Error
-"	highlight default link html5EvtHandler   Error
-"	highlight default link html5EventName	 Error
-"endif
+" highlighting for html 5
+if html_version == 5
+	highlight default link html4DepTagName   htmlTagName
+	highlight default link html4DocTypeAttr	 Error
+	highlight default link html4DtdStr       Error
+	highlight default link html4DtdUrl       Error
+	highlight default link html5DepTagName   Error
+	highlight default link html5DepAttrName  Error
+	highlight default link html5DepEventName Error
+	highlight default link html5DocTypeAttr  htmlAttrName
+	highlight default link html5TagName	     htmlTagName
+	highlight default link html5AttrName     htmlAttrName
+	highlight default link html5AttribValue  Function
+	highlight default link html5EventName	 htmlAttributeNameGrp
+
+" highlighting for html 4 (or anything else really)
+else
+	highlight default link html4DepTagName   Error
+	highlight default link html4DocTypeAttr	 htmlAttrName
+	highlight default link html4DtdStr       String
+	highlight default link html4DtdUrl       htmlUrlGrp
+	highlight default link html5DepTagName   htmlTagName
+	highlight default link html5DepAttrName  htmlAttrName
+	highlight default link html5DepEventName htmlAttrName
+	highlight default link html5DocTypeAttr  Error
+	highlight default link html5TagName      Error
+	highlight default link html5AttrName     Error
+	highlight default link html5AttribValue  Error
+	highlight default link html5EventName	 Error
+endif
 "}}}
 
 " set the buffer's current syntax so that easily see what the syntax
