@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# get the status
+status=$(git status --porcelain)
+
+# and filter out everything not staged for commit. we don't care
+# about removed files, hence [MARC] instead of [MADRC]. while
+# we're at it, trim the status information from each line.
+filenames=($(echo "$status" | grep '^[MARC].*' | cut -d\  -f3))
+
+# set the last changed date to now, formatted as "YYYY Month DD"
+lastUpdate=`date +"%Y %B %d"`
+
+# we need the path to the repository for the sed command later
+repoPath=`git rev-parse --show-toplevel`
+
+# for each file staged for commit, use sed to replace the "Last Changed"
+# line, then stage the new change for the commit. only do all this for
+# .vim files
+for file in ${filenames[@]}
+do
+	if [[ $file == *.vim ]]
+	then
+		sed --in-place "s/Last Change.*\$/Last Change:\t$lastUpdate/" $repoPath/$file
+		git add $repoPath/$file
+	fi
+done
+
