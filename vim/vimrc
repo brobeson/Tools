@@ -40,4 +40,8 @@ set guioptions-=R	" disable the right hand scroll bar
 set guioptions-=r	" disable the right hand scroll bar
 set guioptions-=L	" disable the left hand scroll bar
 set guioptions-=l	" disable the left hand scroll bar
+set guifont=Source_Code_Pro:h9:cANSI
+
+" set up variables specific programming & markup languages
+set html_use_w3_style
 
