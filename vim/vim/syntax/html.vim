@@ -7,7 +7,6 @@
 " Much thanks to Claudio Fleiner. His html.vim file served as a good resource.
 
 " TODO list {{{
-" 1)    highlight the / in the closing tag
 " 2)    enforce XHTML syntax
 "		b) mandatory doctype
 "		c) mandatory html, head, title, and body tags
@@ -17,13 +16,6 @@
 "		g) one root element
 "		h) attribute values must be quoted
 "		i) attribute minimization is not allowed
-" 6)	highlight illegal characters
-" 7)	highlight character codes, eg: &nbsp
-" 8)	test the tags removed in html 4 and reintroduced in html 5
-" 9)	for html 4, highlight as an error the doctype strings which are
-"		incorrect.
-" 10)	for html 4, highlight as an error incorrect dtd string and dtd url
-"		combinations
 " }}}
 
 if !exists("html_version")
@@ -47,9 +39,12 @@ syntax match htmlError /[<>&]/
 " a source about html 4 comments: http://www.htmlhelp.com/reference/wilbur/misc/comment.html
 syntax match  htmlServerSide      contained /<!#\(config\|echo\|elif\|else\|endif\|exec\|flastmod\|fsize\|include\|if\|printenv\|set\)/ms=s+2
 syntax match  htmlServerSideError contained /\s\+#\(config\|echo\|elif\|else\|endif\|exec\|flastmod\|fsize\|include\|if\|printenv\|set\)/
-syntax region html4Comment        contained start=/--/   end=/--/
-syntax region html4CommentTag               start=/<!/   end=/>/    contains=html4Comment,htmlServerSide
-syntax region html5Comment                  start=/<!--/ end=/-->/  contains=htmlServerSide
+if html_version == 4
+	syntax region htmlComment    contained start=/--/   end=/--/
+	syntax region htmlCommentTag           start=/<!/   end=/>/    contains=htmlComment,htmlServerSide
+else
+	syntax region htmlComment start=/<!--/ end=/-->/  contains=htmlServerSide
+endif
 " }}}
 
 " tags {{{
@@ -145,9 +140,9 @@ syntax match   html5AttrName contained /data-[a-z\-]\+/
 syntax match htmlAttr contained /\<.\+\>=/me=e-1 contains=htmlAttrName,html5DepAttrName,html5AttrName
 
 " attribute values
-syntax match html5AttribValue contained /=\s*\(".*"\|'.*'\|[^'" \t>]\+\)/ms=s+1
+syntax match htmlAttribValue contained /=\s*\(".*"\|'.*'\|[^'" \t>]\+\)/ms=s+1
 
-syntax cluster htmlAttributes contains=htmlAttrName,html5DepAttrName,html5AttrName,html5AttribValue,htmlAttr
+syntax cluster htmlAttributes contains=htmlAttrName,html5DepAttrName,html5AttrName,htmlAttribValue,htmlAttr
 " }}}
 
 " doctype {{{
@@ -197,7 +192,7 @@ syntax match htmlEntity /&\(reg\|spades\|trade\|u[Aa]rr\|yen\);/
 
 " embedded CSS {{{
 syntax include @htmlCss syntax/css.vim
-syntax region  htmlCssTag            start=/<style/  keepend end=/<\/style>/ contains=@htmlCss,htmlTagName,htmlAttr,html5AttribValue
+syntax region  htmlCssTag            start=/<style/  keepend end=/<\/style>/ contains=@htmlCss,htmlTagName,htmlAttr,htmlAttribValue
 syntax region  htmlCssAttr contained start=/style="/ keepend end=/"/         contains=@htmlCss,htmlAttrName
 syntax cluster @htmlAttributes add=htmlCssAttr
 " }}}
@@ -215,10 +210,10 @@ highlight default link htmlEntityGrp        Constant
 highlight default link htmlUrlGrp           String
 
 " highlighting for everything common between html 4 and 5
-highlight default link html4Comment        Comment
-highlight default link html4CommentTag     Comment
+highlight default link htmlComment         Comment
+highlight default link htmlCommentTag      Comment
 highlight default link html4DepAttrName    Error
-highlight default link html5Comment        Comment
+highlight default link htmlAttribValue     htmlAttribValueGrp
 highlight default link htmlAttrName		   htmlAttributeNameGrp
 highlight default link htmlDocTypeName	   Statement
 highlight default link htmlEntity          htmlEntityGrp
@@ -241,7 +236,6 @@ if html_version == 5
 	highlight default link html5DocTypeAttr  htmlAttrName
 	highlight default link html5TagName	     htmlTagName
 	highlight default link html5AttrName     htmlAttrName
-	highlight default link html5AttribValue  Function
 	highlight default link html5EventName	 htmlAttributeNameGrp
 
 " highlighting for html 4 (or anything else really)
@@ -256,7 +250,6 @@ else
 	highlight default link html5DocTypeAttr  Error
 	highlight default link html5TagName      Error
 	highlight default link html5AttrName     Error
-	highlight default link html5AttribValue  Error
 	highlight default link html5EventName	 Error
 endif
 "}}}
