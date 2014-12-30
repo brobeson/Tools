@@ -264,20 +264,20 @@ if !exists("*s:Comment")
 		" determine the smallest column at which text begins the lines in the
 		" range.
 		let column = 1000
+		normal ^
 		for line in range(a:firstline, a:lastline)
-			let text = getline(line)
-			let newColumn = match(text, '\S')
+			let newColumn = col(".")
 			if newColumn < column
 				let column = newColumn
 			endif
+			normal j^
 		endfor
 
 		" now go back through the lines, inserting the comment characters at
 		" that minimum column.
 		for line in range(a:firstline, a:lastline)
-			let oldLine = getline(line)
-			let newLine = strpart(oldLine, 0, column) . "//" . strpart(oldLine, column)
-			call setline(line, newLine)
+			call cursor(line, column)
+			normal i//
 		endfor
 
 		" tell the user how many lines were commented
