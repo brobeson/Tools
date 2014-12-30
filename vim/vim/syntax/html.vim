@@ -6,32 +6,15 @@
 "
 " Much thanks to Claudio Fleiner. His html.vim file served as a good resource.
 
-" TODO list {{{
-" 2)    enforce XHTML syntax
-"		b) mandatory doctype
-"		c) mandatory html, head, title, and body tags
-"		d) mandatory xmlns attribute in html tag
-"		e) proper tag nesting
-"		f) closed tags
-"		g) one root element
-"		h) attribute values must be quoted
-"		i) attribute minimization is not allowed
-" }}}
-
 if !exists("html_version")
 	let html_version = 5
 endif
-"if !exists("html_use_xhtml")
-"	let html_use_xhtml = 0
-"endif
 
-" xhtml requires that tag and attribute names be in lower case. html 5
-" does not
-"if html_use_xhtml == 0
+if exists("html_use_w3_style")
+	syntax case match
+else
 	syntax case ignore
-"else
-"	syntax case match
-"endif
+endif
 
 syntax match htmlError /[<>&]/
 
@@ -97,7 +80,11 @@ syntax keyword html5EventName contained onshow onstalled onstorage onsuspend ont
 syntax keyword html5EventName contained ontoggle onvolumechange onwaiting onwheel
 
 " event handlers
-syntax match htmlEvtHandler contained /=\s*\(".*()"\|'.*()'\|[^'" \t>]\+()\)/ms=s+1
+if exists("html_use_w3_style")
+	syntax match htmlEvtHandler contained /=\(".*()"\|'.*()'\)/ms=s+1
+else
+	syntax match htmlEvtHandler contained /=\s*\(".*()"\|'.*()'\|[^'" \t>]\+()\)/ms=s+1
+endif
 
 syntax cluster htmlEvents contains=htmlEventName,html5DepEventName,html5EventName,htmlEvtHandler
 " }}}
@@ -140,7 +127,11 @@ syntax match   html5AttrName contained /data-[a-z\-]\+/
 syntax match htmlAttr contained /\<.\+\>=/me=e-1 contains=htmlAttrName,html5DepAttrName,html5AttrName
 
 " attribute values
-syntax match htmlAttribValue contained /=\s*\(".*"\|'.*'\|[^'" \t>]\+\)/ms=s+1
+if exists("html_use_w3_style")
+	syntax match htmlAttribValue contained /=\(".*"\|'.*'\)/ms=s+1
+else
+	syntax match htmlAttribValue contained /=\s*\(".*"\|'.*'\|[^'" \t>]\+\)/ms=s+1
+endif
 
 syntax cluster htmlAttributes contains=htmlAttrName,html5DepAttrName,html5AttrName,htmlAttribValue,htmlAttr
 " }}}
