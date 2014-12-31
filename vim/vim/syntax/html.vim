@@ -2,7 +2,7 @@
 " Language:		HTML
 " Maintainer:	brobeson
 " URL:			https://github.com/brobeson/Tools
-" Last Change:	2014 December 31
+" Last Change:	2014 December 29
 "
 " Much thanks to Claudio Fleiner. His html.vim file served as a good resource.
 

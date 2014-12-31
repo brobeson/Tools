@@ -1,6 +1,6 @@
 " Vim color file
 " Maintainer: Brendan Robeson <ogslanger@vt.edu>
-" Last Change:	2014 December 31
+" Last Change: 2014 October 3
 " License:  Public Domain
 "
 " This color file is meant to mimic Visual Studio 2013's C++ highlighting for

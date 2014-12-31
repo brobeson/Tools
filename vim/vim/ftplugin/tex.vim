@@ -1,5 +1,5 @@
 " Vim plugin to add a bunch of functionality related to LaTeX development.
-" Last Change:	2014 December 31
+" Last Change: 2014 December 2
 " Maintainer:  Brendan Robeson (ogslanger@vt.edu)
 " License:     Public Domain
 "

@@ -1,5 +1,5 @@
 " Vim plugin to add a bunch of functionality related to Vim scripting.
-" Last Change:	2014 December 31
+" Last Change: 2014 October 6
 " Maintainer:  Brendan Robeson (ogslanger@vt.edu)
 " License:     Public Domain
 "
