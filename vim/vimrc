@@ -1,0 +1,57 @@
+" TODO	verify that on linux, the system and custom vimrc files are run
+
+" i use these settings on my linux box at home, and my windows box at work.
+" the home directory at work is mapped to a network share, so when i use the
+" work laptop at home, i lose all the settings. hence, i need to reconfigure
+" the rtp to get my settings (and plugins, etc) from my local profile.
+"
+" also, the windows version doesn't run both the system vimrc and my vimrc,
+" hence i need to explicitly run it here.
+if has("win32")
+	" reconfigure the runtimepath
+	set rtp-=$HOME\vimfiles
+	set rtp-=$HOME\vimfiles/after
+	set rtp^=$USERPROFILE/vimfiles
+	set rtp+=$USERPROFILE/vimfiles/after
+
+	" now load the installed _vimrc
+	source c:/program files (x86)/vim/_vimrc
+endif
+
+set nobackup	" disable automatic backups
+set number		" enable line numbers
+set nowrap		" disable line wrap
+
+" set all tabbing to 4 characters wide and keep the tabs
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set noexpandtab
+
+" set up some searching options
+set incsearch
+set hlsearch
+
+"colorscheme mine
+colorscheme vs2013dark
+
+" set up the GUI
+set guioptions-=g	" disable grayed out inactive menu items
+set guioptions-=m	" disable the menu bar
+set guioptions-=T	" disable the tool bar
+set guioptions-=t	" disable tear off menus
+set guioptions-=R	" disable the right hand scroll bar
+set guioptions-=r	" disable the right hand scroll bar
+set guioptions-=L	" disable the left hand scroll bar
+set guioptions-=l	" disable the left hand scroll bar
+
+" set up the GUI font
+if has("win32")
+	set guifont=Source_Code_Pro:h9:cANSI
+else
+	set guifont=DejaVu\ Sans\ Mono\ 9
+endif
+
+" set up variables specific programming & markup languages
+let html_use_w3_style = 1
+
