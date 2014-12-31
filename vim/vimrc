@@ -28,6 +28,10 @@ set softtabstop=4
 set shiftwidth=4
 set noexpandtab
 
+" set up some searching options
+set incsearch
+set hlsearch
+
 "colorscheme mine
 colorscheme vs2013dark
 
@@ -40,8 +44,14 @@ set guioptions-=R	" disable the right hand scroll bar
 set guioptions-=r	" disable the right hand scroll bar
 set guioptions-=L	" disable the left hand scroll bar
 set guioptions-=l	" disable the left hand scroll bar
-set guifont=Source_Code_Pro:h9:cANSI
+
+" set up the GUI font
+if has("win32")
+	set guifont=Source_Code_Pro:h9:cANSI
+else
+	set guifont=DejaVu\ Sans\ Mono\ 9
+endif
 
 " set up variables specific programming & markup languages
-set html_use_w3_style
+let html_use_w3_style = 1
 
