@@ -1,5 +1,5 @@
 " Vim plugin to add a bunch of functionality related to C++ development.
-" Last Change:	2014 December 31
+" Last Change:	2015 January 02
 " Maintainer:  Brendan Robeson (ogslanger@vt.edu)
 " License:     Public Domain
 "
@@ -61,76 +61,84 @@ if !exists("*s:InsertDoxygen")
 			let currentLine = currentLine + 1
 		endwhile
 
-		execute ":normal! O/**\n@brief\n@details"
+		" look for deleted functions
+		if match(text, "delete") != -1
+			execute ":normal! O/** @cond */"
+			execute ":normal! jo/** @endcond */"
 
-		" check if this is a template class or function. if it is,
-		" add the tparam tags.
-		let hasTemplate = match(text, "template")
-		if hasTemplate != -1
-			let start = stridx(text, "<") + 1
-			let end = stridx(text, ">", start)
-			let templateParameters = strpart(text, start, end - start)
-			let templateParameters = substitute(templateParameters, '\(<\|,\|>\)', '', 'g')
-			let paramList = split(templateParameters)
-			let index = 1
-			while index < len(paramList)
-				execute ":normal! o@tparam\t" . paramList[index]
-				let index = index + 2
-			endwhile
-		endif
-		" done checking for template parameters
+		" if this code block is not a deleted function
+		else
+			execute ":normal! O/**\n@brief\n@details"
 
-		" check if this is a function. it will have ()s.
-		let isFunction = match(text, "(")
-		if (isFunction != -1)
-			let start = stridx(text, "(") + 1
-			let end = stridx(text, ")", start)
-			let parameters = strpart(text, start, end - start)
-			let parameterList = split(parameters, ',')
-			let index = 0
-			while index < len(parameterList)
-				let paramText = "@param"
-				let paramName = matchstr(parameterList[index], '\w\+$')
+			" check if this is a template class or function. if it is,
+			" add the tparam tags.
+			let hasTemplate = match(text, "template")
+			if hasTemplate != -1
+				let start = stridx(text, "<") + 1
+				let end = stridx(text, ">", start)
+				let templateParameters = strpart(text, start, end - start)
+				let templateParameters = substitute(templateParameters, '\(<\|,\|>\)', '', 'g')
+				let paramList = split(templateParameters)
+				let index = 1
+				while index < len(paramList)
+					execute ":normal! o@tparam\t" . paramList[index]
+					let index = index + 2
+				endwhile
+			endif
+			" done checking for template parameters
 
-				" the rules for determining if a parameter is in or out:
-				" 1 - if const appears first, it is input only
-				" 2 - if it's a reference or a constant pointer, it is input &
-				"     output
-				" 3 - otherwise it is input only
-				" to really know whether something is output only, one needs
-				" to examine the function code, which is beyond the scope of
-				" this plugin, so we default to [in,out] instead of [out].
-				if match(parameterList[index], '^\s*const') != -1
-					let paramText .= "[in]\t"
-				elseif match(parameterList[index], '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
-					let paramText .= "[in,out]\t"
-				else
-					let paramText .= "[in]\t"
+			" check if this is a function. it will have ()s.
+			let isFunction = match(text, "(")
+			if (isFunction != -1)
+				let start = stridx(text, "(") + 1
+				let end = stridx(text, ")", start)
+				let parameters = strpart(text, start, end - start)
+				let parameterList = split(parameters, ',')
+				let index = 0
+				while index < len(parameterList)
+					let paramText = "@param"
+					let paramName = matchstr(parameterList[index], '\w\+$')
+
+					" the rules for determining if a parameter is in or out:
+					" 1 - if const appears first, it is input only
+					" 2 - if it's a reference or a constant pointer, it is input &
+					"     output
+					" 3 - otherwise it is input only
+					" to really know whether something is output only, one needs
+					" to examine the function code, which is beyond the scope of
+					" this plugin, so we default to [in,out] instead of [out].
+					if match(parameterList[index], '^\s*const') != -1
+						let paramText .= "[in]\t"
+					elseif match(parameterList[index], '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
+						let paramText .= "[in,out]\t"
+					else
+						let paramText .= "[in]\t"
+					endif
+
+					execute ":normal! o" . paramText . paramName
+					let index = index + 1
+				endwhile
+
+				" figure out the return type, at this point isFunction holds the
+				" location of the opening (
+				let returnType = substitute(text, '\s\+\(\w\+\|operator.*\)(.*', '', '')
+				let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
+				if returnType == "bool"
+					execute ":normal! o@retval\ttrue\n@retval\tfalse"
+				elseif returnType != "void" && returnType != ""
+					execute ":normal! o@return"
 				endif
 
-				execute ":normal! o" . paramText . paramName
-				let index = index + 1
-			endwhile
-
-			" figure out the return type, at this point isFunction holds the
-			" location of the opening (
-			let returnType = substitute(text, '\s\+\(\w\+\|operator.*\)(.*', '', '')
-			let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
-			if returnType == "bool"
-				execute ":normal! o@retval\ttrue\n@retval\tfalse"
-			elseif returnType != "void" && returnType != ""
-				execute ":normal! o@return"
+				" tack on a report about if the function throws any exceptions
+				if match(text, "noexcept") != -1
+					execute ":normal! o@exception\tNone"
+				else
+					execute ":normal! o@exception"
+				endif
 			endif
 
-			" tack on a report about if the function throws any exceptions
-			if match(text, "noexcept") != -1
-				execute ":normal! o@exception\tNone"
-			else
-				execute ":normal! o@exception"
-			endif
+			execute ":normal! o/"
 		endif
-
-		execute ":normal! o/"
 		call cursor(cursorLeaveLine, 1)
 	endfunction
 endif
