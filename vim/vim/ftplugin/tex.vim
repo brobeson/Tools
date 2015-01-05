@@ -41,7 +41,7 @@ if !exists("*LatexFoldText")
 		" if the first line is not a comment, get the line which starts a LaTeX
 		" command (\begin, \section, etc).
 		else
-			while (firstLineNum <= v:foldend) && (match(firstLine, '\\\a\+{', '', '') == -1)
+			while (firstLineNum <= v:foldend) && (match(firstLine, '\\\a\+\*\?{', '', '') == -1)
 				let firstLineNum = firstLineNum + 1
 				let firstLine = getline(firstLineNum)
 			endwhile
@@ -50,9 +50,9 @@ if !exists("*LatexFoldText")
 			if v:foldend < firstLineNum
 				let foldText = "no LaTeX comment found"
 
-				" otherwise, we do have the LaTeX command
+			" otherwise, we do have the LaTeX command
 			else
-				let cmd = matchstr(firstLine, '\s*\\\a\+{.*}', '', '')
+				let cmd = matchstr(firstLine, '\s*\\\a\+\*\?{.*}', '', '')
 				let foldText = cmd . "..."
 
 				if (0 <= match(cmd, '\begin', '', ''))
