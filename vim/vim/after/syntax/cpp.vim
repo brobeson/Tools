@@ -9,6 +9,6 @@ highlight default link doxyTodo Todo
 
 " load STL syntax highlighting
 "if !exists("cpp_no_stl")
-"	runtime! syntax/stl.vim
+	runtime! syntax/stl.vim
 "endif
 

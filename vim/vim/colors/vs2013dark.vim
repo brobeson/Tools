@@ -77,8 +77,8 @@ highlight Character    cterm=none  ctermfg=darkyellow                   gui=none
 highlight Float        cterm=none  ctermfg=lightgreen                   gui=none       guifg=#b5cea8
 highlight Number       cterm=none  ctermfg=lightgreen                   gui=none       guifg=#b5cea8
 highlight String       cterm=none  ctermfg=darkyellow                   gui=none       guifg=#d69d85
-highlight Identifier   cterm=none  ctermfg=lightgray                    gui=none       guifg=#c8c8c8
-highlight Function     cterm=none  ctermfg=lightgray                    gui=none       guifg=#c8c8c8
+highlight Identifier   cterm=none  ctermfg=lightgray                    gui=none       guifg=#aaaaaa
+highlight Function     cterm=none  ctermfg=lightgray                    gui=none       guifg=#aaaaaa
 "Ignore
 highlight PreProc      cterm=none  ctermfg=gray                         gui=none       guifg=#9b9b9b
 "Define    \
