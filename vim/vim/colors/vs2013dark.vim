@@ -1,6 +1,6 @@
 " Vim color file
 " Maintainer: Brendan Robeson <ogslanger@vt.edu>
-" Last Change: 2014 October 3
+" Last Change:	2014 December 31
 " License:  Public Domain
 "
 " This color file is meant to mimic Visual Studio 2013's C++ highlighting for
@@ -77,8 +77,8 @@ highlight Character    cterm=none  ctermfg=darkyellow                   gui=none
 highlight Float        cterm=none  ctermfg=lightgreen                   gui=none       guifg=#b5cea8
 highlight Number       cterm=none  ctermfg=lightgreen                   gui=none       guifg=#b5cea8
 highlight String       cterm=none  ctermfg=darkyellow                   gui=none       guifg=#d69d85
-highlight Identifier   cterm=none  ctermfg=lightgray                    gui=none       guifg=#c8c8c8
-highlight Function     cterm=none  ctermfg=lightgray                    gui=none       guifg=#c8c8c8
+highlight Identifier   cterm=none  ctermfg=lightgray                    gui=none       guifg=#aaaaaa
+highlight Function     cterm=none  ctermfg=lightgray                    gui=none       guifg=#aaaaaa
 "Ignore
 highlight PreProc      cterm=none  ctermfg=gray                         gui=none       guifg=#9b9b9b
 "Define    \
@@ -107,7 +107,7 @@ highlight Underlined   cterm=none ctermfg=darkcyan                      gui=unde
 
 " custom groups
 highlight htmlAttributeNameGrp cterm=none ctermfg=darkcyan gui=none      guifg=#9cdcfe guibg=bg
-highlight htmlAttribValueGrp   cterm=none ctermfg=gray     gui=none      guifg=#c8c8c8 guibg=bg
+highlight htmlAttribValueGrp   cterm=none ctermfg=gray     gui=none      guifg=#aaaaaa guibg=bg
 highlight htmlEntityGrp        cterm=none ctermfg=darkcyan gui=none      guifg=#00a0a0 guibg=bg
 highlight urlGrp               cterm=none ctermfg=darkcyan gui=underline guifg=#569cd6 guibg=bg
 
