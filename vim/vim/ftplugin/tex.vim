@@ -19,6 +19,7 @@ setlocal cpo&vim
 set noautoindent
 set nocindent
 set nosmartindent
+set cursorline
 
 "==============================================================================
 " code folding {{{

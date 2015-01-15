@@ -7,6 +7,7 @@
 " highlighted.
 let stl_highlight_methods = 1
 let cpp_no_cpp11 = 1
+let cpp_no_cpp14 = 1
 let cpp_no_cpp17 = 1
 
 syntax keyword stlNamespace std
@@ -126,18 +127,25 @@ syntax keyword stlNamespace std
 "		" }}}
 "	" }}}
 
-" TODO string objects and character arrays {{{
+" WORKING ON string objects and character arrays {{{
+" STL string objects
+" TODO	""s operator
+syntax keyword stl11TypeId			u16string u32string
+syntax keyword stl11FunctionId		stod stof stoi stol stold stoll stoul stoull to_string to_wstring
+syntax keyword stlConstantId		npos
+syntax keyword stlMethodId			append c_str compare data eof eq eq_int_type find_first_not_of find_last_not_of find_last_of length lt move not_eof rfind substr to_char_type to_int_type
+syntax keyword stlClassId			basic_string char_traits
+syntax keyword stlTypeId			char_type int_type off_type pos_type state_type string traits_type wstring
+
 "	" TODO verify this
-"	syntax match stlTemplate "std::\(char_traits\|\(basic_\|u16\|u32\|w\)\?string\)"
-"	syntax match stlConstant "std::string::npos"
-"	syntax match stlFunction "std::\(getline\|sto\(d\|f\|i\|l\|ld\|ll\|ul\|ull\)\|swap\|to_w\?string\)"
+"	syntax match stlFunction "std::\(getline\|swap
 "	if exists("stl_highlight_methods")
-"		syntax match stlMethod "\.\(append\|assign\|at\|back\|begin\|c_str\|capacity\|cbegin\|cend\)"ms=s+1
-"		syntax match stlMethod "\.\(clear\|compare\|copy\|crbegin\|crend\|empty\|end\|data\|erase\)"ms=s+1
-"		syntax match stlMethod "\.\(find\|find_first_not_of\|find_first_of\|find_last_not_of\)"ms=s+1
-"		syntax match stlMethod "\.\(find_last_of\|front\|get_allocator\|insert\|length\|max_size\)"ms=s+1
+"		syntax match stlMethod "\.\(\|assign\|at\|back\|begin\|\|capacity\|cbegin\|cend\)"ms=s+1
+"		syntax match stlMethod "\.\(clear\|\|copy\|crbegin\|crend\|empty\|end\|\|erase\)"ms=s+1
+"		syntax match stlMethod "\.\(find\|\|find_first_of\|\)"ms=s+1
+"		syntax match stlMethod "\.\(\|front\|get_allocator\|insert\|\|max_size\)"ms=s+1
 "		syntax match stlMethod "\.\(pop_back\|push_back\|rbegin\|rend\|replace\|reserve\|resize\)"ms=s+1
-"		syntax match stlMethod "\.\(rfind\|shrink_to_fit\|size\|substr\|swap\)"ms=s+1
+"		syntax match stlMethod "\.\(\|shrink_to_fit\|size\|\|swap\)"ms=s+1
 "	endif
 "
 "	" null terminated byte strings
@@ -166,42 +174,61 @@ syntax keyword stlNamespace std
 "	syntax keyword stlMacro    WEOF
 "	" }}}
 
-" WORKING ON containers {{{
-	" TODO from stl11: array forward_list unordered_map unordered_multimap unordered_multiset unordered_set
-	" TODO TEST 
-	syntax keyword stlContainerId	deque list map multimap multiset priority_queue queue set stack vector
-	syntax keyword stlTypeId		allocator_type const_iterator const_pointer const_reference
-	syntax keyword stlTypeId		const_reverse_iterator container_type difference_type first_argument_type iterator
-	syntax keyword stlTypeId		key_compare key_type mapped_type pointer reference result_type reverse_iterator
-	syntax keyword stlTypeId		second_argument_type size_type value_type
-	syntax keyword stlMemberClassId value_compare
-	syntax keyword stlMethodId		assign at back begin capacity cbegin cend clear count crbegin crend
-	syntax keyword stlMethodId		empty end equal_range erase find front get_allocator insert key_comp
-	syntax keyword stlMethodId		lower_bound max_size merge pop pop_back pop_front push push_back
-	syntax keyword stlMethodId		push_front rbegin remove remove_if rend reserve resize reverse size
-	syntax keyword stlMethodId		sort splice swap top unique upper_bound value_comp
-	syntax keyword stl11MethodId	data emplace emplace_back emplace_front emplace_hint shrink_to_fit
-	syntax keyword stl17MethodId	insert_or_assign try_emplace
-	syntax keyword stlFunctionId	swap
-	syntax keyword stlMemberId		c comp
+" containers {{{
+syntax keyword stlContainerId	deque list map multimap multiset priority_queue queue set stack vector
+syntax keyword stlMemberClassId value_compare
+syntax keyword stlMemberId		c comp
+syntax keyword stlMethodId		assign at back begin capacity cbegin cend clear count crbegin crend empty end equal_range erase find front
+syntax keyword stlMethodId		get_allocator insert key_comp lower_bound max_size merge pop pop_back pop_front push push_back push_front
+syntax keyword stlMethodId		rbegin remove remove_if rend reserve resize reverse size sort splice swap top unique upper_bound value_comp
+syntax keyword stlTypeId		allocator_type const_iterator const_pointer const_reference const_reverse_iterator container_type
+syntax keyword stlTypeId		difference_type first_argument_type iterator key_compare key_type mapped_type pointer reference result_type
+syntax keyword stlTypeId		reverse_iterator second_argument_type size_type value_type
 
-	" helper classes
-	"	std::uses_allocator
+" added in C++11
+syntax keyword stl11ContainerId	array forward_list unordered_map unordered_multimap unordered_multiset unordered_set
+syntax keyword stl11FunctionId	get
+syntax keyword stl11MethodId	before_begin bucket bucket_count bucket_size cbefore_begin emplace emplace_after emplace_back
+syntax keyword stl11MethodId	emplace_front emplace_hint erase_after fill hash_function insert_after key_eq load_factor max_bucket_count
+syntax keyword stl11MethodId	max_load_factor rehash shrink_to_fit splice_after
+syntax keyword stl11TypeId		const_local_iterator hasher key_equal local_iterator
 
-	"syntax match stlContainer	/stl::\(deque\|list\|map\|multimap\|multiset\|priority_queue\|queue\|set\|stack\|vector\)/ contains=stdContainerId
-	"syntax match stlClass     "stl::\(multi\)\?map::value_compare"
-	"syntax match stlFunction  "std::get"
-	"if exists("stl_highlight_methods")
-	"	syntax match stlMethod "\.\(before_begin\|bucket\|bucket_count\|bucket_size\|cbefore_begin\|count\|emplace\)"ms=s+1
-	"	syntax match stlMethod "\.\(emplace_after\|emplace_back\|emplace_front\|emplace_hint\|equal_range\|erase_after\)"ms=s+1
-	"	syntax match stlMethod "\.\(fill\|hash_function\|insert_after\|insert_or_assign\|key_comp\|key_eq\|load_factor\)"ms=s+1
-	"	syntax match stlMethod "\.\(lower_bound\|max_bucket_count\|max_load_factor\|merge\|pop\|pop_front\|push\)"ms=s+1
-	"	syntax match stlMethod "\.\(push_front\|rehash\|remove\|remove_if\|reverse\|sort\|splice\|splice_after\|top\)"ms=s+1
-	"	syntax match stlMethod "\.\(try_emplace\|unique\|upper_bound\|value_comp\)"ms=s+1
-	"endif
+" added in C++17
+syntax keyword stl17MethodId	insert_or_assign try_emplace
+
+" helper classes
+"	tuple_element
+"	tuple_size
+"	uses_allocator
+
+"syntax match stlContainer	/stl::\(deque\|list\|map\|multimap\|multiset\|priority_queue\|queue\|set\|stack\|vector\)/ contains=stdContainerId
+"syntax match stlClass     "stl::\(multi\)\?map::value_compare"
+"syntax match stlFunction  "std::get"
+"if exists("stl_highlight_methods")
+"	syntax match stlMethod "\.\(before_begin\|bucket\|bucket_count\|bucket_size\|cbefore_begin\|count\|emplace\)"ms=s+1
+"	syntax match stlMethod "\.\(emplace_after\|emplace_back\|emplace_front\|emplace_hint\|equal_range\|erase_after\)"ms=s+1
+"	syntax match stlMethod "\.\(fill\|hash_function\|insert_after\|insert_or_assign\|key_comp\|key_eq\|load_factor\)"ms=s+1
+"	syntax match stlMethod "\.\(lower_bound\|max_bucket_count\|max_load_factor\|merge\|pop\|pop_front\|push\)"ms=s+1
+"	syntax match stlMethod "\.\(push_front\|rehash\|remove\|remove_if\|reverse\|sort\|splice\|splice_after\|top\)"ms=s+1
+"	syntax match stlMethod "\.\(try_emplace\|unique\|upper_bound\|value_comp\)"ms=s+1
+"endif
 " }}}
 
-" TODO algorithms {{{
+" algorithms {{{
+	syntax keyword stlFunctionId	accumulate adjacent_difference adjacent_find binary_search bsearch copy copy_backward count count_if
+	syntax keyword stlFunctionId	equal equal_range fill fill_n find find_end find_first_of find_if for_each generate generate_n includes
+	syntax keyword stlFunctionId	inner_product inplace_merge iter_swap lexicographical_compare lower_bound max max_element make_heap
+	syntax keyword stlFunctionId	merge min min_element mismatch next_permutation nth_element partial_sort partial_sort_copy partial_sum
+	syntax keyword stlFunctionId	partition pop_heap prev_permutation push_heap qsort remove remove_copy remove_copy_if remove_if replace
+	syntax keyword stlFunctionId	replace_copy replace_copy_if replace_if reverse reverse_copy rotate rotate_copy search search_n
+	syntax keyword stlFunctionId	set_difference set_intersection set_symmetric_difference set_union sort sort_heap stable_partition
+	syntax keyword stlFunctionId	stable_sort swap swap_ranges transform unique unique_copy upper_bound
+
+	syntax keyword stl11FunctionId	all_of any_of copy_if copy_n find_if_not iota is_heap is_heap_until is_partitioned is_permutation
+	syntax keyword stl11FunctionId	is_sorted is_sorted_until minmax minmax_element move_backward none_of partition_copy
+	syntax keyword stl11FunctionId	partition_point shuffle
+
+	syntax keyword stl14DepFunctionId random_shuffle
 " }}}
 
 " TODO iterators {{{
@@ -225,28 +252,9 @@ syntax keyword stlNamespace std
 " TODO thread support {{{
 " }}}
 
-" TODO C++11 {{{
-	" containers {{{
-		"forward_list
-		"unordered_set
-		"unordered_multiset
-		"unordered_map
-		"unordered_multimap
-		"syntax keyword stl11ContainerId array
-		"syntax keyword stl11FunctionId  get swap
-		"syntax keyword stl11MethodId    at back begin cbegin cend crbegin crend data empty end fill front max_size
-		"syntax keyword stl11MethodId    rbegin rend size swap
-		"syntax keyword stl11TypeId      const_iterator const_pointer const_reference const_reverse_iterator
-		"syntax keyword stl11TypeId      difference_type iterator pointer reference reverse_iterator size_type value_type
-		"syntax match   stlFunction      "\<std::\(get\|swap\)\s*("me=e-1 contains=stlNamespace,stl11FunctionId
-		"syntax match   stlMethod        "\.\(at\|back\|begin\|cbegin\|cend\|crbegin\|crend\|data\|empty\|end\|fill\|front\|max_size\|rbegin\|rend\|size\|swap\)\s*("ms=s+1,me=e-1 contains=stl11MethodId
-		"syntax match   stlTemplate      "\<std::array\>" contains=stlNamespace,stl11ContainerId
-		"syntax match   stlTypedef       "\<std::array::\(const_iterator\|const_pointer\|const_reference\|const_reverse_iterator\|difference_type\|iterator\|pointer\|reference\|reverse_iterator\|size_type\|value_type\)\>" contains=stlNamespace,stl11ContainerId,stl11TypeId
-		"syntax match   stl11Function "std::\(get\|swap\)"
-	" }}}
-" }}}
-
-"highlight default link stlConstant      Constant
+" highlighting {{{
+ highlight default link stlClassId       Structure
+ highlight default link stlConstantId    Constant
  highlight default link stlContainerId   Structure
 "highlight default link stlEnumeration   Type
 "highlight default link stlEnumValue     Constant
@@ -276,16 +284,26 @@ if exists("stl_highlight_methods")
 endif
 
 " highlighting of C++11 STL changes
-"if exists("cpp_no_cpp11")
-"	highlight default link stl11ContainerId Error
-"	highlight default link stl11FunctionId  Error
+if exists("cpp_no_cpp11")
+	highlight default link stl11ContainerId Error
+	highlight default link stl11FunctionId  Error
 "	"highlight default link stl11Template Error
-"	highlight default link stl11TypeId      Error
-"else
-"	highlight default link stl11ContainerId stlContainerId
-"	highlight default link stl11FunctionId  stlFunctionId
+	highlight default link stl11TypeId      Error
+else
+	highlight default link stl11ContainerId stlContainerId
+	highlight default link stl11FunctionId  stlFunctionId
 "	"highlight default link stl11Template stlTemplate
-"	highlight default link stl11TypeId      stlTypeId
-"endif
+	highlight default link stl11TypeId      stlTypeId
+endif
 
+" deprecated & removed functionality
+if exists("cpp_no_cpp14") && exists("cpp_no_cpp17")
+	highlight default link stl14DepFunctionId Function
+else
+	highlight default link stl14DepFunctionId Error
+endif
+"}}}
 
+"================================================================
+" I initially copied this from https://github.com/Mizuchi/STL-Syntax. I'm only using it to point out some STL functionality I may miss in my own file.
+"================================================================
