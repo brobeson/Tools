@@ -16,6 +16,8 @@ let b:loaded_vim = 1
 let s:save_cpo = &cpo
 setlocal cpo&vim
 
+set cursorline
+
 
 "==============================================================================
 " code folding {{{

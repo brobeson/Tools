@@ -18,6 +18,8 @@ let b:loaded_cpp = 1
 let s:save_cpo = &cpo
 setlocal cpo&vim
 
+set cursorline
+
 "==============================================================================
 " map some normal mode keystrokes to common C++ editing operations {{{
 "==============================================================================

@@ -2,6 +2,10 @@
 syntax keyword cppError NULL
 highlight default link cppError Error
 
+" override some highlight linking
+highlight! default link cStructure   Statement
+highlight! default link cppStructure Statement
+
 " match Doxygen 'todo' comments
 syntax match doxyTodo contained /[\\@]\ctodo/
 syntax cluster cCommentGroup add=doxyTodo
