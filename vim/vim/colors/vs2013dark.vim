@@ -50,8 +50,8 @@ highlight SpecialKey    cterm=none  ctermfg=white                               
 "SpellCap
 "SpellLocal
 "SpellRare
-highlight StatusLine    cterm=none  ctermfg=fg         ctermbg=darkgray  gui=none       guifg=fg        guibg=bg
-highlight StatusLineNC  cterm=none  ctermfg=darkgray   ctermbg=bg        gui=none       guifg=darkgray  guibg=bg
+highlight StatusLine    cterm=none  ctermfg=fg         ctermbg=darkgray  gui=underline  guifg=fg        guibg=bg
+highlight StatusLineNC  cterm=none  ctermfg=darkgray   ctermbg=bg        gui=underline  guifg=darkgray  guibg=bg
 highlight VertSplit     cterm=none  ctermfg=darkgray   ctermbg=darkgray                 guifg=#808080   guibg=#808080
 highlight WildMenu      cterm=none  ctermfg=black      ctermbg=darkgray  gui=underline  guifg=fg        guibg=bg
 
@@ -94,7 +94,7 @@ highlight Statement    cterm=bold  ctermfg=darkcyan                     gui=none
 "Label         /
 "Operator     /
 "Repeat      /
-highlight Todo         cterm=none  ctermfg=black       ctermbg=darkcyan gui=none       guifg=black    guibg=#92caf4
+highlight Todo         cterm=none  ctermfg=black       ctermbg=darkcyan gui=none       guifg=#57a64a    guibg=bg
 highlight Type         cterm=none  ctermfg=white                        gui=none       guifg=#569cd6
 highlight StorageClass cterm=none  ctermfg=white                        gui=none       guifg=#569cd6
 highlight Structure    cterm=none  ctermfg=cyan                         gui=none       guifg=#4ec9b3
