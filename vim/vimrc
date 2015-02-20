@@ -31,6 +31,15 @@ set guioptions-=L	" disable the left hand scroll bar
 set guioptions-=l	" disable the left hand scroll bar
 set guifont=DejaVu\ Sans\ Mono\ 9
 
+" map some handy fold commands. typing z# will fold & unfold everything to the
+" #th fold. i only have 1-5 set, because i don't typically have more folds
+" than that. z0 is not set because there is already zM.
+nmap <unique> z1 :set foldlevel=1<CR>
+nmap <unique> z2 :set foldlevel=2<CR>
+nmap <unique> z3 :set foldlevel=3<CR>
+nmap <unique> z4 :set foldlevel=4<CR>
+nmap <unique> z5 :set foldlevel=5<CR>
+
 " set up variables specific programming & markup languages
 let html_use_w3_style = 1
 

@@ -309,6 +309,55 @@ endif
 "}}}
 
 
+"==============================================================================
+" the extract-to-function plugin {{{
+"==============================================================================
+if !exists("no_plugin_maps") && !exists("no_cpp_maps")
+	" map the comment command
+	if !hasmapto('<Plug>CppPasteFunction')
+		map <buffer> <unique> <Leader>fp <Plug>CppPasteFunction
+	endif
+	noremap  <buffer> <unique> <script> <Plug>CppPasteFunction <SID>PasteFunction
+	noremap  <buffer>                   <SID>PasteFunction     :call <SID>PasteFunction()<CR>
+
+	" map the uncomment command
+	if !hasmapto('<Plug>CppYankFunction')
+		map <buffer> <unique> <Leader>fy <Plug>CppYankFunction
+	endif
+	noremap  <buffer> <unique> <script> <Plug>CppYankFunction <SID>YankFunction
+	noremap  <buffer>                   <SID>YankFunction     :call <SID>YankFunction()<CR>
+endif
+noremenu <script> &C++.&Yank\ for\ Function	<SID>YankFunction
+noremenu <script> &C++.&Paste\ as\ Function	<SID>PasteFunction
+
+let s:functionBody = []
+
+" define the function to paste a buffer as a function
+if !exists("*s:PasteFunction")
+	function s:PasteFunction()
+		execute "normal o{\n}\n\n\ekkk"
+
+		call append(line('.'), s:functionBody)
+		let lineCount = len(s:functionBody) + 2
+		if exists("cpp_reformat_on_function_paste")
+			execute 'normal' lineCount . '=='
+		endif
+
+		normal O
+		startinsert
+	endfunction
+endif
+
+" define the function to uncomment a range of lines
+if !exists("*s:YankFunction")
+	function s:YankFunction() range
+		let s:functionBody = getline(a:firstline, a:lastline)
+		echo a:lastline - a:firstline + 1 "lines yanked, ready to be put as a function"
+	endfunction
+endif
+"}}}
+
+
 " restore the original cpoptions
 let &cpo = s:save_cpo
 
