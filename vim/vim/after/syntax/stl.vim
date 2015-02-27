@@ -18,6 +18,7 @@ syntax keyword stlClassId	contained char_traits
 syntax keyword stlClassId	contained deque
 syntax keyword stlClassId	contained list
 syntax keyword stlClassId	contained map
+syntax keyword stlClassId	contained mbstate_t
 syntax keyword stlClassId	contained multimap
 syntax keyword stlClassId	contained multiset
 syntax keyword stlClassId	contained priority_queue
@@ -26,7 +27,10 @@ syntax keyword stlClassId	contained set
 syntax keyword stlClassId	contained stack
 syntax keyword stlClassId	contained value_compare
 syntax keyword stlClassId	contained vector
-syntax match   stlClass		/std::\(basic_string\|char_traits\|deque\|list\|map\|multimap\|multiset\|priority_queue\|queue\|set\|stack\|vector\)/ contains=stlNamespaceId,stlClassId
+syntax keyword stlClassId	contained wctrans_t
+syntax keyword stlClassId	contained wctype_t
+syntax keyword stlClassId	contained wint_t
+syntax match   stlClass		/std::\(basic_string\|char_traits\|deque\|list\|map\|mbstate_t\|multimap\|multiset\|priority_queue\|queue\|set\|stack\|vector\|wctrans_t\|wctype_t\|wint_t\)/ contains=stlNamespaceId,stlClassId
 syntax match   stlClass		/::value_compare/ contains=stlClassId
 
 " added in C++11
@@ -67,7 +71,15 @@ endif
 " }}}
 
 " constants {{{
+syntax keyword stlConstantId	contained __STDC_UTF_16__
+syntax keyword stlConstantId	contained __STDC_UTF_32__
 syntax keyword stlConstantId	contained npos
+syntax keyword stlConstantId	contained MB_CUR_MAX
+syntax keyword stlConstantId	contained MB_LEN_MAX
+syntax keyword stlConstantId	contained WCHAR_MAX
+syntax keyword stlConstantId	contained WCHAR_MIN
+syntax keyword stlConstantId	contained WEOF
+syntax match   stlConstant		/std::\(__STDC_UTF_\(16\|32\)__\|MB_\(CUR\|LEN\)_MAX\|WCHAR_M\(AX\|IN\)\|WEOF\)\>/ contains=stlNamespaceId,stlConstantId
 syntax match   stlConstant		/::npos/ contains=stlConstantId
 
 if !exists("cpp_no_cpp11")
@@ -112,8 +124,13 @@ endif
 syntax keyword stlFunctionId	contained accumulate
 syntax keyword stlFunctionId	contained adjacent_difference
 syntax keyword stlFunctionId	contained adjacent_find
+syntax keyword stlFunctionId	contained atof
+syntax keyword stlFunctionId	contained atoi
+syntax keyword stlFunctionId	contained atol
+syntax keyword stlFunctionId	contained atoll
 syntax keyword stlFunctionId	contained binary_search
 syntax keyword stlFunctionId	contained bsearch
+syntax keyword stlFunctionId	contained btowc
 syntax keyword stlFunctionId	contained copy
 syntax keyword stlFunctionId	contained copy_backward
 syntax keyword stlFunctionId	contained count
@@ -135,6 +152,29 @@ syntax keyword stlFunctionId	contained generate_n
 syntax keyword stlFunctionId	contained includes
 syntax keyword stlFunctionId	contained inner_product
 syntax keyword stlFunctionId	contained inplace_merge
+syntax keyword stlFunctionId	contained isalnum
+syntax keyword stlFunctionId	contained isalpha
+syntax keyword stlFunctionId	contained iscntrl
+syntax keyword stlFunctionId	contained isdigit
+syntax keyword stlFunctionId	contained isgraph
+syntax keyword stlFunctionId	contained islower
+syntax keyword stlFunctionId	contained isprint
+syntax keyword stlFunctionId	contained ispunct
+syntax keyword stlFunctionId	contained isspace
+syntax keyword stlFunctionId	contained isupper
+syntax keyword stlFunctionId	contained iswalnum
+syntax keyword stlFunctionId	contained iswalpha
+syntax keyword stlFunctionId	contained iswcntrl
+syntax keyword stlFunctionId	contained iswctype
+syntax keyword stlFunctionId	contained iswdigit
+syntax keyword stlFunctionId	contained iswgraph
+syntax keyword stlFunctionId	contained iswlower
+syntax keyword stlFunctionId	contained iswprint
+syntax keyword stlFunctionId	contained iswpunct
+syntax keyword stlFunctionId	contained iswspace
+syntax keyword stlFunctionId	contained iswupper
+syntax keyword stlFunctionId	contained iswxdigit
+syntax keyword stlFunctionId	contained isxdigit
 syntax keyword stlFunctionId	contained iter_swap
 syntax keyword stlFunctionId	contained lexicographical_compare
 syntax keyword stlFunctionId	contained lower_bound
@@ -142,6 +182,18 @@ syntax keyword stlFunctionId	contained lt
 syntax keyword stlFunctionId	contained max
 syntax keyword stlFunctionId	contained max_element
 syntax keyword stlFunctionId	contained make_heap
+syntax keyword stlFunctionId	contained mblen
+syntax keyword stlFunctionId	contained mbrlen
+syntax keyword stlFunctionId	contained mbrtowc
+syntax keyword stlFunctionId	contained mbsinit
+syntax keyword stlFunctionId	contained mbsrtowcs
+syntax keyword stlFunctionId	contained mbstowcs
+syntax keyword stlFunctionId	contained mbtowc
+syntax keyword stlFunctionId	contained memchr
+syntax keyword stlFunctionId	contained memcmp
+syntax keyword stlFunctionId	contained memcpy
+syntax keyword stlFunctionId	contained memmove
+syntax keyword stlFunctionId	contained memset
 syntax keyword stlFunctionId	contained merge
 syntax keyword stlFunctionId	contained min
 syntax keyword stlFunctionId	contained min_element
@@ -180,25 +232,91 @@ syntax keyword stlFunctionId	contained sort
 syntax keyword stlFunctionId	contained sort_heap
 syntax keyword stlFunctionId	contained stable_partition
 syntax keyword stlFunctionId	contained stable_sort
+syntax keyword stlFunctionId	contained stod
+syntax keyword stlFunctionId	contained stof
 syntax keyword stlFunctionId	contained stoi
 syntax keyword stlFunctionId	contained stol
 syntax keyword stlFunctionId	contained stoll
 syntax keyword stlFunctionId	contained stoul
-syntax keyword stlFunctionId	contained stoull
-syntax keyword stlFunctionId	contained stof
-syntax keyword stlFunctionId	contained stod
 syntax keyword stlFunctionId	contained stold
+syntax keyword stlFunctionId	contained stoull
+syntax keyword stlFunctionId	contained strcat
+syntax keyword stlFunctionId	contained strchr
+syntax keyword stlFunctionId	contained strcmp
+syntax keyword stlFunctionId	contained strcoll
+syntax keyword stlFunctionId	contained strcpy
+syntax keyword stlFunctionId	contained strcspn
+syntax keyword stlFunctionId	contained strerror
+syntax keyword stlFunctionId	contained strlen
+syntax keyword stlFunctionId	contained strncat
+syntax keyword stlFunctionId	contained strncmp
+syntax keyword stlFunctionId	contained strncpy
+syntax keyword stlFunctionId	contained strpbrk
+syntax keyword stlFunctionId	contained strrchr
+syntax keyword stlFunctionId	contained strspn
+syntax keyword stlFunctionId	contained strstr
+syntax keyword stlFunctionId	contained strtod
+syntax keyword stlFunctionId	contained strtof
+syntax keyword stlFunctionId	contained strtok
+syntax keyword stlFunctionId	contained strtol
+syntax keyword stlFunctionId	contained strtold
+syntax keyword stlFunctionId	contained strtoll
+syntax keyword stlFunctionId	contained strtoul
+syntax keyword stlFunctionId	contained strtoull
+syntax keyword stlFunctionId	contained strxfrm
 syntax keyword stlFunctionId	contained swap
 syntax keyword stlFunctionId	contained swap_ranges
 syntax keyword stlFunctionId	contained to_char_type
 syntax keyword stlFunctionId	contained to_int_type
 syntax keyword stlFunctionId	contained to_string
 syntax keyword stlFunctionId	contained to_wstring
+syntax keyword stlFunctionId	contained tolower
+syntax keyword stlFunctionId	contained toupper
+syntax keyword stlFunctionId	contained towctrans
+syntax keyword stlFunctionId	contained towlower
+syntax keyword stlFunctionId	contained towupper
 syntax keyword stlFunctionId	contained transform
 syntax keyword stlFunctionId	contained unique
 syntax keyword stlFunctionId	contained unique_copy
 syntax keyword stlFunctionId	contained upper_bound
-syntax match   stlFunction		/std::\(accumulate\|adjacent_difference\|adjacent_find\|binary_search\|bsearch\|copy\|copy_backward\|count\|count_if\|equal\|equal_range\|fill\|fill_n\|find\|find_end\|find_first_of\|find_if\|for_each\|generate\|generate_n\|includes\|inner_product\|inplace_merge\|iter_swap\|lexicographical_compare\|lower_bound\|max\|max_element\|make_heap\|merge\|min\|min_element\|mismatch\|next_permutation\|nth_element\|partial_sort\|partial_sort_copy\|partial_sum\|partition\|pop_heap\|prev_permutation\|push_heap\|qsort\|remove\|remove_copy\|remove_copy_if\|remove_if\|replace\|replace_copy\|replace_copy_if\|replace_if\|reverse\|reverse_copy\|rotate\|rotate_copy\|search\|search_n\|set_difference\|set_intersection\|set_symmetric_difference\|set_union\|sort\|sort_heap\|stable_partition\|stable_sort\|stoi\|stol\|stoll\|stoul\|stoull\|stof\|stod\|stold\|swap\|swap_ranges\|to_string\|to_wstring\|transform\|unique\|unique_copy\|upper_bound\)\>/ contains=stlNamespaceId,stlFunctionId
+syntax keyword stlFunctionId	contained wcrtomb
+syntax keyword stlFunctionId	contained wcscat
+syntax keyword stlFunctionId	contained wcschr
+syntax keyword stlFunctionId	contained wcscmp
+syntax keyword stlFunctionId	contained wcscoll
+syntax keyword stlFunctionId	contained wcscpy
+syntax keyword stlFunctionId	contained wcscspn
+syntax keyword stlFunctionId	contained wcslen
+syntax keyword stlFunctionId	contained wcsncat
+syntax keyword stlFunctionId	contained wcsncmp
+syntax keyword stlFunctionId	contained wcsncpy
+syntax keyword stlFunctionId	contained wcspbrk
+syntax keyword stlFunctionId	contained wcsrchr
+syntax keyword stlFunctionId	contained wcsrtombs
+syntax keyword stlFunctionId	contained wcsspn
+syntax keyword stlFunctionId	contained wcsstr
+syntax keyword stlFunctionId	contained wcstod
+syntax keyword stlFunctionId	contained wcstof
+syntax keyword stlFunctionId	contained wcstok
+syntax keyword stlFunctionId	contained wcstol
+syntax keyword stlFunctionId	contained wcstold
+syntax keyword stlFunctionId	contained wcstoll
+syntax keyword stlFunctionId	contained wcstombs
+syntax keyword stlFunctionId	contained wcstoul
+syntax keyword stlFunctionId	contained wcstoull
+syntax keyword stlFunctionId	contained wcsxfrm
+syntax keyword stlFunctionId	contained wctob
+syntax keyword stlFunctionId	contained wctomb
+syntax keyword stlFunctionId	contained wctrans
+syntax keyword stlFunctionId	contained wctype
+syntax keyword stlFunctionId	contained wmemchr
+syntax keyword stlFunctionId	contained wmemcmp
+syntax keyword stlFunctionId	contained wmemcpy
+syntax keyword stlFunctionId	contained wmemmove
+syntax keyword stlFunctionId	contained wmemset
+syntax match   stlFunction		/std::\(btowc\|mb\(len\|rlen\|rtowc\|sinit\|srtowcs\|stowcs\|towc\)\|wc\(rtomb\|srtombs\|stombs\|tob\|tomb\)\)\>/ contains=stlNamespaceId,stlFunctionId
+syntax match   stlFunction		/std::wc\(s\(cat\|chr\|cmp\|coll\|cpy\|cspn\|len\|ncat\|ncmp\|ncpy\|pbrk\|rchr\|rtombs\|spn\|str\|tod\|tof\|tok\|tol\|told\|toll\|tombs\|toul\|toull\|xfrm\)\|trans\|type\)\>/ contains=stlNamespaceId,stlFunctionId
+syntax match   stlFunction		/std::\(accumulate\|adjacent_difference\|adjacent_find\|ato\(f\|i\|l\|ll\)\|binary_search\|bsearch\|copy\|copy_backward\|count\|count_if\|equal\|equal_range\|fill\|fill_n\|find\|find_end\|find_first_of\|find_if\|for_each\|generate\|generate_n\|includes\|inner_product\|inplace_merge\|isw\?\(alnum\|alpha\|cntrl\|digit\|graph\|lower\|print\|punct\|space\|upper\|xdigit\)\|iswctype\|iter_swap\|lexicographical_compare\|lower_bound\|max\|max_element\|make_heap\|w\?mem\(chr\|cmp\|cpy\|move\|set\)\|merge\|min\|min_element\|mismatch\|next_permutation\|nth_element\|partial_sort\|partial_sort_copy\|partial_sum\|partition\|pop_heap\|prev_permutation\|push_heap\|qsort\|remove\|remove_copy\|remove_copy_if\|remove_if\|replace\|replace_copy\|replace_copy_if\|replace_if\|reverse\|reverse_copy\|rotate\|rotate_copy\|search\|search_n\|set_difference\|set_intersection\|set_symmetric_difference\|set_union\|sort\|sort_heap\|stable_partition\|stable_sort\|sto\(i\|l\|ll\|ul\|ull\|f\|d\|ld\)\|str\(cat\|chr\|cmp\|coll\|cpy\|cspn\|error\|len\|ncat\|ncmp\|ncpy\|pbrk\|rchr\|spn\|str\|to\(d\|f\|k\|l\|ld\|ll\|ul\|ull\)\|xfrm\)\|swap\|swap_ranges\|to\(_string\|_wstring\|wctrans\|w\?lower\|w\?upper\)\|transform\|unique\|unique_copy\|upper_bound\|\)\>/ contains=stlNamespaceId,stlFunctionId
 syntax match   stlFunction		/::\(assign\|compare\|copy\|eof\|eq\|eq_int_type\|find\|length\|lt\|move\|not_eof\|to_char_type\|to_int_type\)\>/ contains=stlMethodId,stlFunctionId
 
 " C++11
@@ -206,6 +324,8 @@ if !exists("cpp_no_cpp11")
 	syntax keyword stlFunctionId	contained all_of
 	syntax keyword stlFunctionId	contained any_of
 	syntax keyword stlFunctionId	contained async
+	syntax keyword stlFunctionId	contained c16rtomb
+	syntax keyword stlFunctionId	contained c32rtomb
 	syntax keyword stlFunctionId	contained call_once
 	syntax keyword stlFunctionId	contained copy_if
 	syntax keyword stlFunctionId	contained copy_n
@@ -222,9 +342,13 @@ if !exists("cpp_no_cpp11")
 	syntax keyword stlFunctionId	contained is_permutation
 	syntax keyword stlFunctionId	contained is_sorted
 	syntax keyword stlFunctionId	contained is_sorted_until
+	syntax keyword stlFunctionId	contained isblank
+	syntax keyword stlFunctionId	contained iswblank
 	syntax keyword stlFunctionId	contained lock
 	syntax keyword stlFunctionId	contained make_error_code
 	syntax keyword stlFunctionId	contained make_error_condition
+	syntax keyword stlFunctionId	contained mbrtoc16
+	syntax keyword stlFunctionId	contained mbrtoc32
 	syntax keyword stlFunctionId	contained minmax
 	syntax keyword stlFunctionId	contained minmax_element
 	syntax keyword stlFunctionId	contained move
@@ -236,17 +360,22 @@ if !exists("cpp_no_cpp11")
 	syntax keyword stlFunctionId	contained shuffle
 	syntax keyword stlFunctionId	contained sleep_for
 	syntax keyword stlFunctionId	contained sleep_until
+	syntax keyword stlFunctionId	contained strtoimax
+	syntax keyword stlFunctionId	contained strtoumax
 	syntax keyword stlFunctionId	contained swap
 	syntax keyword stlFunctionId	contained try_lock
 	syntax keyword stlFunctionId	contained yield
-	syntax match   stlFunction		/std::\(all_of\|any_of\|async\|call_once\|copy_if\|copy_n\|find_if_not\|future_category\|get\|get_id\|hash\|iota\|is_heap\|is_heap_until\|is_partitioned\|is_permutation\|is_sorted\|is_sorted_until\|lock\|make_error_code\|make_error_condition\|minmax\|minmax_element\|move\|move_backward\|none_of\|notify_all_at_thread_exit\|partition_copy\|partition_point\|shuffle\|sleep_for\|sleep_until\|swap\|try_lock\|yield\)\>/ contains=stlNamespaceId,stlFunctionId
-	syntax match   stlFunction		/std::thread::hardware_concurrency/ contains=stlNamespaceId,stlClassId,stlFunctionId
+	syntax keyword stlFunctionId	contained wcstoimax
+	syntax keyword stlFunctionId	contained wcstoumax
+	syntax match   stlFunction		/\<std::\(c\(16\|32\)rtomb\|mbrtoc\(16\|32\)\)\>/ contains=stlNamespaceId,stlFunctionId
+	syntax match   stlFunction		/\<std::\(all_of\|any_of\|async\|call_once\|copy_if\|copy_n\|find_if_not\|future_category\|get\|get_id\|hash\|iota\|is\(_heap\|_heap_until\|_partitioned\|_permutation\|_sorted\|_sorted_until\|w\?blank\)\|lock\|make_error_code\|make_error_condition\|minmax\|minmax_element\|move\|move_backward\|none_of\|notify_all_at_thread_exit\|partition_copy\|partition_point\|shuffle\|sleep_for\|sleep_until\|strto[iu]max\|swap\|try_lock\|wcsto[iu]max\|yield\)\>/ contains=stlNamespaceId,stlFunctionId
+	syntax match   stlFunction		/\<std::thread::hardware_concurrency/ contains=stlNamespaceId,stlClassId,stlFunctionId
 endif
 
 " deprecated in C++14
 if exists("cpp_no_cpp14") && exists("cpp_no_cpp17")
 	syntax keyword stlFunctionId	contained random_shuffle
-	syntax match   stlFunction		/std::random_shuffle\>/ contains=stlNamespaceId,stlFunctionId
+	syntax match   stlFunction		/\<std::random_shuffle\>/ contains=stlNamespaceId,stlFunctionId
 endif
 " }}}
 
