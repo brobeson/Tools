@@ -272,25 +272,40 @@ noremenu <script> &C++.&Uncomment <SID>Uncomment
 if !exists("*s:Comment")
 	function s:Comment() range
 		" determine the smallest column at which text begins the lines in the
-		" range.
-		let column = 1000
-		normal ^
-		for line in range(a:firstline, a:lastline)
-			let newColumn = col(".")
-			if newColumn < column
-				let column = newColumn
+		" range. use the first non-blank line to get the initial column.
+		let commentColumn = 0
+		let lineNumber = nextnonblank(a:firstline)
+		if lineNumber <= a:lastline
+			call cursor(lineNumber, 0)
+			normal ^
+			let commentColumn = col('.')
+		endif
+
+		" now loop through the remaining lines. any non-blank line with text
+		" further left than has already been found, sets a new column for the
+		" comment marker.
+		while lineNumber <= a:lastline
+			let lineNumber = nextnonblank(lineNumber + 1)
+			if (lineNumber <= a:lastline)
+				call cursor(lineNumber, 0)
+				normal ^
+				if col('.') < commentColumn
+					let commentColumn = col('.')
+				endif
 			endif
-			normal j^
-		endfor
+		endwhile
 
 		" now go back through the lines, inserting the comment characters at
 		" that minimum column.
-		for line in range(a:firstline, a:lastline)
-			call cursor(line, column)
+		let lineNumber = nextnonblank(a:firstline)
+		while lineNumber <= a:lastline
+			call cursor(lineNumber, commentColumn)
 			normal i//
-		endfor
+			let lineNumber = nextnonblank(lineNumber + 1)
+		endwhile
 
 		" tell the user how many lines were commented
+		call cursor(a:firstline, commentColumn)
 		echo a:lastline - a:firstline + 1 "lines commented"
 	endfunction
 endif
@@ -303,6 +318,7 @@ if !exists("*s:Uncomment")
 		for line in range(a:firstline, a:lastline)
 			call setline(line, substitute(getline(line), '\/\/', '', ''))
 		endfor
+		normal ^
 		echo a:lastline - a:firstline + 1 "lines uncommented"
 	endfunction
 endif
