@@ -278,30 +278,35 @@ noremenu <script> &C++.&Uncomment <SID>Uncomment
 " the extract-to-function plugin {{{
 "==============================================================================
 if !exists("no_plugin_maps") && !exists("no_cpp_maps")
-	" map the comment command
-	if !hasmapto('<Plug>CppPasteFunction')
-		map <buffer> <unique> <Leader>fp <Plug>CppPasteFunction
+	" map the delete command
+	if !hasmapto('<Plug>CppDeleteFunction')
+		map <buffer> <unique> <Leader>fd <Plug>CppDeleteFunction
 	endif
-	noremap  <buffer> <unique> <script> <Plug>CppPasteFunction <SID>PasteFunction
-	noremap  <buffer>                   <SID>PasteFunction     :call <SID>PasteFunction()<CR>
+	noremap  <buffer> <unique> <script> <Plug>CppDeleteFunction <SID>DeleteFunction
+	noremap  <buffer>                   <SID>DeleteFunction     :call <SID>DeleteFunction()<CR>
 
-	" map the uncomment command
-	if !hasmapto('<Plug>CppYankFunction')
-		map <buffer> <unique> <Leader>fy <Plug>CppYankFunction
+	" map the paste below command
+	if !hasmapto('<Plug>CppPasteFunctionBelow')
+		map <buffer> <unique> <Leader>fp <Plug>CppPasteFunctionBelow
 	endif
-	noremap  <buffer> <unique> <script> <Plug>CppYankFunction <SID>YankFunction
-	noremap  <buffer>                   <SID>YankFunction     :call <SID>YankFunction()<CR>
+	noremap  <buffer> <unique> <script> <Plug>CppPasteFunctionBelow <SID>PasteFunctionBelow
+	noremap  <buffer>                   <SID>PasteFunctionBelow     :call <SID>PasteFunctionBelow()<CR>
+
+	" map the paste above command
+	if !hasmapto('<Plug>CppPasteFunctionAbove')
+		map <buffer> <unique> <Leader>fP <Plug>CppPasteFunctionAbove
+	endif
+	noremap  <buffer> <unique> <script> <Plug>CppPasteFunctionAbove <SID>PasteFunctionAbove
+	noremap  <buffer>                   <SID>PasteFunctionAbove     :call <SID>PasteFunctionAbove()<CR>
 endif
-noremenu <script> &C++.&Yank\ for\ Function	<SID>YankFunction
-noremenu <script> &C++.&Paste\ as\ Function	<SID>PasteFunction
+noremenu <script> &C++.&Delete\ for\ Function	<SID>DeleteFunction
+noremenu <script> &C++.&Paste\ as\ Function		<SID>PasteFunctionAbove
 
 let s:functionBody = []
 
 " define the function to paste a buffer as a function
 if !exists("*s:PasteFunction")
 	function s:PasteFunction()
-		execute "normal o{\n}\n\n\ekkk"
-
 		call append(line('.'), s:functionBody)
 		let lineCount = len(s:functionBody) + 2
 		if exists("cpp_reformat_on_function_paste")
@@ -309,15 +314,34 @@ if !exists("*s:PasteFunction")
 		endif
 
 		normal O
+	endfunction
+endif
+
+" define the function to paste a buffer as a function below the current line
+if !exists("*s:PasteFunctionBelow")
+	function s:PasteFunctionBelow()
+		execute "normal o{\n}\n\n\ekkk"
+		call <SID>PasteFunction()
+		startinsert
+	endfunction
+endif
+
+" define the function to paste a buffer as a function above the current line
+if !exists("*s:PasteFunctionAbove")
+	function s:PasteFunctionAbove()
+		execute "normal O{\n}\n\n\ekkk"
+		call <SID>PasteFunction()
 		startinsert
 	endfunction
 endif
 
 " define the function to uncomment a range of lines
-if !exists("*s:YankFunction")
-	function s:YankFunction() range
+if !exists("*s:DeleteFunction")
+	function s:DeleteFunction() range
+		let lineRange = a:lastline - a:firstline + 1
 		let s:functionBody = getline(a:firstline, a:lastline)
-		echo a:lastline - a:firstline + 1 "lines yanked, ready to be put as a function"
+		execute 'normal ' . lineRange . 'dd'
+		echo lineRange "lines deleted, ready to be put as a function"
 	endfunction
 endif
 "}}}
