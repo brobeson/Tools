@@ -7,6 +7,7 @@
 "  - add functionality to insert Doxygen comments
 "  - add my code folding text and fold settings
 "  - add functionality to comment and uncomment a range of lines
+"  - add functionality to create a new class declaration
 "  - add functionality to yank lines of code, and paste them as a new function
 
 " check if this plugin (or one with the same name) has already been loaded
@@ -139,8 +140,10 @@ if !exists("*s:InsertDoxygen")
 					execute ":normal! o@exception"
 				endif
 			endif
-
 			execute ":normal! o/"
+
+			" move the cursor to the end of the brief tag.
+			call search('@brief', 'bce')
 		endif
 		call cursor(cursorLeaveLine, 1)
 	endfunction
@@ -272,6 +275,69 @@ if !exists("no_plugin_maps") && !exists("no_cpp_maps")
 endif
 noremenu <script> &C++.&Comment   <SID>Comment
 noremenu <script> &C++.&Uncomment <SID>Uncomment
+"}}}
+
+
+"==============================================================================
+" the new class plugin {{{
+"==============================================================================
+if !exists("no_plugin_maps") && !exists("no_cpp_maps")
+	" map the new class command
+	if !hasmapto('<Plug>CppNewClass')
+		map <buffer> <unique> <Leader>oc <Plug>CppNewClass
+	endif
+	noremap  <buffer> <unique> <script> <Plug>CppNewClass <SID>NewClass
+	noremap  <buffer>                   <SID>NewClass     :call <SID>NewClass()<CR>
+endif
+noremenu <script> &C++.&New\ Class <SID>NewClass
+
+" define the function to create a new class
+if !exists("*s:NewClass")
+	function s:NewClass()
+		" ask the user for a class name. the default is the file name.
+		let className = substitute(@%, '\..*', '', '')
+		let className = input("enter a name for the class: ", className)
+		echo className
+
+		" build up the class declaration
+		let classDeclaration = []
+		call add(classDeclaration, 'class ' . className)
+		call add(classDeclaration, '{')
+		call add(classDeclaration, 'public:')
+		call add(classDeclaration, '/** @cond */')
+		call add(classDeclaration, 'FooBar() = delete;')
+		call add(classDeclaration, className . '(const ' . className . '& source) = delete;')
+		call add(classDeclaration, className . '& operator=(const ' . className . '& source) = delete;')
+		call add(classDeclaration, '/** @endcond */')
+		call add(classDeclaration, '')
+		call add(classDeclaration, '/**')
+		call add(classDeclaration, ' * @brief		Destroy a ' . className . ' object.')
+		call add(classDeclaration, ' * @exception	None.')
+		call add(classDeclaration, ' */')
+		call add(classDeclaration, '~' . className . '() = default;')
+		call add(classDeclaration, '')
+		call add(classDeclaration, 'private:')
+		call add(classDeclaration, '};')
+
+		" add it to the buffer
+		call append(line('.'), classDeclaration)
+		let lineCount = len(classDeclaration)
+
+		" reformat the code
+		normal j
+		execute 'normal' lineCount . '=='
+
+		" add two lines after the class
+		execute 'normal' lineCount - 1 . 'jo'
+		normal o
+
+		" return to the top of the class
+		execute 'normal' lineCount  + 1. 'k'
+
+		" and add doxygen comments
+		call <SID>InsertDoxygen()
+	endfunction
+endif
 "}}}
 
 
