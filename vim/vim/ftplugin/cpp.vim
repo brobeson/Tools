@@ -7,6 +7,7 @@
 "  - add functionality to insert Doxygen comments
 "  - add my code folding text and fold settings
 "  - add functionality to comment and uncomment a range of lines
+"  - add functionality to yank lines of code, and paste them as a new function
 
 " check if this plugin (or one with the same name) has already been loaded
 if exists("b:loaded_cpp")
@@ -290,14 +291,14 @@ if !exists("no_plugin_maps") && !exists("no_cpp_maps")
 		map <buffer> <unique> <Leader>fp <Plug>CppPasteFunctionBelow
 	endif
 	noremap  <buffer> <unique> <script> <Plug>CppPasteFunctionBelow <SID>PasteFunctionBelow
-	noremap  <buffer>                   <SID>PasteFunctionBelow     :call <SID>PasteFunctionBelow()<CR>
+	noremap  <buffer>                   <SID>PasteFunctionBelow     :call <SID>PasteFunction('below')<CR>
 
 	" map the paste above command
 	if !hasmapto('<Plug>CppPasteFunctionAbove')
 		map <buffer> <unique> <Leader>fP <Plug>CppPasteFunctionAbove
 	endif
 	noremap  <buffer> <unique> <script> <Plug>CppPasteFunctionAbove <SID>PasteFunctionAbove
-	noremap  <buffer>                   <SID>PasteFunctionAbove     :call <SID>PasteFunctionAbove()<CR>
+	noremap  <buffer>                   <SID>PasteFunctionAbove     :call <SID>PasteFunction('above')<CR>
 endif
 noremenu <script> &C++.&Delete\ for\ Function	<SID>DeleteFunction
 noremenu <script> &C++.&Paste\ as\ Function		<SID>PasteFunctionAbove
@@ -306,42 +307,61 @@ let s:functionBody = []
 
 " define the function to paste a buffer as a function
 if !exists("*s:PasteFunction")
-	function s:PasteFunction()
-		call append(line('.'), s:functionBody)
-		let lineCount = len(s:functionBody) + 2
-		if exists("cpp_reformat_on_function_paste")
-			execute 'normal' lineCount . '=='
+	function s:PasteFunction(aboveOrBelow)
+		if a:aboveOrBelow == 'above'
+			normal k
 		endif
+		call append(line('.'), s:functionBody)
+		let lineCount = len(s:functionBody)
 
-		normal O
-	endfunction
-endif
+		" reformat the code
+		normal j
+		execute 'normal' lineCount . '=='
 
-" define the function to paste a buffer as a function below the current line
-if !exists("*s:PasteFunctionBelow")
-	function s:PasteFunctionBelow()
-		execute "normal o{\n}\n\n\ekkk"
-		call <SID>PasteFunction()
-		startinsert
-	endfunction
-endif
+		" add two lines after the function
+		execute 'normal' lineCount - 1 . 'jo'
+		normal o
 
-" define the function to paste a buffer as a function above the current line
-if !exists("*s:PasteFunctionAbove")
-	function s:PasteFunctionAbove()
-		execute "normal O{\n}\n\n\ekkk"
-		call <SID>PasteFunction()
-		startinsert
+		" return to the top of the function
+		execute 'normal' lineCount  + 1. 'k'
+
+		" and add doxygen comments
+		call <SID>InsertDoxygen()
 	endfunction
 endif
 
 " define the function to uncomment a range of lines
 if !exists("*s:DeleteFunction")
 	function s:DeleteFunction() range
+		" prompt the user for the function declaration
+		call inputsave()
+		let declaration = input("enter the function declaration: ")
+
+		" if the user add a semicolon, a compiler error will result, so chuck
+		" it.
+		let declaration = substitute(declaration, ';$', '', '')
+
+		" get the lines to be cut
 		let lineRange = a:lastline - a:firstline + 1
 		let s:functionBody = getline(a:firstline, a:lastline)
 		execute 'normal ' . lineRange . 'dd'
-		echo lineRange "lines deleted, ready to be put as a function"
+
+		" prepend the function declaration and opening brace, then append the
+		" closing brace
+		call insert(s:functionBody, '{')
+		call insert(s:functionBody, declaration)
+		call add(s:functionBody, '}')
+
+		" get the replacement function call, then append it
+		let functionCall = substitute(declaration, '\S*\s', '', '')
+		let functionCall = substitute(functionCall, '(.*$', '(', '')
+		let functionCall = input("enter the call to the new function: ", functionCall)
+		normal k
+		call append(line('.'), functionCall)
+		normal j==
+
+		"echo lineRange "lines deleted, ready to be put as a function"
+		call inputrestore()
 	endfunction
 endif
 "}}}
