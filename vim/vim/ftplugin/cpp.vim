@@ -7,6 +7,8 @@
 "  - add functionality to insert Doxygen comments
 "  - add my code folding text and fold settings
 "  - add functionality to comment and uncomment a range of lines
+"  - add functionality to create a new class declaration
+"  - add functionality to yank lines of code, and paste them as a new function
 
 " check if this plugin (or one with the same name) has already been loaded
 if exists("b:loaded_cpp")
@@ -138,8 +140,10 @@ if !exists("*s:InsertDoxygen")
 					execute ":normal! o@exception"
 				endif
 			endif
-
 			execute ":normal! o/"
+
+			" move the cursor to the end of the brief tag.
+			call search('@brief', 'bce')
 		endif
 		call cursor(cursorLeaveLine, 1)
 	endfunction
@@ -250,60 +254,180 @@ setlocal fillchars=fold:\
 "==============================================================================
 " the comment/uncomment plugin {{{
 "==============================================================================
+" load the general comment & uncomment functions
+runtime comment.vim
+
+" create the command mappings to call the functions
 if !exists("no_plugin_maps") && !exists("no_cpp_maps")
 	" map the comment command
 	if !hasmapto('<Plug>CppComment')
 		map <buffer> <unique> <Leader>c <Plug>CppComment
 	endif
 	noremap  <buffer> <unique> <script> <Plug>CppComment <SID>Comment
-	noremap  <buffer>                   <SID>Comment     :call <SID>Comment()<CR>
+	noremap  <buffer>                   <SID>Comment     :call Comment("//")<CR>
 
 	" map the uncomment command
 	if !hasmapto('<Plug>CppUncomment')
 		map <buffer> <unique> <Leader>u <Plug>CppUncomment
 	endif
 	noremap  <buffer> <unique> <script> <Plug>CppUncomment <SID>Uncomment
-	noremap  <buffer>                   <SID>Uncomment     :call <SID>Uncomment()<CR>
+	noremap  <buffer>                   <SID>Uncomment     :call Uncomment("//")<CR>
 endif
 noremenu <script> &C++.&Comment   <SID>Comment
 noremenu <script> &C++.&Uncomment <SID>Uncomment
+"}}}
 
-" define the function to comment a range of lines
-if !exists("*s:Comment")
-	function s:Comment() range
-		" determine the smallest column at which text begins the lines in the
-		" range.
-		let column = 1000
-		normal ^
-		for line in range(a:firstline, a:lastline)
-			let newColumn = col(".")
-			if newColumn < column
-				let column = newColumn
-			endif
-			normal j^
-		endfor
 
-		" now go back through the lines, inserting the comment characters at
-		" that minimum column.
-		for line in range(a:firstline, a:lastline)
-			call cursor(line, column)
-			normal i//
-		endfor
+"==============================================================================
+" the new class plugin {{{
+"==============================================================================
+if !exists("no_plugin_maps") && !exists("no_cpp_maps")
+	" map the new class command
+	if !hasmapto('<Plug>CppNewClass')
+		map <buffer> <unique> <Leader>oc <Plug>CppNewClass
+	endif
+	noremap  <buffer> <unique> <script> <Plug>CppNewClass <SID>NewClass
+	noremap  <buffer>                   <SID>NewClass     :call <SID>NewClass()<CR>
+endif
+noremenu <script> &C++.&New\ Class <SID>NewClass
 
-		" tell the user how many lines were commented
-		echo a:lastline - a:firstline + 1 "lines commented"
+" define the function to create a new class
+if !exists("*s:NewClass")
+	function s:NewClass()
+		" ask the user for a class name. the default is the file name.
+		let className = substitute(@%, '\..*', '', '')
+		let className = input("enter a name for the class: ", className)
+		echo className
+
+		" build up the class declaration
+		let classDeclaration = []
+		call add(classDeclaration, 'class ' . className)
+		call add(classDeclaration, '{')
+		call add(classDeclaration, 'public:')
+		call add(classDeclaration, '/** @cond */')
+		call add(classDeclaration, 'FooBar() = delete;')
+		call add(classDeclaration, className . '(const ' . className . '& source) = delete;')
+		call add(classDeclaration, className . '& operator=(const ' . className . '& source) = delete;')
+		call add(classDeclaration, '/** @endcond */')
+		call add(classDeclaration, '')
+		call add(classDeclaration, '/**')
+		call add(classDeclaration, ' * @brief		Destroy a ' . className . ' object.')
+		call add(classDeclaration, ' * @exception	None.')
+		call add(classDeclaration, ' */')
+		call add(classDeclaration, '~' . className . '() = default;')
+		call add(classDeclaration, '')
+		call add(classDeclaration, 'private:')
+		call add(classDeclaration, '};')
+
+		" add it to the buffer
+		call append(line('.'), classDeclaration)
+		let lineCount = len(classDeclaration)
+
+		" reformat the code
+		normal j
+		execute 'normal' lineCount . '=='
+
+		" add two lines after the class
+		execute 'normal' lineCount - 1 . 'jo'
+		normal o
+
+		" return to the top of the class
+		execute 'normal' lineCount  + 1. 'k'
+
+		" and add doxygen comments
+		call <SID>InsertDoxygen()
+	endfunction
+endif
+"}}}
+
+
+"==============================================================================
+" the extract-to-function plugin {{{
+"==============================================================================
+if !exists("no_plugin_maps") && !exists("no_cpp_maps")
+	" map the delete command
+	if !hasmapto('<Plug>CppDeleteFunction')
+		map <buffer> <unique> <Leader>fd <Plug>CppDeleteFunction
+	endif
+	noremap  <buffer> <unique> <script> <Plug>CppDeleteFunction <SID>DeleteFunction
+	noremap  <buffer>                   <SID>DeleteFunction     :call <SID>DeleteFunction()<CR>
+
+	" map the paste below command
+	if !hasmapto('<Plug>CppPasteFunctionBelow')
+		map <buffer> <unique> <Leader>fp <Plug>CppPasteFunctionBelow
+	endif
+	noremap  <buffer> <unique> <script> <Plug>CppPasteFunctionBelow <SID>PasteFunctionBelow
+	noremap  <buffer>                   <SID>PasteFunctionBelow     :call <SID>PasteFunction('below')<CR>
+
+	" map the paste above command
+	if !hasmapto('<Plug>CppPasteFunctionAbove')
+		map <buffer> <unique> <Leader>fP <Plug>CppPasteFunctionAbove
+	endif
+	noremap  <buffer> <unique> <script> <Plug>CppPasteFunctionAbove <SID>PasteFunctionAbove
+	noremap  <buffer>                   <SID>PasteFunctionAbove     :call <SID>PasteFunction('above')<CR>
+endif
+noremenu <script> &C++.&Delete\ for\ Function	<SID>DeleteFunction
+noremenu <script> &C++.&Paste\ as\ Function		<SID>PasteFunctionAbove
+
+let s:functionBody = []
+
+" define the function to paste a buffer as a function
+if !exists("*s:PasteFunction")
+	function s:PasteFunction(aboveOrBelow)
+		if a:aboveOrBelow == 'above'
+			normal k
+		endif
+		call append(line('.'), s:functionBody)
+		let lineCount = len(s:functionBody)
+
+		" reformat the code
+		normal j
+		execute 'normal' lineCount . '=='
+
+		" add two lines after the function
+		execute 'normal' lineCount - 1 . 'jo'
+		normal o
+
+		" return to the top of the function
+		execute 'normal' lineCount  + 1. 'k'
+
+		" and add doxygen comments
+		call <SID>InsertDoxygen()
 	endfunction
 endif
 
 " define the function to uncomment a range of lines
-if !exists("*s:Uncomment")
-	function s:Uncomment() range
-		" this is the cleanest way i found to uncomment the
-		" lines without incurring problems if folding is enabled.
-		for line in range(a:firstline, a:lastline)
-			call setline(line, substitute(getline(line), '\/\/', '', ''))
-		endfor
-		echo a:lastline - a:firstline + 1 "lines uncommented"
+if !exists("*s:DeleteFunction")
+	function s:DeleteFunction() range
+		" prompt the user for the function declaration
+		call inputsave()
+		let declaration = input("enter the function declaration: ")
+
+		" if the user add a semicolon, a compiler error will result, so chuck
+		" it.
+		let declaration = substitute(declaration, ';$', '', '')
+
+		" get the lines to be cut
+		let lineRange = a:lastline - a:firstline + 1
+		let s:functionBody = getline(a:firstline, a:lastline)
+		execute 'normal ' . lineRange . 'dd'
+
+		" prepend the function declaration and opening brace, then append the
+		" closing brace
+		call insert(s:functionBody, '{')
+		call insert(s:functionBody, declaration)
+		call add(s:functionBody, '}')
+
+		" get the replacement function call, then append it
+		let functionCall = substitute(declaration, '\S*\s', '', '')
+		let functionCall = substitute(functionCall, '(.*$', '(', '')
+		let functionCall = input("enter the call to the new function: ", functionCall)
+		normal k
+		call append(line('.'), functionCall)
+		normal j==
+
+		"echo lineRange "lines deleted, ready to be put as a function"
+		call inputrestore()
 	endfunction
 endif
 "}}}

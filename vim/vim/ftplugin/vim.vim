@@ -67,62 +67,26 @@ setlocal fillchars=fold:\
 "==============================================================================
 " the comment/uncomment plugin {{{
 "==============================================================================
+" load the general comment & uncomment functions
+runtime comment.vim
+
 if !exists("no_plugin_maps") && !exists("no_vim_maps")
 	" map the comment command
 	if !hasmapto('<Plug>VimComment')
 		map <buffer> <unique> <Leader>c <Plug>VimComment
 	endif
 	noremap  <buffer> <unique> <script> <Plug>VimComment <SID>Comment
-	noremap  <buffer>                   <SID>Comment     :call <SID>Comment()<CR>
+	noremap  <buffer>                   <SID>Comment     :call Comment('"')<CR>
 
 	" map the uncomment command
 	if !hasmapto('<Plug>VimUncomment')
 		map <buffer> <unique> <Leader>u <Plug>VimUncomment
 	endif
 	noremap  <buffer> <unique> <script> <Plug>VimUncomment <SID>Uncomment
-	noremap  <buffer>                   <SID>Uncomment     :call <SID>Uncomment()<CR>
+	noremap  <buffer>                   <SID>Uncomment     :call Uncomment('"')<CR>
 endif
 noremenu <script> &Vim.&Comment   <SID>Comment
 noremenu <script> &Vim.&Uncomment <SID>Uncomment
-
-" define the function to comment a range of lines
-if !exists("*s:Comment")
-	function s:Comment() range
-		" determine the smallest column at which text begins the lines in the
-		" range.
-		let column = 1000
-		normal ^
-		for line in range(a:firstline, a:lastline)
-			let newColumn = col(".")
-			if newColumn < column
-				let column = newColumn
-			endif
-			normal j^
-		endfor
-
-		" now go back through the lines, inserting the comment characters at
-		" that minimum column.
-		for line in range(a:firstline, a:lastline)
-			call cursor(line, column)
-			normal i"
-		endfor
-
-		" tell the user how many lines were commented
-		echo a:lastline - a:firstline + 1 "lines commented"
-	endfunction
-endif
-
-" define the function to uncomment a range of lines
-if !exists("*s:Uncomment")
-	function s:Uncomment() range
-		" this is the cleanest way i found to uncomment the
-		" lines without incurring problems if folding is enabled.
-		for line in range(a:firstline, a:lastline)
-			call setline(line, substitute(getline(line), '"', '', ''))
-		endfor
-		echo a:lastline - a:firstline + 1 "lines uncommented"
-	endfunction
-endif
 "}}}
 
 
