@@ -1,5 +1,5 @@
 " Vim plugin to add a bunch of functionality related to LaTeX development.
-" Last Change:	2014 December 31
+" Last Change:	2015 March 8
 " Maintainer:  Brendan Robeson (ogslanger@vt.edu)
 " License:     Public Domain
 "
@@ -16,10 +16,16 @@ let b:loaded_latex = 1
 let s:save_cpo = &cpo
 setlocal cpo&vim
 
+
+" load the general code editing tools
+runtime codeTools.vim
+
+
 set noautoindent
 set nocindent
 set nosmartindent
 set cursorline
+
 
 "==============================================================================
 " code folding {{{
@@ -85,9 +91,7 @@ setlocal fillchars=fold:\
 "==============================================================================
 " the comment/uncomment plugin {{{
 "==============================================================================
-" load the general comment & uncomment functions
-runtime comment.vim
-
+" create the command mappings to call the functions
 if !exists("no_plugin_maps") && !exists("no_latex_maps")
 	" map the comment command
 	if !hasmapto('<Plug>LatexComment')

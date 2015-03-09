@@ -1,4 +1,4 @@
-" Vim plugin to comment & uncomment a range of lines of code
+" Vim plugin with various tools for editing code
 " Last Change:	2015 January 02
 " Maintainer:	Brendan Robeson (github.com/brobeson/Tools/)
 " License:		Public Domain
@@ -25,7 +25,44 @@ let g:loaded_comment = 1
 let s:save_cpo = &cpo
 setlocal cpo&vim
 
-" define the function to comment a range of lines
+set cursorline
+
+"==============================================================================
+" map some normal mode keystrokes to common editing operations {{{
+"==============================================================================
+" move to the end and erase a character
+nmap <buffer> <Leader>x $x
+
+" enter insert mode right before the last character, typically a ; or )
+nmap <buffer> <Leader>i $i
+
+" enter 'replace' mode at the last character. I frequently encounter a
+" situation where I need to remove the last character then append new text.
+" you may be wondering why I don't map to $R.  I tried that and felt that $xa
+" provides better feedback by just removing the last character.
+nmap <buffer> <Leader>r $xa
+
+" map some handy fold commands. typing z# will fold & unfold everything to the
+" #th fold. i only have 1-5 set, because i don't typically have more folds
+" than that. z0 is not set because there is already zM.
+nmap <unique> z1 :set foldlevel=1<CR>
+nmap <unique> z2 :set foldlevel=2<CR>
+nmap <unique> z3 :set foldlevel=3<CR>
+nmap <unique> z4 :set foldlevel=4<CR>
+nmap <unique> z5 :set foldlevel=5<CR>
+"}}}
+
+
+"==============================================================================
+" set up variables specific programming & markup languages {{{
+"==============================================================================
+let html_use_w3_style = 1
+"}}}
+
+
+"==============================================================================
+" define the function to comment a range of lines {{{
+"==============================================================================
 if !exists("*Comment")
 	function Comment(commentString) range
 		" determine the smallest column at which text begins the lines in the
@@ -80,6 +117,7 @@ if !exists("*Uncomment")
 		echo a:lastline - a:firstline + 1 "lines uncommented"
 	endfunction
 endif
+"}}}
 
 " restore the original cpoptions
 let &cpo = s:save_cpo

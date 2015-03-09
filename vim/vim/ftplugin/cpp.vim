@@ -1,9 +1,8 @@
 " Vim plugin to add a bunch of functionality related to C++ development.
-" Last Change:	2015 January 02
+" Last Change:	2015 March 8
 " Maintainer:  Brendan Robeson (ogslanger@vt.edu)
 " License:     Public Domain
 "
-"  - add mappings for common editing modes, such as inserting text before a ;
 "  - add functionality to insert Doxygen comments
 "  - add my code folding text and fold settings
 "  - add functionality to comment and uncomment a range of lines
@@ -20,23 +19,9 @@ let b:loaded_cpp = 1
 let s:save_cpo = &cpo
 setlocal cpo&vim
 
-set cursorline
 
-"==============================================================================
-" map some normal mode keystrokes to common C++ editing operations {{{
-"==============================================================================
-" move to the end and erase a character
-nmap <buffer> <Leader>x $x
-
-" enter insert mode right before the last character, typically a ; or )
-nmap <buffer> <Leader>i $i
-
-" enter 'replace' mode at the last character. I frequently encounter a
-" situation where I need to remove the last character then append new text.
-" you may be wondering why I don't map to $R.  I tried that and felt that $xa
-" provides better feedback by just removing the last character.
-nmap <buffer> <Leader>r $xa
-"}}}
+" load the general code editing tools
+runtime codeTools.vim
 
 
 "==============================================================================
@@ -254,9 +239,6 @@ setlocal fillchars=fold:\
 "==============================================================================
 " the comment/uncomment plugin {{{
 "==============================================================================
-" load the general comment & uncomment functions
-runtime comment.vim
-
 " create the command mappings to call the functions
 if !exists("no_plugin_maps") && !exists("no_cpp_maps")
 	" map the comment command

@@ -1,5 +1,5 @@
 " Vim plugin to add a bunch of functionality related to Vim scripting.
-" Last Change:	2014 December 31
+" Last Change:	2015 March 8
 " Maintainer:  Brendan Robeson (ogslanger@vt.edu)
 " License:     Public Domain
 "
@@ -16,7 +16,9 @@ let b:loaded_vim = 1
 let s:save_cpo = &cpo
 setlocal cpo&vim
 
-set cursorline
+
+" load the general code editing tools
+runtime codeTools.vim
 
 
 "==============================================================================
@@ -67,9 +69,7 @@ setlocal fillchars=fold:\
 "==============================================================================
 " the comment/uncomment plugin {{{
 "==============================================================================
-" load the general comment & uncomment functions
-runtime comment.vim
-
+" create the command mappings to call the functions
 if !exists("no_plugin_maps") && !exists("no_vim_maps")
 	" map the comment command
 	if !hasmapto('<Plug>VimComment')
