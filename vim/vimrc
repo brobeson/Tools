@@ -3,6 +3,7 @@
 set nobackup	" disable automatic backups
 set number		" enable line numbers
 set nowrap		" disable line wrap
+set cursorline	" highlight the line with the cursor
 
 " set all tabbing to 4 characters wide and keep the tabs
 set tabstop=4
