@@ -1,0 +1,22 @@
+*stl-syntax.txt*	For Vim version 7.4.	Last change: 2015 Mar 9
+
+Syntax highlighting for the C++ Standard Template Library.
+
+This syntax file provides highlighting for functions, constants, classes,
+etc. from the C++ Standard Template Library. Highlighting, generally, requires
+the fully qualified name. This is by design.
+    std::cout << "Hello World!\n";  // std and cout are highlit
+    using namespace std;	    // std is not highlit
+    cout << "Hello World!\n";	    // cout is not highlit
+
+STL Syntax Settings				    *stl-syntax-settings*
+Variable		Use~
+stl_highlight_members	Enable highlighting of class members & methods. This
+			can cause methods from non-STL classes to highlight if
+			they have the same name.
+cpp_no_cpp11		Disable C++11 STL components.
+cpp_no_cpp14		Disable C++14 STL components.
+cpp_no_cpp17		Disable C++17 STL components.
+
+vim:tw=78:ts=8:ft=help:norl:
+

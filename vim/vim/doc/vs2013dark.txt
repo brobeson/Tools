@@ -1,0 +1,20 @@
+*vs2013dark.txt*	For Vim version 7.4.	Last change: 2015 Mar 9
+
+Color file imitating the Dark theme in MS Visual Studio 2013.
+
+This is not an exact match. Some of VS's highlighting isn't possible in Vim,
+since Vim does not have a compiler parser. For example, Vim cannot determine
+that a particular character string is a local variable, and highlight it as
+such. Other colors from VS can, in my opinion, be improved. For example, in
+VS, the line numbers are bright blue. In Vim, I've made them dark gray so
+they are less intrusive.
+
+vs2013dark Custom Highlight Groups		*vs2013dark-highlight-groups*
+Group			Purpose~
+htmlAttributeNameGrp	Highlighting for HTML attribute names.
+htmlAttribValueGrp	Highlighting for HTML attribute values.
+htmlEntityGrp		Highlighting for HTML entities, for example &amp;
+urlGrp			Highlighting for URLs.
+
+vim:tw=78:ts=8:ft=help:norl:
+
