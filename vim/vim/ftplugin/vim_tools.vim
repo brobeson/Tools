@@ -17,10 +17,6 @@ let s:save_cpo = &cpo
 setlocal cpo&vim
 
 
-" load the general code editing tools
-runtime codeTools.vim
-
-
 "==============================================================================
 " code folding {{{
 "==============================================================================
@@ -43,7 +39,7 @@ if !exists("*VimFoldText")
 		let spaces = repeat(' ', &tabstop)
 		let foldText = substitute(foldText, '\t', spaces, 'g')
 
-		" append '[ NNNNN lines ]    <comment text with leading white space, '"', " or trailing fold marker>
+		" append '[ NNNNN lines ]    <comment text with leading white space, '"', or trailing fold marker>
 		" the markerText variable gets the beginning fold marker so it can be
 		" extracted from the fold text. this has two advantages:
 		" 1) if a user changes their fold marker text, this accounts for that,
@@ -69,24 +65,24 @@ setlocal fillchars=fold:\
 "==============================================================================
 " the comment/uncomment plugin {{{
 "==============================================================================
-" create the command mappings to call the functions
-if !exists("no_plugin_maps") && !exists("no_vim_maps")
-	" map the comment command
-	if !hasmapto('<Plug>VimComment')
-		map <buffer> <unique> <Leader>c <Plug>VimComment
-	endif
-	noremap  <buffer> <unique> <script> <Plug>VimComment <SID>Comment
-	noremap  <buffer>                   <SID>Comment     :call Comment('"')<CR>
+if !exists("*Comment") || !exists("*Uncomment")
+	echoerr "Command() or Uncomment() is undefined. Do you have plugin/codeTools.vim loaded?"
+else
+	" create the command mappings to call the functions
+	if !exists("no_plugin_maps") && !exists("no_vim_maps")
+		" map the comment command
+		if !hasmapto('<Plug>VimComment')
+			map <buffer> <unique> <Leader>c <Plug>VimComment
+		endif
+		noremap  <buffer> <unique> <script> <Plug>VimComment :call Comment('"')<CR>
 
-	" map the uncomment command
-	if !hasmapto('<Plug>VimUncomment')
-		map <buffer> <unique> <Leader>u <Plug>VimUncomment
+		" map the uncomment command
+		if !hasmapto('<Plug>VimUncomment')
+			map <buffer> <unique> <Leader>u <Plug>VimUncomment
+		endif
+		noremap  <buffer> <unique> <script> <Plug>VimUncomment :call Uncomment('"')<CR>
 	endif
-	noremap  <buffer> <unique> <script> <Plug>VimUncomment <SID>Uncomment
-	noremap  <buffer>                   <SID>Uncomment     :call Uncomment('"')<CR>
 endif
-noremenu <script> &Vim.&Comment   <SID>Comment
-noremenu <script> &Vim.&Uncomment <SID>Uncomment
 "}}}
 
 

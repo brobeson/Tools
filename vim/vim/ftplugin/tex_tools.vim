@@ -16,15 +16,10 @@ let b:loaded_latex = 1
 let s:save_cpo = &cpo
 setlocal cpo&vim
 
-
-" load the general code editing tools
-runtime codeTools.vim
-
-
-set noautoindent
-set nocindent
-set nosmartindent
-set cursorline
+setlocal noautoindent
+setlocal nocindent
+setlocal nosmartindent
+setlocal cursorline
 
 
 "==============================================================================
@@ -91,24 +86,24 @@ setlocal fillchars=fold:\
 "==============================================================================
 " the comment/uncomment plugin {{{
 "==============================================================================
-" create the command mappings to call the functions
-if !exists("no_plugin_maps") && !exists("no_latex_maps")
-	" map the comment command
-	if !hasmapto('<Plug>LatexComment')
-		map <buffer> <unique> <Leader>c <Plug>LatexComment
-	endif
-	noremap  <buffer> <unique> <script> <Plug>LatexComment <SID>Comment
-	noremap  <buffer>                   <SID>Comment     :call Comment("%")<CR>
+if !exists("*Comment") || !exists("*Uncomment")
+	echoerr "Command() or Uncomment() is undefined. Do you have plugin/codeTools.vim loaded?"
+else
+	" create the command mappings to call the functions
+	if !exists("no_plugin_maps") && !exists("no_latex_maps")
+		" map the comment command
+		if !hasmapto('<Plug>LatexComment')
+			map <buffer> <unique> <Leader>c <Plug>LatexComment
+		endif
+		noremap  <buffer> <unique> <script> <Plug>LatexComment :call Comment('%')<CR>
 
-	" map the uncomment command
-	if !hasmapto('<Plug>LatexUncomment')
-		map <buffer> <unique> <Leader>u <Plug>LatexUncomment
+		" map the uncomment command
+		if !hasmapto('<Plug>LatexUncomment')
+			map <buffer> <unique> <Leader>u <Plug>LatexUncomment
+		endif
+		noremap  <buffer> <unique> <script> <Plug>LatexUncomment :call Uncomment('%')<CR>
 	endif
-	noremap  <buffer> <unique> <script> <Plug>LatexUncomment <SID>Uncomment
-	noremap  <buffer>                   <SID>Uncomment     :call Uncomment("%")<CR>
 endif
-noremenu <script> &Latex.&Comment   <SID>Comment
-noremenu <script> &Latex.&Uncomment <SID>Uncomment
 "}}}
 
 

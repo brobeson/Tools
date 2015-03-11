@@ -12,7 +12,7 @@ syntax cluster cCommentGroup add=doxyTodo
 highlight default link doxyTodo Todo
 
 " load STL syntax highlighting
-"if !exists("cpp_no_stl")
+if !exists("cpp_no_stl")
 	runtime! syntax/stl.vim
-"endif
+endif
 

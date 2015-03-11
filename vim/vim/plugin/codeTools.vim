@@ -16,31 +16,30 @@
 " in '//', for Vim you'd pass in '"'.
 
 " check if this plugin (or one with the same name) has already been loaded
-if exists("g:loaded_comment")
+if exists("g:loaded_codeTools")
 	finish
 endif
-let g:loaded_comment = 1
+let g:loaded_codeTools = 1
 
 " save cpoptions and reset to avoid problems in the script
 let s:save_cpo = &cpo
 setlocal cpo&vim
 
-set cursorline
 
 "==============================================================================
 " map some normal mode keystrokes to common editing operations {{{
 "==============================================================================
 " move to the end and erase a character
-nmap <buffer> <Leader>x $x
+nmap <unique> <Leader>x $x
 
 " enter insert mode right before the last character, typically a ; or )
-nmap <buffer> <Leader>i $i
+nmap <unique> <Leader>i $i
 
 " enter 'replace' mode at the last character. I frequently encounter a
 " situation where I need to remove the last character then append new text.
 " you may be wondering why I don't map to $R.  I tried that and felt that $xa
 " provides better feedback by just removing the last character.
-nmap <buffer> <Leader>r $xa
+nmap <unique> <Leader>r $xa
 
 " map some handy fold commands. typing z# will fold & unfold everything to the
 " #th fold. i only have 1-5 set, because i don't typically have more folds
@@ -54,14 +53,7 @@ nmap <unique> z5 :set foldlevel=5<CR>
 
 
 "==============================================================================
-" set up variables specific programming & markup languages {{{
-"==============================================================================
-let html_use_w3_style = 1
-"}}}
-
-
-"==============================================================================
-" define the function to comment a range of lines {{{
+" define the functions to comment and uncomment a range of lines {{{
 "==============================================================================
 if !exists("*Comment")
 	function Comment(commentString) range

@@ -1,7 +1,7 @@
 " Vim plugin to add a bunch of functionality related to C++ development.
 " Last Change:	2015 March 8
-" Maintainer:  Brendan Robeson (ogslanger@vt.edu)
-" License:     Public Domain
+" Maintainer:	Brendan Robeson (github.com/brobeson/Tools.git)
+" License:		Public Domain
 "
 "  - add functionality to insert Doxygen comments
 "  - add my code folding text and fold settings
@@ -20,22 +20,16 @@ let s:save_cpo = &cpo
 setlocal cpo&vim
 
 
-" load the general code editing tools
-runtime codeTools.vim
-
-
 "==============================================================================
 " create a command to insert doxygen comments {{{
 "==============================================================================
  map the doxygen comment command
 if !exists("no_plugin_maps") && !exists("no_cpp_maps")
-	if !hasmapto('<Plug>Cpp_Doxygen')
-		map <buffer> <unique> <Leader>d <Plug>Cpp_Doxygen
+	if !hasmapto('<Plug>Cpp_InsertDoxygen')
+		map <buffer> <unique> <Leader>d <Plug>Cpp_InsertDoxygen
 	endif
-	noremap  <buffer> <unique> <script> <Plug>Cpp_Doxygen <SID>InsertDoxygen
-	noremap  <buffer>                   <SID>InsertDoxygen     :call <SID>InsertDoxygen()<CR>
+	noremap  <buffer> <unique> <script> <Plug>Cpp_InsertDoxygen :call <SID>InsertDoxygen()<CR>
 endif
-noremenu <script> &C++.Insert\ &Doxygen <SID>InsertDoxygen
 
 " insert the doxygen comment
 if !exists("*s:InsertDoxygen")
@@ -239,24 +233,24 @@ setlocal fillchars=fold:\
 "==============================================================================
 " the comment/uncomment plugin {{{
 "==============================================================================
-" create the command mappings to call the functions
-if !exists("no_plugin_maps") && !exists("no_cpp_maps")
-	" map the comment command
-	if !hasmapto('<Plug>CppComment')
-		map <buffer> <unique> <Leader>c <Plug>CppComment
-	endif
-	noremap  <buffer> <unique> <script> <Plug>CppComment <SID>Comment
-	noremap  <buffer>                   <SID>Comment     :call Comment("//")<CR>
+if !exists("*Comment") || !exists("*Uncomment")
+	echoerr "Command() or Uncomment() is undefined. Do you have plugin/codeTools.vim loaded?"
+else
+	" create the command mappings to call the functions
+	if !exists("no_plugin_maps") && !exists("no_cpp_maps")
+		" map the comment command
+		if !hasmapto('<Plug>CppComment')
+			map <buffer> <unique> <Leader>c <Plug>CppComment
+		endif
+		noremap  <buffer> <unique> <script> <Plug>CppComment :call Comment('//')<CR>
 
-	" map the uncomment command
-	if !hasmapto('<Plug>CppUncomment')
-		map <buffer> <unique> <Leader>u <Plug>CppUncomment
+		" map the uncomment command
+		if !hasmapto('<Plug>CppUncomment')
+			map <buffer> <unique> <Leader>u <Plug>CppUncomment
+		endif
+		noremap  <buffer> <unique> <script> <Plug>CppUncomment :call Uncomment('//')<CR>
 	endif
-	noremap  <buffer> <unique> <script> <Plug>CppUncomment <SID>Uncomment
-	noremap  <buffer>                   <SID>Uncomment     :call Uncomment("//")<CR>
 endif
-noremenu <script> &C++.&Comment   <SID>Comment
-noremenu <script> &C++.&Uncomment <SID>Uncomment
 "}}}
 
 
@@ -266,12 +260,10 @@ noremenu <script> &C++.&Uncomment <SID>Uncomment
 if !exists("no_plugin_maps") && !exists("no_cpp_maps")
 	" map the new class command
 	if !hasmapto('<Plug>CppNewClass')
-		map <buffer> <unique> <Leader>oc <Plug>CppNewClass
+		map <buffer> <unique> <Leader>pc <Plug>CppNewClass
 	endif
-	noremap  <buffer> <unique> <script> <Plug>CppNewClass <SID>NewClass
-	noremap  <buffer>                   <SID>NewClass     :call <SID>NewClass()<CR>
+	noremap  <buffer> <unique> <script> <Plug>CppNewClass:call <SID>NewClass()<CR>
 endif
-noremenu <script> &C++.&New\ Class <SID>NewClass
 
 " define the function to create a new class
 if !exists("*s:NewClass")
@@ -331,34 +323,22 @@ if !exists("no_plugin_maps") && !exists("no_cpp_maps")
 	if !hasmapto('<Plug>CppDeleteFunction')
 		map <buffer> <unique> <Leader>fd <Plug>CppDeleteFunction
 	endif
-	noremap  <buffer> <unique> <script> <Plug>CppDeleteFunction <SID>DeleteFunction
-	noremap  <buffer>                   <SID>DeleteFunction     :call <SID>DeleteFunction()<CR>
+	noremap  <buffer> <unique> <script> <Plug>CppDeleteFunction :call <SID>DeleteFunction()<CR>
 
 	" map the paste below command
-	if !hasmapto('<Plug>CppPasteFunctionBelow')
-		map <buffer> <unique> <Leader>fp <Plug>CppPasteFunctionBelow
+	if !hasmapto('<Plug>CppPasteFunction')
+		map <buffer> <unique> <Leader>fp <Plug>CppPasteFunction
 	endif
-	noremap  <buffer> <unique> <script> <Plug>CppPasteFunctionBelow <SID>PasteFunctionBelow
-	noremap  <buffer>                   <SID>PasteFunctionBelow     :call <SID>PasteFunction('below')<CR>
-
-	" map the paste above command
-	if !hasmapto('<Plug>CppPasteFunctionAbove')
-		map <buffer> <unique> <Leader>fP <Plug>CppPasteFunctionAbove
-	endif
-	noremap  <buffer> <unique> <script> <Plug>CppPasteFunctionAbove <SID>PasteFunctionAbove
-	noremap  <buffer>                   <SID>PasteFunctionAbove     :call <SID>PasteFunction('above')<CR>
+	noremap  <buffer> <unique> <script> <Plug>CppPasteFunction:call <SID>PasteFunction()<CR>
 endif
-noremenu <script> &C++.&Delete\ for\ Function	<SID>DeleteFunction
-noremenu <script> &C++.&Paste\ as\ Function		<SID>PasteFunctionAbove
 
+" this is script scope so the lines can be deleted from one file, and pasted
+" to a new function in another file.
 let s:functionBody = []
 
 " define the function to paste a buffer as a function
 if !exists("*s:PasteFunction")
-	function s:PasteFunction(aboveOrBelow)
-		if a:aboveOrBelow == 'above'
-			normal k
-		endif
+	function s:PasteFunction()
 		call append(line('.'), s:functionBody)
 		let lineCount = len(s:functionBody)
 

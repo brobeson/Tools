@@ -26,7 +26,7 @@ highlight ColorColumn   cterm=none                     ctermbg=darkred   gui=non
 highlight Cursor        cterm=none                                                      guifg=bg        guibg=fg
 highlight CursorColumn  cterm=none                     ctermbg=darkgray  gui=none                       guibg=black
 "CursorIM
-highlight CursorLine    cterm=none                     ctermbg=darkgray  gui=none                       guibg=black
+highlight CursorLine    cterm=none                     ctermbg=bg        gui=none                       guibg=black
 highlight CursorLineNr                                                   gui=none       guifg=#808080   guibg=black
 highlight Directory     cterm=none  ctermfg=darkgray                     gui=none       guifg=#808080
 highlight Error         cterm=none  ctermfg=lightgray  ctermbg=darkred   gui=underline  guifg=darkred   guibg=bg
