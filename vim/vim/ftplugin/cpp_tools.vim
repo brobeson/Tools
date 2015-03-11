@@ -37,7 +37,7 @@ if !exists("*s:InsertDoxygen")
 		" extract the whole header
 		let lastLine = search("[;{]", "cnW")
 		let currentLine = line(".")
-		let cursorLeaveLine = currentLine + 1
+		let cursorStartLine = currentLine
 		let text = ""
 		while currentLine <= lastLine
 			let text .= getline(currentLine)
@@ -51,7 +51,11 @@ if !exists("*s:InsertDoxygen")
 
 		" if this code block is not a deleted function
 		else
-			execute ":normal! O/**\n@brief\n@details"
+			" start building up the doxygen comment
+			let commentBody = []
+			call add(commentBody, '/**')
+			call add(commentBody, ' * @brief')
+			call add(commentBody, ' * @details')
 
 			" check if this is a template class or function. if it is,
 			" add the tparam tags.
@@ -64,7 +68,7 @@ if !exists("*s:InsertDoxygen")
 				let paramList = split(templateParameters)
 				let index = 1
 				while index < len(paramList)
-					execute ":normal! o@tparam\t" . paramList[index]
+					call add(commentBody, ' * @tparam	' . paramList[index])
 					let index = index + 2
 				endwhile
 			endif
@@ -91,14 +95,14 @@ if !exists("*s:InsertDoxygen")
 					" to examine the function code, which is beyond the scope of
 					" this plugin, so we default to [in,out] instead of [out].
 					if match(parameterList[index], '^\s*const') != -1
-						let paramText .= "[in]\t"
+						let paramText .= "[in]	"
 					elseif match(parameterList[index], '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
-						let paramText .= "[in,out]\t"
+						let paramText .= "[in,out]	"
 					else
-						let paramText .= "[in]\t"
+						let paramText .= "[in]	"
 					endif
 
-					execute ":normal! o" . paramText . paramName
+					call add(commentBody, ' * ' . paramText . paramName)
 					let index = index + 1
 				endwhile
 
@@ -107,24 +111,29 @@ if !exists("*s:InsertDoxygen")
 				let returnType = substitute(text, '\s\+\(\w\+\|operator.*\)(.*', '', '')
 				let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
 				if returnType == "bool"
-					execute ":normal! o@retval\ttrue\n@retval\tfalse"
+					call add(commentBody, ' * @retval	true')
+					call add(commentBody, ' * @retval	false')
 				elseif returnType != "void" && returnType != ""
-					execute ":normal! o@return"
+					call add(commentBody, ' * @return')
 				endif
 
 				" tack on a report about if the function throws any exceptions
 				if match(text, "noexcept") != -1
-					execute ":normal! o@exception\tNone"
+					call add(commentBody, ' * @exception	None')
 				else
-					execute ":normal! o@exception"
+					call add(commentBody, ' * @exception')
 				endif
 			endif
-			execute ":normal! o/"
+
+			" close the comment, add it to the buffer, and format the comment
+			call add(commentBody, ' */')
+			call append(line('.') - 1, commentBody)
+			call cursor(cursorStartLine, 1)
+			execute 'normal' len(commentBody) . '=='
 
 			" move the cursor to the end of the brief tag.
-			call search('@brief', 'bce')
+			normal j$
 		endif
-		call cursor(cursorLeaveLine, 1)
 	endfunction
 endif
 "}}}
