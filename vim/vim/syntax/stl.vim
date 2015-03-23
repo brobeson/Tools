@@ -34,7 +34,7 @@ syntax match   stlClass		/std::\(basic_string\|char_traits\|deque\|list\|map\|mb
 syntax match   stlClass		/::value_compare/ contains=stlClassId
 
 " added in C++11
-if !exists("cpp_no_cpp11")
+if !exists('cpp_no_cpp11')
 	syntax keyword stlClassId	contained array
 	syntax keyword stlClassId	contained adopt_lock_t
 	syntax keyword stlClassId	contained condition_variable
@@ -64,7 +64,7 @@ if !exists("cpp_no_cpp11")
 endif
 
 " added in C++14
-if !exists("cpp_no_cpp14")
+if !exists('cpp_no_cpp14')
 	syntax keyword stlClassId		contained shared_lock shared_timed_mutex
 	syntax match   stlClass			/std::\(shared_lock\|shared_timed_mutex\)\>/ contains=stlNamespaceId,stlClassId
 endif
@@ -82,7 +82,7 @@ syntax keyword stlConstantId	contained WEOF
 syntax match   stlConstant		/std::\(__STDC_UTF_\(16\|32\)__\|MB_\(CUR\|LEN\)_MAX\|WCHAR_M\(AX\|IN\)\|WEOF\)\>/ contains=stlNamespaceId,stlConstantId
 syntax match   stlConstant		/::npos/ contains=stlConstantId
 
-if !exists("cpp_no_cpp11")
+if !exists('cpp_no_cpp11')
 	syntax keyword stlConstantId	contained adopt_lock
 	syntax keyword stlConstantId	contained defer_lock
 	syntax keyword stlConstantId	contained try_to_lock
@@ -91,7 +91,7 @@ endif
 " }}}
 
 " data members {{{
-if exists("stl_highlight_members")
+if exists('stl_highlight_members')
 	" TODO why does compare(comp); highlight the comp identifier?
 	syntax keyword stlMemberId	contained c comp
 	syntax match   stlMember	/\(\.\|->\)c\(omp\)\?/ contains=stlMemberId
@@ -99,7 +99,7 @@ endif
 " }}}
 
 " enumerations {{{
-if !exists("cpp_no_cpp11")
+if !exists('cpp_no_cpp11')
 	syntax keyword stlEnumerationId	contained cv_status
 	syntax keyword stlEnumerationId	contained future_errc
 	syntax keyword stlEnumerationId	contained future_status
@@ -320,7 +320,7 @@ syntax match   stlFunction		/std::\(accumulate\|adjacent_difference\|adjacent_fi
 syntax match   stlFunction		/::\(assign\|compare\|copy\|eof\|eq\|eq_int_type\|find\|length\|lt\|move\|not_eof\|to_char_type\|to_int_type\)\>/ contains=stlMethodId,stlFunctionId
 
 " C++11
-if !exists("cpp_no_cpp11")
+if !exists('cpp_no_cpp11')
 	syntax keyword stlFunctionId	contained all_of
 	syntax keyword stlFunctionId	contained any_of
 	syntax keyword stlFunctionId	contained async
@@ -373,14 +373,14 @@ if !exists("cpp_no_cpp11")
 endif
 
 " deprecated in C++14
-if exists("cpp_no_cpp14") && exists("cpp_no_cpp17")
+if exists('cpp_no_cpp14') && exists('cpp_no_cpp17')
 	syntax keyword stlFunctionId	contained random_shuffle
 	syntax match   stlFunction		/\<std::random_shuffle\>/ contains=stlNamespaceId,stlFunctionId
 endif
 " }}}
 
 " methods {{{
-if exists("stl_highlight_members")
+if exists('stl_highlight_members')
 	syntax keyword stlMethodId	contained append
 	syntax keyword stlMethodId	contained assign
 	syntax keyword stlMethodId	contained at
@@ -440,7 +440,7 @@ if exists("stl_highlight_members")
 	syntax keyword stlMethodId	contained value_comp
 	syntax match   stlMethod	/\(->\|\.\)\(append\|assign\|at\|back\|begin\|c_str\|capacity\|cbegin\|cend\|clear\|compare\|copy\|count\|crbegin\|crend\|data\|empty\|end\|equal_range\|erase\|find\|find_first_not_of\|find_first_of\|find_last_not_of\|find_last_of\|front\|get_allocator\|insert\|key_comp\|length\|lower_bound\|max_size\|merge\|pop\|pop_back\|pop_front\|push\|push_back\|push_front\|rbegin\|remove\|remove_if\|rend\|replace\|reserve\|resize\|reverse\|rfind\|size\|sort\|splice\|substr\|swap\|top\|unique\|upper_bound\|value_comp\)\>/ contains=stlMethodId
 
-	if !exists("cpp_no_cpp11")
+	if !exists('cpp_no_cpp11')
 		syntax keyword stlMethodId	contained before_begin
 		syntax keyword stlMethodId	contained bucket
 		syntax keyword stlMethodId	contained bucket_count
@@ -495,7 +495,7 @@ if exists("stl_highlight_members")
 		syntax match   stlMethod	/\(->\|\.\)\(before_begin\|bucket\|bucket_count\|bucket_size\|cbefore_begin\|code\|detach\|emplace\|emplace_after\|emplace_back\|emplace_front\|emplace_hint\|erase_after\|fill\|get\|get_future\|get_id\|hash_function\|insert_after\|join\|joinable\|key_eq\|load_factor\|lock\|make_ready_at_thread_exit\|max_bucket_count\|max_load_factor\|mutex\|native_handle\|notify_all\|notify_one\|owns_lock\|rehash\|release\|reset\|set_exception\|set_exception_at_thread_exit\|set_value\|set_value_at_thread_exit\|share\|shrink_to_fit\|splice_after\|try_lock\|try_lock_for\|try_lock_until\|unlock\|valid\|wait\|wait_for\|wait_until\|what\)\>/ contains=stlMethodId
 	endif
 
-	if !exists("cpp_no_cpp14")
+	if !exists('cpp_no_cpp14')
 		syntax keyword stlMethodId	contained lock_shared
 		syntax keyword stlMethodId	contained try_lock_shared
 		syntax keyword stlMethodId	contained try_lock_shared_for
@@ -504,7 +504,7 @@ if exists("stl_highlight_members")
 		syntax match   stlMethod	/\(->\|\.\)\(lock_shared\|try_lock_shared\|try_lock_shared_for\|try_lock_shared_until\|unlock_shared\)\>/ contains=stlMethodId
 	endif
 
-	if !exists("cpp_no_cpp17")
+	if !exists('cpp_no_cpp17')
 		syntax keyword stlMethodId	contained insert_or_assign
 		syntax keyword stlMethodId	contained try_emplace
 		syntax match   stlMethod	/\(->\|\.\)\(insert_or_assign\|try_emplace\)\>/ contains=stlMethodId
@@ -546,7 +546,7 @@ syntax match   stlType		/::\(allocator_type\|char_type\|const_iterator\|const_po
 syntax match   stlType		/::value_compare::\(first_argument_type\|result_type\|second_argument_type\)\>/ contains=stlClassId,stlTypeId
 syntax match   stlType		/std::\(u16\|u32\|w\)\?string/ contains=stlNamespaceId,stlTypeId
 
-if !exists("cpp_no_cpp11")
+if !exists('cpp_no_cpp11')
 	syntax keyword stlTypeId	contained const_local_iterator
 	syntax keyword stlTypeId	contained hasher
 	syntax keyword stlTypeId	contained key_equal
@@ -557,11 +557,21 @@ if !exists("cpp_no_cpp11")
 	syntax match   stlType		/std::\(\(condition_variable\|mutex\|thread\)::native_handle_type\|\(lock_guard\|unique_lock\)::mutex_type\)\>/ contains=stlNamespaceId,stlClassId,stlTypeId
 endif
 
-if !exists("cpp_no_cpp14")
+if !exists('cpp_no_cpp14')
 	syntax keyword stlTypeId	contained mutex_type;
 	syntax match   stlType		/std::shared_lock::mutex_type\>/ contains=stlNamespaceId,stlClassId,stlTypeId
 endif
 " }}}
+
+" TODO	{{{
+" iterators 
+" numerics 
+" input/output 
+" localizations 
+" regular expressions 
+" atomic operations 
+" ""s operator (from C++ 14)
+" ""[if|i|il] operator (from C++14)
 
 " TODO utilities {{{
 "		" type support {{{
@@ -678,17 +688,15 @@ endif
 "		" }}}
 "	" }}}
 
-" TODO	{{{
-" iterators 
-" numerics 
-" input/output 
-" localizations 
-" regular expressions 
-" atomic operations 
-" "" s operator (from C++ 14)
-
-" std::uses_allocator	class template
-" std::is_error_code_enum class template
+" helper classes
+" std::glsice				class
+" std::glsice_array			class template
+" std::indirect_array		class template
+" std::is_error_code_enum	class template
+" std::mask_array			class template
+" std::slice				class
+" std::slice_array			class template
+" std::uses_allocator		class template
 " }}}
 
 " highlighting {{{
@@ -702,4 +710,5 @@ highlight default link stlMemberId		Identifier
 highlight default link stlMethodId		Function
 highlight default link stlNamespaceId	Structure
 highlight default link stlTypeId		Typedef
+"}}}
 
