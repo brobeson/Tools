@@ -16,7 +16,7 @@
 " in '//', for Vim you'd pass in '"'.
 
 " check if this plugin (or one with the same name) has already been loaded
-if exists("g:loaded_codeTools")
+if exists('g:loaded_codeTools')
 	finish
 endif
 let g:loaded_codeTools = 1
@@ -55,7 +55,7 @@ nmap <unique> z5 :set foldlevel=5<CR>
 "==============================================================================
 " define the functions to comment and uncomment a range of lines {{{
 "==============================================================================
-if !exists("*Comment")
+if !exists('*Comment')
 	function Comment(commentString) range
 		" determine the smallest column at which text begins the lines in the
 		" range. use the first non-blank line to get the initial column.
@@ -94,12 +94,12 @@ if !exists("*Comment")
 
 		" tell the user how many lines were commented
 		call cursor(a:firstline, commentColumn)
-		echo totalCommentedLines . " lines commented"
+		echo totalCommentedLines . ' lines commented'
 	endfunction
 endif
 
 " define the function to uncomment a range of lines
-if !exists("*Uncomment")
+if !exists('*Uncomment')
 	function Uncomment(commentString) range
 		" this is the cleanest way i found to uncomment the
 		" lines without incurring problems if folding is enabled.
@@ -108,7 +108,7 @@ if !exists("*Uncomment")
 			call setline(line, substitute(getline(line), a:commentString, '', ''))
 		endfor
 		normal ^
-		echo a:lastline - a:firstline + 1 "lines uncommented"
+		echo a:lastline - a:firstline + 1 'lines uncommented'
 	endfunction
 endif
 "}}}

@@ -7,7 +7,7 @@
 "  - add functionality to comment and uncomment a range of lines
 
 " check if this plugin (or one with the same name) has already been loaded
-if exists("b:loaded_vim")
+if exists('b:loaded_vim')
 	finish
 endif
 let b:loaded_vim = 1
@@ -24,7 +24,7 @@ setlocal cpo&vim
 " and another that I accidentally erased. i'm not sure why, but i can't make
 " this a script local function. if i do, then using
 " set foldtext=<SID>VimFoldText, then the folding doesn't display correctly.
-if !exists("*VimFoldText")
+if !exists('*VimFoldText')
 	function VimFoldText()
 		" get the first line. we need it to determine what type of fold text
 		" to create.
@@ -44,7 +44,7 @@ if !exists("*VimFoldText")
 		" extracted from the fold text. this has two advantages:
 		" 1) if a user changes their fold marker text, this accounts for that,
 		" 2) it avoids an unwanted fold starting here in this file.
-		let foldText .= printf("[ %5d lines ]    ", v:foldend - v:foldstart + 1)
+		let foldText .= printf('[ %5d lines ]    ', v:foldend - v:foldstart + 1)
 		let foldText .= substitute(firstLine, '^\s*"\s*', '', '')
 		let markerText = substitute(&foldmarker, ',.*', '', '')
 		let foldText = substitute(foldText, markerText, '', '')
@@ -65,11 +65,11 @@ setlocal fillchars=fold:\
 "==============================================================================
 " the comment/uncomment plugin {{{
 "==============================================================================
-if !exists("*Comment") || !exists("*Uncomment")
-	echoerr "Command() or Uncomment() is undefined. Do you have plugin/codeTools.vim loaded?"
+if !exists('*Comment') || !exists('*Uncomment')
+	echoerr 'Command() or Uncomment() is undefined. Do you have plugin/codeTools.vim loaded?'
 else
 	" create the command mappings to call the functions
-	if !exists("no_plugin_maps") && !exists("no_vim_maps")
+	if !exists('no_plugin_maps') && !exists('no_vim_maps')
 		" map the comment command
 		if !hasmapto('<Plug>VimComment')
 			map <buffer> <unique> <Leader>c <Plug>VimComment

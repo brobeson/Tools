@@ -13,7 +13,7 @@
 " First remove all existing highlighting.
 highlight clear
 
-let colors_name = "vs2013dark"
+let colors_name = 'vs2013dark'
 
 highlight Normal ctermfg=white ctermbg=black guifg=#dcdcdc guibg=#1e1e1e
 
@@ -124,8 +124,8 @@ highlight Visual      cterm=reverse                              gui=reverse    
 highlight VisualNOS   cterm=underline,bold                       gui=underline
 highlight WarningMsg                        ctermfg=darkred                     guifg=red
 
-if exists("syntax_on")
-  let syntax_cmd = "enable"
+if exists('syntax_on')
+  let syntax_cmd = 'enable'
   runtime syntax/syncolor.vim
   unlet syntax_cmd
 endif

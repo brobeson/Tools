@@ -7,7 +7,7 @@
 "  - add functionality to comment and uncomment a range of lines
 
 " check if this plugin (or one with the same name) has already been loaded
-if exists("b:loaded_latex")
+if exists('b:loaded_latex')
 	finish
 endif
 let b:loaded_latex = 1
@@ -28,7 +28,7 @@ setlocal cursorline
 " i'm not sure why, but i can't make this a script local function. if i do,
 " then using set foldtext=<SID>LatexFoldText, then the folding doesn't display
 " correctly.
-if !exists("*LatexFoldText")
+if !exists('*LatexFoldText')
 	function LatexFoldText()
 		let firstLineNum = v:foldstart
 		let firstLine = getline(firstLineNum)
@@ -38,7 +38,7 @@ if !exists("*LatexFoldText")
 		if -1 != match(firstLine, '^\s*%.\+' . markerText, '', '')
 			let foldText = substitute(firstLine, '%\s*', '', '')
 			let foldText = substitute(foldText, markerText, '', '')
-			let foldText .= "..."
+			let foldText .= '...'
 
 		" if the first line is not a comment, get the line which starts a LaTeX
 		" command (\begin, \section, etc).
@@ -50,12 +50,12 @@ if !exists("*LatexFoldText")
 
 			" if a valid first line was not found
 			if v:foldend < firstLineNum
-				let foldText = "no LaTeX comment found"
+				let foldText = 'no LaTeX comment found'
 
 			" otherwise, we do have the LaTeX command
 			else
 				let cmd = matchstr(firstLine, '\s*\\\a\+\*\?{.*}', '', '')
-				let foldText = cmd . "..."
+				let foldText = cmd . '...'
 
 				if (0 <= match(cmd, '\begin', '', ''))
 					let foldText .= matchstr(cmd, '{.*}', '', '')
@@ -86,11 +86,11 @@ setlocal fillchars=fold:\
 "==============================================================================
 " the comment/uncomment plugin {{{
 "==============================================================================
-if !exists("*Comment") || !exists("*Uncomment")
-	echoerr "Command() or Uncomment() is undefined. Do you have plugin/codeTools.vim loaded?"
+if !exists('*Comment') || !exists('*Uncomment')
+	echoerr 'Command() or Uncomment() is undefined. Do you have plugin/codeTools.vim loaded?'
 else
 	" create the command mappings to call the functions
-	if !exists("no_plugin_maps") && !exists("no_latex_maps")
+	if !exists('no_plugin_maps') && !exists('no_latex_maps')
 		" map the comment command
 		if !hasmapto('<Plug>LatexComment')
 			map <buffer> <unique> <Leader>c <Plug>LatexComment

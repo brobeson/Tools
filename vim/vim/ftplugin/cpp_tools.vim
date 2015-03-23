@@ -10,7 +10,7 @@
 "  - add functionality to yank lines of code, and paste them as a new function
 
 " check if this plugin (or one with the same name) has already been loaded
-if exists("b:loaded_cpp")
+if exists('b:loaded_cpp')
 	finish
 endif
 let b:loaded_cpp = 1
@@ -24,7 +24,7 @@ setlocal cpo&vim
 " create a command to insert doxygen comments {{{
 "==============================================================================
  map the doxygen comment command
-if !exists("no_plugin_maps") && !exists("no_cpp_maps")
+if !exists('no_plugin_maps') && !exists('no_cpp_maps')
 	if !hasmapto('<Plug>Cpp_InsertDoxygen')
 		map <buffer> <unique> <Leader>d <Plug>Cpp_InsertDoxygen
 	endif
@@ -32,22 +32,22 @@ if !exists("no_plugin_maps") && !exists("no_cpp_maps")
 endif
 
 " insert the doxygen comment
-if !exists("*s:InsertDoxygen")
+if !exists('*s:InsertDoxygen')
 	function s:InsertDoxygen()
 		" extract the whole header
-		let lastLine = search("[;{]", "cnW")
-		let currentLine = line(".")
+		let lastLine = search('[;{]', 'cnW')
+		let currentLine = line('.')
 		let cursorStartLine = currentLine
-		let text = ""
+		let text = ''
 		while currentLine <= lastLine
 			let text .= getline(currentLine)
 			let currentLine = currentLine + 1
 		endwhile
 
 		" look for deleted functions
-		if match(text, "delete") != -1
-			execute ":normal! O/** @cond */"
-			execute ":normal! jo/** @endcond */"
+		if match(text, 'delete') != -1
+			execute ':normal! O/** @cond */'
+			execute ':normal! jo/** @endcond */'
 
 		" if this code block is not a deleted function
 		else
@@ -59,10 +59,10 @@ if !exists("*s:InsertDoxygen")
 
 			" check if this is a template class or function. if it is,
 			" add the tparam tags.
-			let hasTemplate = match(text, "template")
+			let hasTemplate = match(text, 'template')
 			if hasTemplate != -1
-				let start = stridx(text, "<") + 1
-				let end = stridx(text, ">", start)
+				let start = stridx(text, '<') + 1
+				let end = stridx(text, '>', start)
 				let templateParameters = strpart(text, start, end - start)
 				let templateParameters = substitute(templateParameters, '\(<\|,\|>\)', '', 'g')
 				let paramList = split(templateParameters)
@@ -75,15 +75,15 @@ if !exists("*s:InsertDoxygen")
 			" done checking for template parameters
 
 			" check if this is a function. it will have ()s.
-			let isFunction = match(text, "(")
+			let isFunction = match(text, '(')
 			if (isFunction != -1)
-				let start = stridx(text, "(") + 1
-				let end = stridx(text, ")", start)
+				let start = stridx(text, '(') + 1
+				let end = stridx(text, ')', start)
 				let parameters = strpart(text, start, end - start)
 				let parameterList = split(parameters, ',')
 				let index = 0
 				while index < len(parameterList)
-					let paramText = "@param"
+					let paramText = '@param'
 					let paramName = matchstr(parameterList[index], '\w\+$')
 
 					" the rules for determining if a parameter is in or out:
@@ -95,11 +95,11 @@ if !exists("*s:InsertDoxygen")
 					" to examine the function code, which is beyond the scope of
 					" this plugin, so we default to [in,out] instead of [out].
 					if match(parameterList[index], '^\s*const') != -1
-						let paramText .= "[in]	"
+						let paramText .= '[in]	'
 					elseif match(parameterList[index], '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
-						let paramText .= "[in,out]	"
+						let paramText .= '[in,out]	'
 					else
-						let paramText .= "[in]	"
+						let paramText .= '[in]	'
 					endif
 
 					call add(commentBody, ' * ' . paramText . paramName)
@@ -110,15 +110,15 @@ if !exists("*s:InsertDoxygen")
 				" location of the opening (
 				let returnType = substitute(text, '\s\+\(\w\+\|operator.*\)(.*', '', '')
 				let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
-				if returnType == "bool"
+				if returnType == 'bool'
 					call add(commentBody, ' * @retval	true')
 					call add(commentBody, ' * @retval	false')
-				elseif returnType != "void" && returnType != ""
+				elseif returnType != 'void' && returnType != ''
 					call add(commentBody, ' * @return')
 				endif
 
 				" tack on a report about if the function throws any exceptions
-				if match(text, "noexcept") != -1
+				if match(text, 'noexcept') != -1
 					call add(commentBody, ' * @exception	None')
 				else
 					call add(commentBody, ' * @exception')
@@ -146,7 +146,7 @@ endif
 " and another that I accidentally erased. i'm not sure why, but i can't make
 " this a script local function. if i do, then use 'set foldtext=<SID>CppFoldText',
 " then the folding doesn't display correctly.
-if !exists("*CppFoldText")
+if !exists('*CppFoldText')
 	function CppFoldText()
 		" get the first line. we need it to determine what type of fold text
 		" to create. also initialize the fold text in a way to indicate a
@@ -158,7 +158,7 @@ if !exists("*CppFoldText")
 		if match(firstLine, '^\s*#if\(def\)\?\s*0') == 0
 			let codeLine = getline(v:foldstart + 1)
 			let spaceCount = match(codeLine, '\S')
-			let foldText = repeat(' ', spaceCount) . "[ commented code ]  "
+			let foldText = repeat(' ', spaceCount) . '[ commented code ]  '
 			let foldText .= substitute(codeLine, '^\s*', '', '')
 
 		" javadoc comment blocks
@@ -198,10 +198,10 @@ if !exists("*CppFoldText")
 				" finally, combine all the lines into the fold's fill text
 				let foldText .= join(comments) . ' */'
 
-"			" if there is no brief tag, but there is a grouping tag
-"			elseif 0 < groupStart
-"				let foldText = comments
-"			endif
+			" if there is no brief tag, but there is a grouping tag
+			"elseif 0 < groupStart
+			"	let foldText = comments
+			"endif
 
 			" if there is no brief tag, set the fill text to indicate that
 			else
@@ -217,7 +217,7 @@ if !exists("*CppFoldText")
 			let foldText = substitute(firstLine, '{.*', '{', '')
 
 			" the fill text is the number of folded lines, right justified
-			let foldText .= printf(" %5d lines }", v:foldend - v:foldstart + 1)
+			let foldText .= printf(' %5d lines }', v:foldend - v:foldstart + 1)
 		endif
 
 		" vim sets the tab character to 1 space in the fold text.  I want
@@ -242,11 +242,11 @@ setlocal fillchars=fold:\
 "==============================================================================
 " the comment/uncomment plugin {{{
 "==============================================================================
-if !exists("*Comment") || !exists("*Uncomment")
-	echoerr "Command() or Uncomment() is undefined. Do you have plugin/codeTools.vim loaded?"
+if !exists('*Comment') || !exists('*Uncomment')
+	echoerr 'Command() or Uncomment() is undefined. Do you have plugin/codeTools.vim loaded?'
 else
 	" create the command mappings to call the functions
-	if !exists("no_plugin_maps") && !exists("no_cpp_maps")
+	if !exists('no_plugin_maps') && !exists('no_cpp_maps')
 		" map the comment command
 		if !hasmapto('<Plug>CppComment')
 			map <buffer> <unique> <Leader>c <Plug>CppComment
@@ -266,7 +266,7 @@ endif
 "==============================================================================
 " the new class plugin {{{
 "==============================================================================
-if !exists("no_plugin_maps") && !exists("no_cpp_maps")
+if !exists('no_plugin_maps') && !exists('no_cpp_maps')
 	" map the new class command
 	if !hasmapto('<Plug>CppNewClass')
 		map <buffer> <unique> <Leader>pc <Plug>CppNewClass
@@ -275,11 +275,11 @@ if !exists("no_plugin_maps") && !exists("no_cpp_maps")
 endif
 
 " define the function to create a new class
-if !exists("*s:NewClass")
+if !exists('*s:NewClass')
 	function s:NewClass()
 		" ask the user for a class name. the default is the file name.
 		let className = substitute(@%, '\..*', '', '')
-		let className = input("enter a name for the class: ", className)
+		let className = input('enter a name for the class: ', className)
 		echo className
 
 		" build up the class declaration
@@ -327,7 +327,7 @@ endif
 "==============================================================================
 " the extract-to-function plugin {{{
 "==============================================================================
-if !exists("no_plugin_maps") && !exists("no_cpp_maps")
+if !exists('no_plugin_maps') && !exists('no_cpp_maps')
 	" map the delete command
 	if !hasmapto('<Plug>CppDeleteFunction')
 		map <buffer> <unique> <Leader>fd <Plug>CppDeleteFunction
@@ -346,7 +346,7 @@ endif
 let s:functionBody = []
 
 " define the function to paste a buffer as a function
-if !exists("*s:PasteFunction")
+if !exists('*s:PasteFunction')
 	function s:PasteFunction()
 		call append(line('.'), s:functionBody)
 		let lineCount = len(s:functionBody)
@@ -368,11 +368,11 @@ if !exists("*s:PasteFunction")
 endif
 
 " define the function to uncomment a range of lines
-if !exists("*s:DeleteFunction")
+if !exists('*s:DeleteFunction')
 	function s:DeleteFunction() range
 		" prompt the user for the function declaration
 		call inputsave()
-		let declaration = input("enter the function declaration: ")
+		let declaration = input('enter the function declaration: ')
 
 		" if the user add a semicolon, a compiler error will result, so chuck
 		" it.
@@ -392,12 +392,12 @@ if !exists("*s:DeleteFunction")
 		" get the replacement function call, then append it
 		let functionCall = substitute(declaration, '\S*\s', '', '')
 		let functionCall = substitute(functionCall, '(.*$', '(', '')
-		let functionCall = input("enter the call to the new function: ", functionCall)
+		let functionCall = input('enter the call to the new function: ', functionCall)
 		normal k
 		call append(line('.'), functionCall)
 		normal j==
 
-		"echo lineRange "lines deleted, ready to be put as a function"
+		"echo lineRange 'lines deleted, ready to be put as a function'
 		call inputrestore()
 	endfunction
 endif

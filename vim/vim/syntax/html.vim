@@ -6,11 +6,11 @@
 "
 " Much thanks to Claudio Fleiner. His html.vim file served as a good resource.
 
-if !exists("html_version")
+if !exists('html_version')
 	let html_version = 5
 endif
 
-if exists("html_use_w3_style")
+if exists('html_use_w3_style')
 	syntax case match
 else
 	syntax case ignore
@@ -80,7 +80,7 @@ syntax keyword html5EventName contained onshow onstalled onstorage onsuspend ont
 syntax keyword html5EventName contained ontoggle onvolumechange onwaiting onwheel
 
 " event handlers
-if exists("html_use_w3_style")
+if exists('html_use_w3_style')
 	syntax match htmlEvtHandler contained /=\(".*()"\|'.*()'\)/ms=s+1
 else
 	syntax match htmlEvtHandler contained /=\s*\(".*()"\|'.*()'\|[^'" \t>]\+()\)/ms=s+1
@@ -127,7 +127,7 @@ syntax match   html5AttrName contained /data-[a-z\-]\+/
 syntax match htmlAttr contained /\<.\+\>=/me=e-1 contains=htmlAttrName,html5DepAttrName,html5AttrName
 
 " attribute values
-if exists("html_use_w3_style")
+if exists('html_use_w3_style')
 	syntax match htmlAttribValue contained /=\(".*"\|'.*'\)/ms=s+1
 else
 	syntax match htmlAttribValue contained /=\s*\(".*"\|'.*'\|[^'" \t>]\+\)/ms=s+1
@@ -248,8 +248,8 @@ endif
 " set the buffer's current syntax so that easily see what the syntax
 " _should_ be.
 if html_version == 5
-	let b:current_syntax = "html5"
+	let b:current_syntax = 'html5'
 else
-	let b:current_syntax = "html4"
+	let b:current_syntax = 'html4'
 endif
 
