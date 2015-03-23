@@ -84,15 +84,17 @@ if !exists("*Comment")
 		" now go back through the lines, inserting the comment characters at
 		" that minimum column.
 		let lineNumber = nextnonblank(a:firstline)
+		let totalCommentedLines = 0
 		while lineNumber <= a:lastline
 			call cursor(lineNumber, commentColumn)
 			execute 'normal i' . a:commentString
+			let totalCommentedLines += 1
 			let lineNumber = nextnonblank(lineNumber + 1)
 		endwhile
 
 		" tell the user how many lines were commented
 		call cursor(a:firstline, commentColumn)
-		echo a:lastline - a:firstline + 1 "lines commented"
+		echo totalCommentedLines . " lines commented"
 	endfunction
 endif
 
