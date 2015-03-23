@@ -23,7 +23,7 @@ setlocal cpo&vim
 "==============================================================================
 " create a command to insert doxygen comments {{{
 "==============================================================================
- map the doxygen comment command
+" map the doxygen comment command
 if !exists('no_plugin_maps') && !exists('no_cpp_maps')
 	if !hasmapto('<Plug>Cpp_InsertDoxygen')
 		map <buffer> <unique> <Leader>d <Plug>Cpp_InsertDoxygen
@@ -34,105 +34,112 @@ endif
 " insert the doxygen comment
 if !exists('*s:InsertDoxygen')
 	function s:InsertDoxygen()
-		" extract the whole header
-		let lastLine = search('[;{]', 'cnW')
-		let currentLine = line('.')
-		let cursorStartLine = currentLine
-		let text = ''
-		while currentLine <= lastLine
-			let text .= getline(currentLine)
-			let currentLine = currentLine + 1
-		endwhile
+		if line('.') == 1
+			let fileHeader = ['/**', ' * @file', ' * @brief', ' * @details', ' * @author', ' */']
+			call append(0, fileHeader)
+			call cursor(3, strlen(getline(3)))
 
-		" look for deleted functions
-		if match(text, 'delete') != -1
-			execute ':normal! O/** @cond */'
-			execute ':normal! jo/** @endcond */'
-
-		" if this code block is not a deleted function
 		else
-			" start building up the doxygen comment
-			let commentBody = []
-			call add(commentBody, '/**')
-			call add(commentBody, ' * @brief')
-			call add(commentBody, ' * @details')
+			" extract the whole header
+			let lastLine = search('[;{]', 'cnW')
+			let currentLine = line('.')
+			let cursorStartLine = currentLine
+			let text = ''
+			while currentLine <= lastLine
+				let text .= getline(currentLine)
+				let currentLine = currentLine + 1
+			endwhile
 
-			" check if this is a template class or function. if it is,
-			" add the tparam tags.
-			let hasTemplate = match(text, 'template')
-			if hasTemplate != -1
-				let start = stridx(text, '<') + 1
-				let end = stridx(text, '>', start)
-				let templateParameters = strpart(text, start, end - start)
-				let templateParameters = substitute(templateParameters, '\(<\|,\|>\)', '', 'g')
-				let paramList = split(templateParameters)
-				let index = 1
-				while index < len(paramList)
-					call add(commentBody, ' * @tparam	' . paramList[index])
-					let index = index + 2
-				endwhile
-			endif
-			" done checking for template parameters
+			" look for deleted functions
+			if match(text, 'delete') != -1
+				execute ':normal! O/** @cond */'
+				execute ':normal! jo/** @endcond */'
 
-			" check if this is a function. it will have ()s.
-			let isFunction = match(text, '(')
-			if (isFunction != -1)
-				let start = stridx(text, '(') + 1
-				let end = stridx(text, ')', start)
-				let parameters = strpart(text, start, end - start)
-				let parameterList = split(parameters, ',')
-				let index = 0
-				while index < len(parameterList)
-					let paramText = '@param'
-					let paramName = matchstr(parameterList[index], '\w\+$')
+				" if this code block is not a deleted function
+			else
+				" start building up the doxygen comment
+				let commentBody = []
+				call add(commentBody, '/**')
+				call add(commentBody, ' * @brief')
+				call add(commentBody, ' * @details')
 
-					" the rules for determining if a parameter is in or out:
-					" 1 - if const appears first, it is input only
-					" 2 - if it's a reference or a constant pointer, it is input &
-					"     output
-					" 3 - otherwise it is input only
-					" to really know whether something is output only, one needs
-					" to examine the function code, which is beyond the scope of
-					" this plugin, so we default to [in,out] instead of [out].
-					if match(parameterList[index], '^\s*const') != -1
-						let paramText .= '[in]	'
-					elseif match(parameterList[index], '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
-						let paramText .= '[in,out]	'
-					else
-						let paramText .= '[in]	'
+				" check if this is a template class or function. if it is,
+				" add the tparam tags.
+				let hasTemplate = match(text, 'template')
+				if hasTemplate != -1
+					let start = stridx(text, '<') + 1
+					let end = stridx(text, '>', start)
+					let templateParameters = strpart(text, start, end - start)
+					let templateParameters = substitute(templateParameters, '\(<\|,\|>\)', '', 'g')
+					let paramList = split(templateParameters)
+					let index = 1
+					while index < len(paramList)
+						call add(commentBody, ' * @tparam	' . paramList[index])
+						let index = index + 2
+					endwhile
+				endif
+				" done checking for template parameters
+
+				" check if this is a function. it will have ()s.
+				let isFunction = match(text, '(')
+				if (isFunction != -1)
+					let start = stridx(text, '(') + 1
+					let end = stridx(text, ')', start)
+					let parameters = strpart(text, start, end - start)
+					let parameterList = split(parameters, ',')
+					let index = 0
+					while index < len(parameterList)
+						let paramText = '@param'
+						let paramName = matchstr(parameterList[index], '\w\+$')
+
+						" the rules for determining if a parameter is in or out:
+						" 1 - if const appears first, it is input only
+						" 2 - if it's a reference or a constant pointer, it is input &
+						"     output
+						" 3 - otherwise it is input only
+						" to really know whether something is output only, one needs
+						" to examine the function code, which is beyond the scope of
+						" this plugin, so we default to [in,out] instead of [out].
+						if match(parameterList[index], '^\s*const') != -1
+							let paramText .= '[in]	'
+						elseif match(parameterList[index], '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
+							let paramText .= '[in,out]	'
+						else
+							let paramText .= '[in]	'
+						endif
+
+						call add(commentBody, ' * ' . paramText . paramName)
+						let index = index + 1
+					endwhile
+
+					" figure out the return type, at this point isFunction holds the
+					" location of the opening (
+					let returnType = substitute(text, '\s\+\(\w\+\|operator.*\)(.*', '', '')
+					let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
+					if returnType == 'bool'
+						call add(commentBody, ' * @retval	true')
+						call add(commentBody, ' * @retval	false')
+					elseif returnType != 'void' && returnType != ''
+						call add(commentBody, ' * @return')
 					endif
 
-					call add(commentBody, ' * ' . paramText . paramName)
-					let index = index + 1
-				endwhile
-
-				" figure out the return type, at this point isFunction holds the
-				" location of the opening (
-				let returnType = substitute(text, '\s\+\(\w\+\|operator.*\)(.*', '', '')
-				let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
-				if returnType == 'bool'
-					call add(commentBody, ' * @retval	true')
-					call add(commentBody, ' * @retval	false')
-				elseif returnType != 'void' && returnType != ''
-					call add(commentBody, ' * @return')
+					" tack on a report about if the function throws any exceptions
+					if match(text, 'noexcept') != -1
+						call add(commentBody, ' * @exception	None')
+					else
+						call add(commentBody, ' * @exception')
+					endif
 				endif
 
-				" tack on a report about if the function throws any exceptions
-				if match(text, 'noexcept') != -1
-					call add(commentBody, ' * @exception	None')
-				else
-					call add(commentBody, ' * @exception')
-				endif
+				" close the comment, add it to the buffer, and format the comment
+				call add(commentBody, ' */')
+				call append(line('.') - 1, commentBody)
+				call cursor(cursorStartLine, 1)
+				execute 'normal' len(commentBody) . '=='
+
+				" move the cursor to the end of the brief tag.
+				normal j$
 			endif
-
-			" close the comment, add it to the buffer, and format the comment
-			call add(commentBody, ' */')
-			call append(line('.') - 1, commentBody)
-			call cursor(cursorStartLine, 1)
-			execute 'normal' len(commentBody) . '=='
-
-			" move the cursor to the end of the brief tag.
-			normal j$
 		endif
 	endfunction
 endif
@@ -180,7 +187,7 @@ if !exists('*CppFoldText')
 			" if the brief tag was found...
 			if 0 < briefStart
 				" find the next javadoc tag, which marks the end of the brief
-				" text. then get crop the comments array.
+				" text. then crop the comments array.
 				let briefEnd = match(comments, '[@|\\]', briefStart + 1) - 1
 				let comments = comments[briefStart : briefEnd]
 
@@ -196,7 +203,12 @@ if !exists('*CppFoldText')
 				endwhile
 
 				" finally, combine all the lines into the fold's fill text
-				let foldText .= join(comments) . ' */'
+				let commentString = join(comments)
+				if 0 < strlen(commentString)
+					let foldText .= commentString . ' */'
+				else
+					let foldText .= 'no brief description */'
+				endif
 
 			" if there is no brief tag, but there is a grouping tag
 			"elseif 0 < groupStart
