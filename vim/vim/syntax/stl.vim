@@ -15,6 +15,7 @@ syntax keyword stlNamespaceId contained std
 " classes {{{
 syntax keyword stlClassId	contained basic_string
 syntax keyword stlClassId	contained char_traits
+syntax keyword stlClassId	contained complex
 syntax keyword stlClassId	contained deque
 syntax keyword stlClassId	contained list
 syntax keyword stlClassId	contained map
@@ -23,44 +24,86 @@ syntax keyword stlClassId	contained multimap
 syntax keyword stlClassId	contained multiset
 syntax keyword stlClassId	contained priority_queue
 syntax keyword stlClassId	contained queue
+syntax keyword stlClassId	contained random_device
 syntax keyword stlClassId	contained set
 syntax keyword stlClassId	contained stack
+syntax keyword stlClassId	contained valarray
 syntax keyword stlClassId	contained value_compare
 syntax keyword stlClassId	contained vector
 syntax keyword stlClassId	contained wctrans_t
 syntax keyword stlClassId	contained wctype_t
 syntax keyword stlClassId	contained wint_t
-syntax match   stlClass		/std::\(basic_string\|char_traits\|deque\|list\|map\|mbstate_t\|multimap\|multiset\|priority_queue\|queue\|set\|stack\|vector\|wctrans_t\|wctype_t\|wint_t\)/ contains=stlNamespaceId,stlClassId
+syntax match   stlClass		/std::\(basic_string\|char_traits\|complex\|deque\|list\|map\|mbstate_t\|multimap\|multiset\|priority_queue\|queue\|random_device\|set\|stack\|valarray\|vector\|wctrans_t\|wctype_t\|wint_t\)/ contains=stlNamespaceId,stlClassId
 syntax match   stlClass		/::value_compare/ contains=stlClassId
 
 " added in C++11
 if !exists('cpp_no_cpp11')
 	syntax keyword stlClassId	contained array
 	syntax keyword stlClassId	contained adopt_lock_t
+	syntax keyword stlClassId	contained bernoulli_distribution
+	syntax keyword stlClassId	contained binomial_distribution
+	syntax keyword stlClassId	contained cauchy_distribution
+	syntax keyword stlClassId	contained chi_squared_distribution
 	syntax keyword stlClassId	contained condition_variable
 	syntax keyword stlClassId	contained condition_variable_any
 	syntax keyword stlClassId	contained defer_lock_t
+	syntax keyword stlClassId	contained discard_block_engine
+	syntax keyword stlClassId	contained discrete_distribution
+	syntax keyword stlClassId	contained exponential_distribution
+	syntax keyword stlClassId	contained extreme_value_distribution
+	syntax keyword stlClassId	contained fisher_f_distribution
 	syntax keyword stlClassId	contained forward_list
 	syntax keyword stlClassId	contained future
 	syntax keyword stlClassId	contained future_error
+	syntax keyword stlClassId	contained gamma_distribution
+	syntax keyword stlClassId	contained geometric_distribution
 	syntax keyword stlClassId	contained id
+	syntax keyword stlClassId	contained independent_bits_engine
+	syntax keyword stlClassId	contained linear_congruential_engine
 	syntax keyword stlClassId	contained lock_guard
+	syntax keyword stlClassId	contained lognormal_distribution
+	syntax keyword stlClassId	contained mersenne_twister_engine
 	syntax keyword stlClassId	contained mutex
+	syntax keyword stlClassId	contained negative_binomial_distribution
+	syntax keyword stlClassId	contained normal_distribution
 	syntax keyword stlClassId	contained once_flag
 	syntax keyword stlClassId	contained packaged_task
+	syntax keyword stlClassId	contained piecewise_constant_distribution
+	syntax keyword stlClassId	contained piecewise_linear_distribution
+	syntax keyword stlClassId	contained poisson_distribution
 	syntax keyword stlClassId	contained promise
+	syntax keyword stlClassId	contained ratio
+	syntax keyword stlClassId	contained ratio_add
+	syntax keyword stlClassId	contained ratio_divide
+	syntax keyword stlClassId	contained ratio_equal
+	syntax keyword stlClassId	contained ratio_greater
+	syntax keyword stlClassId	contained ratio_greater_equal
+	syntax keyword stlClassId	contained ratio_less
+	syntax keyword stlClassId	contained ratio_less_equal
+	syntax keyword stlClassId	contained ratio_multiply
+	syntax keyword stlClassId	contained ratio_not_equal
+	syntax keyword stlClassId	contained ratio_subtract
 	syntax keyword stlClassId	contained recursive_mutex
 	syntax keyword stlClassId	contained recursive_timed_mutex
+	syntax keyword stlClassId	contained seed_seq
 	syntax keyword stlClassId	contained shared_future
+	syntax keyword stlClassId	contained shuffle_order_engine
+	syntax keyword stlClassId	contained student_t_distribution
+	syntax keyword stlClassId	contained subtract_with_carry_engine
 	syntax keyword stlClassId	contained thread
 	syntax keyword stlClassId	contained timed_mutex
 	syntax keyword stlClassId	contained try_to_lock_t
+	syntax keyword stlClassId	contained uniform_int_distribution
+	syntax keyword stlClassId	contained uniform_real_distribution
 	syntax keyword stlClassId	contained unique_lock
 	syntax keyword stlClassId	contained unordered_map
 	syntax keyword stlClassId	contained unordered_multimap
 	syntax keyword stlClassId	contained unordered_multiset
 	syntax keyword stlClassId	contained unordered_set
-	syntax match   stlClass		/std::\(array\|adopt_lock_t\|condition_variable\|condition_variable_any\|defer_lock_t\|forward_list\|future\|future_error\|lock_guard\|mutex\|once_flag\|packaged_task\|promise\|recursive_mutex\|recursive_timed_mutex\|shared_future\|thread\(::id\)\?\|timed_mutex\|try_to_lock_t\|unique_lock\|unordered_map\|unordered_multimap\|unordered_multiset\|unordered_set\)\>/ contains=stlNamespaceId,stlClassId
+	syntax keyword stlClassId	contained weibull_distribution
+	syntax match   stlClass		/std::\(array\|adopt_lock_t\|condition_variable\|condition_variable_any\|defer_lock_t\|forward_list\|future\|future_error\|lock_guard\|mutex\|once_flag\|packaged_task\|promise\|ratio\(_add\|_divide\|_equal\|_greater\(_equal\)\?\|_less\(_equal\)\?\|_multiply\|_not_equal\|_subtract\)\?\|recursive_mutex\|recursive_timed_mutex\|seed_seq\|shared_future\|thread\(::id\)\?\|timed_mutex\|try_to_lock_t\|unique_lock\|unordered_map\|unordered_multimap\|unordered_multiset\|unordered_set\)\>/ contains=stlNamespaceId,stlClassId
+	syntax match   stlClass		/std::\(bernoulli\|\(negative_\)\?binomial\|cauchy\|chi_squared\|discrete\|exponential\|extreme_value\|fisher_f\|gamma\|geometric\|\(log\)\?normal\|normal\|piecewise_\(constant\|linear\)\|poisson\|student_t\|uniform_\(int\|real\)\|weibull\)_distribution/ contains=stlNamespaceId,stlClassId
+	syntax match   stlClass		/std::\(discard_block\|independent_bits\|linear_congruential\|mersenne_twister\|shuffle_order\|subtract_with_carry\)_engine/ contains=stlNamespaceId,stlClassId
 endif
 
 " added in C++14
@@ -76,17 +119,75 @@ syntax keyword stlConstantId	contained __STDC_UTF_32__
 syntax keyword stlConstantId	contained npos
 syntax keyword stlConstantId	contained MB_CUR_MAX
 syntax keyword stlConstantId	contained MB_LEN_MAX
+syntax keyword stlConstantId	contained HUGE_VAL
+syntax keyword stlConstantId	contained RAND_MAX
 syntax keyword stlConstantId	contained WCHAR_MAX
 syntax keyword stlConstantId	contained WCHAR_MIN
 syntax keyword stlConstantId	contained WEOF
-syntax match   stlConstant		/std::\(__STDC_UTF_\(16\|32\)__\|MB_\(CUR\|LEN\)_MAX\|WCHAR_M\(AX\|IN\)\|WEOF\)\>/ contains=stlNamespaceId,stlConstantId
+syntax match   stlConstant		/std::\(__STDC_UTF_\(16\|32\)__\|MB_\(CUR\|LEN\)_MAX\|HUGE_VAL\|RAND_MAX\|WCHAR_M\(AX\|IN\)\|WEOF\)\>/ contains=stlNamespaceId,stlConstantId
 syntax match   stlConstant		/::npos/ contains=stlConstantId
 
 if !exists('cpp_no_cpp11')
 	syntax keyword stlConstantId	contained adopt_lock
+	syntax keyword stlConstantId	contained block_size
+	syntax keyword stlConstantId	contained default_seed
 	syntax keyword stlConstantId	contained defer_lock
+	syntax keyword stlConstantId	contained den
+	syntax keyword stlConstantId	contained FE_ALL_EXCEPT
+	syntax keyword stlConstantId	contained FE_DFL_ENV
+	syntax keyword stlConstantId	contained FE_DIVBYZERO
+	syntax keyword stlConstantId	contained FE_DOWNWARD
+	syntax keyword stlConstantId	contained FE_INEXACT
+	syntax keyword stlConstantId	contained FE_INVALID
+	syntax keyword stlConstantId	contained FE_OVERFLOW
+	syntax keyword stlConstantId	contained FE_TONEAREST
+	syntax keyword stlConstantId	contained FE_TOWARDZERO
+	syntax keyword stlConstantId	contained FE_UNDERFLOW
+	syntax keyword stlConstantId	contained FE_UPWARD
+	syntax keyword stlConstantId	contained FP_INFINITE
+	syntax keyword stlConstantId	contained FP_NAN
+	syntax keyword stlConstantId	contained FP_NORMAL
+	syntax keyword stlConstantId	contained FP_SUBNORMAL
+	syntax keyword stlConstantId	contained FP_ZERO
+	syntax keyword stlConstantId	contained HUGE_VALF
+	syntax keyword stlConstantId	contained HUGE_VALL
+	syntax keyword stlConstantId	contained increment
+	syntax keyword stlConstantId	contained INFINITY
+	syntax keyword stlConstantId	contained initialization_multiplier
+	syntax keyword stlConstantId	contained long_lag
+	syntax keyword stlConstantId	contained mask_bits
+	syntax keyword stlConstantId	contained MATH_ERREXCEPT
+	syntax keyword stlConstantId	contained math_errhandling
+	syntax keyword stlConstantId	contained MATH_ERRNO
+	syntax keyword stlConstantId	contained modulus
+	syntax keyword stlConstantId	contained multiplier
+	syntax keyword stlConstantId	contained NAN
+	syntax keyword stlConstantId	contained num
+	syntax keyword stlConstantId	contained shift_size
+	syntax keyword stlConstantId	contained short_lag
+	syntax keyword stlConstantId	contained state_size
+	syntax keyword stlConstantId	contained table_size
+	syntax keyword stlConstantId	contained tempering_b
+	syntax keyword stlConstantId	contained tempering_c
+	syntax keyword stlConstantId	contained tempering_d
+	syntax keyword stlConstantId	contained tempering_l
+	syntax keyword stlConstantId	contained tempering_s
+	syntax keyword stlConstantId	contained tempering_t
+	syntax keyword stlConstantId	contained tempering_u
 	syntax keyword stlConstantId	contained try_to_lock
-	syntax match   stlConstant		/std::\(adopt_lock\|defer_lock\|try_to_lock\)\>/ contains=stlNamespaceId,stlConstantId
+	syntax keyword stlConstantId	contained used_size
+	syntax keyword stlConstantId	contained value
+	syntax keyword stlConstantId	contained word_size
+	syntax keyword stlConstantId	contained xor_mask
+	syntax match   stlConstant		/std::\(adopt_lock\|defer_lock\|FP_\(INFINITE\|NAN\|NORMAL\|SUBNORMAL\|ZERO\)\|HUGE_VAL[FL]\|INFINITY\|MATH_ERR\(EXCEPT\|NO\)\|math_errhandling\|NAN\|try_to_lock\)\>/ contains=stlNamespaceId,stlConstantId
+	syntax match   stlConstant		/std::discard_block_engine::\(block\|used\)_size/ contains=stlNamespaceId,stlClassId,stlConstantId
+	syntax match   stlConstant		/std::linear_congruential_engine::\(default_seed\|increment\|modulus\|multiplier\)/ contains=stlNamespaceId,stlClassId,stlConstantId
+	syntax match   stlConstant		/std::mersenne_twister_engine::\(default_seed\|initialization_multiplier\|mask_bits\|\(shift\|state\|word\)_size\|tempering_[bcdlstu]\|xor_mask\)/ contains=stlNamespaceId,stlClassId,stlConstantId
+	syntax match   stlConstant		/std::shuffle_order_engine::table_size/ contains=stlNamespaceId,stlClassId,stlConstantId
+	syntax match   stlConstant		/std::subtract_with_carry_engine::\(default_seed\|\(long\|short\)_lag\|word_size\)/ contains=stlNamespaceId,stlClassId,stlConstantId
+	syntax match   stlConstant		/std::FE_\(ALL_EXCEPT\|DFL_ENV\|DIVBYZERO\|DOWNWARD\|INEXACT\|INVALID\|OVERFLOW\|TONEAREST\|TOWARDZERO\|UNDERFLOW\|UPWARD\)/ contains=stlNamespaceId,stlConstantId
+	syntax match   stlConstant		/std::ratio\(_add\|_divide\|_multiply\|_subtract\)\?::\(den\|num\)/ contains=stlNamespaceId,stlClassId,stlConstantId
+	syntax match   stlConstant		/\<std::ratio\(_equal\|_greater\(_equal\)\?\|_less\(_equal\)\?\|_not_equal\)\?::value\>/ contains=stlNamespaceId,stlClassId,stlConstantId
 endif
 " }}}
 
@@ -121,9 +222,15 @@ endif
 " }}}
 
 " free & static functions {{{
+syntax keyword stlFunctionId	contained abs
 syntax keyword stlFunctionId	contained accumulate
+syntax keyword stlFunctionId	contained acos
 syntax keyword stlFunctionId	contained adjacent_difference
 syntax keyword stlFunctionId	contained adjacent_find
+syntax keyword stlFunctionId	contained arg
+syntax keyword stlFunctionId	contained asin
+syntax keyword stlFunctionId	contained atan
+syntax keyword stlFunctionId	contained atan2
 syntax keyword stlFunctionId	contained atof
 syntax keyword stlFunctionId	contained atoi
 syntax keyword stlFunctionId	contained atol
@@ -131,24 +238,35 @@ syntax keyword stlFunctionId	contained atoll
 syntax keyword stlFunctionId	contained binary_search
 syntax keyword stlFunctionId	contained bsearch
 syntax keyword stlFunctionId	contained btowc
+syntax keyword stlFunctionId	contained ceil
+syntax keyword stlFunctionId	contained conj
 syntax keyword stlFunctionId	contained copy
 syntax keyword stlFunctionId	contained copy_backward
+syntax keyword stlFunctionId	contained cos
+syntax keyword stlFunctionId	contained cosh
 syntax keyword stlFunctionId	contained count
 syntax keyword stlFunctionId	contained count_if
+syntax keyword stlFunctionId	contained div
 syntax keyword stlFunctionId	contained eof
 syntax keyword stlFunctionId	contained eq
 syntax keyword stlFunctionId	contained eq_int_type
 syntax keyword stlFunctionId	contained equal
 syntax keyword stlFunctionId	contained equal_range
+syntax keyword stlFunctionId	contained exp
+syntax keyword stlFunctionId	contained fabs
 syntax keyword stlFunctionId	contained fill
 syntax keyword stlFunctionId	contained fill_n
 syntax keyword stlFunctionId	contained find
 syntax keyword stlFunctionId	contained find_end
 syntax keyword stlFunctionId	contained find_first_of
 syntax keyword stlFunctionId	contained find_if
+syntax keyword stlFunctionId	contained floor
+syntax keyword stlFunctionId	contained fmod
 syntax keyword stlFunctionId	contained for_each
+syntax keyword stlFunctionId	contained frexp
 syntax keyword stlFunctionId	contained generate
 syntax keyword stlFunctionId	contained generate_n
+syntax keyword stlFunctionId	contained imag
 syntax keyword stlFunctionId	contained includes
 syntax keyword stlFunctionId	contained inner_product
 syntax keyword stlFunctionId	contained inplace_merge
@@ -176,7 +294,12 @@ syntax keyword stlFunctionId	contained iswupper
 syntax keyword stlFunctionId	contained iswxdigit
 syntax keyword stlFunctionId	contained isxdigit
 syntax keyword stlFunctionId	contained iter_swap
+syntax keyword stlFunctionId	contained labs
+syntax keyword stlFunctionId	contained ldexp
+syntax keyword stlFunctionId	contained ldiv
 syntax keyword stlFunctionId	contained lexicographical_compare
+syntax keyword stlFunctionId	contained log
+syntax keyword stlFunctionId	contained log10
 syntax keyword stlFunctionId	contained lower_bound
 syntax keyword stlFunctionId	contained lt
 syntax keyword stlFunctionId	contained max
@@ -198,18 +321,24 @@ syntax keyword stlFunctionId	contained merge
 syntax keyword stlFunctionId	contained min
 syntax keyword stlFunctionId	contained min_element
 syntax keyword stlFunctionId	contained mismatch
+syntax keyword stlFunctionId	contained modf
 syntax keyword stlFunctionId	contained move
 syntax keyword stlFunctionId	contained next_permutation
+syntax keyword stlFunctionId	contained norm
 syntax keyword stlFunctionId	contained not_eof
 syntax keyword stlFunctionId	contained nth_element
 syntax keyword stlFunctionId	contained partial_sort
 syntax keyword stlFunctionId	contained partial_sort_copy
 syntax keyword stlFunctionId	contained partial_sum
 syntax keyword stlFunctionId	contained partition
+syntax keyword stlFunctionId	contained polar
 syntax keyword stlFunctionId	contained pop_heap
+syntax keyword stlFunctionId	contained pow
 syntax keyword stlFunctionId	contained prev_permutation
 syntax keyword stlFunctionId	contained push_heap
 syntax keyword stlFunctionId	contained qsort
+syntax keyword stlFunctionId	contained rand
+syntax keyword stlFunctionId	contained real
 syntax keyword stlFunctionId	contained remove
 syntax keyword stlFunctionId	contained remove_copy
 syntax keyword stlFunctionId	contained remove_copy_if
@@ -228,8 +357,12 @@ syntax keyword stlFunctionId	contained set_difference
 syntax keyword stlFunctionId	contained set_intersection
 syntax keyword stlFunctionId	contained set_symmetric_difference
 syntax keyword stlFunctionId	contained set_union
+syntax keyword stlFunctionId	contained sin
+syntax keyword stlFunctionId	contained sinh
 syntax keyword stlFunctionId	contained sort
 syntax keyword stlFunctionId	contained sort_heap
+syntax keyword stlFunctionId	contained sqrt
+syntax keyword stlFunctionId	contained srand
 syntax keyword stlFunctionId	contained stable_partition
 syntax keyword stlFunctionId	contained stable_sort
 syntax keyword stlFunctionId	contained stod
@@ -266,6 +399,8 @@ syntax keyword stlFunctionId	contained strtoull
 syntax keyword stlFunctionId	contained strxfrm
 syntax keyword stlFunctionId	contained swap
 syntax keyword stlFunctionId	contained swap_ranges
+syntax keyword stlFunctionId	contained tan
+syntax keyword stlFunctionId	contained tanh
 syntax keyword stlFunctionId	contained to_char_type
 syntax keyword stlFunctionId	contained to_int_type
 syntax keyword stlFunctionId	contained to_string
@@ -316,25 +451,55 @@ syntax keyword stlFunctionId	contained wmemmove
 syntax keyword stlFunctionId	contained wmemset
 syntax match   stlFunction		/std::\(btowc\|mb\(len\|rlen\|rtowc\|sinit\|srtowcs\|stowcs\|towc\)\|wc\(rtomb\|srtombs\|stombs\|tob\|tomb\)\)\>/ contains=stlNamespaceId,stlFunctionId
 syntax match   stlFunction		/std::wc\(s\(cat\|chr\|cmp\|coll\|cpy\|cspn\|len\|ncat\|ncmp\|ncpy\|pbrk\|rchr\|rtombs\|spn\|str\|tod\|tof\|tok\|tol\|told\|toll\|tombs\|toul\|toull\|xfrm\)\|trans\|type\)\>/ contains=stlNamespaceId,stlFunctionId
-syntax match   stlFunction		/std::\(accumulate\|adjacent_difference\|adjacent_find\|ato\(f\|i\|l\|ll\)\|binary_search\|bsearch\|copy\|copy_backward\|count\|count_if\|equal\|equal_range\|fill\|fill_n\|find\|find_end\|find_first_of\|find_if\|for_each\|generate\|generate_n\|includes\|inner_product\|inplace_merge\|isw\?\(alnum\|alpha\|cntrl\|digit\|graph\|lower\|print\|punct\|space\|upper\|xdigit\)\|iswctype\|iter_swap\|lexicographical_compare\|lower_bound\|max\|max_element\|make_heap\|w\?mem\(chr\|cmp\|cpy\|move\|set\)\|merge\|min\|min_element\|mismatch\|next_permutation\|nth_element\|partial_sort\|partial_sort_copy\|partial_sum\|partition\|pop_heap\|prev_permutation\|push_heap\|qsort\|remove\|remove_copy\|remove_copy_if\|remove_if\|replace\|replace_copy\|replace_copy_if\|replace_if\|reverse\|reverse_copy\|rotate\|rotate_copy\|search\|search_n\|set_difference\|set_intersection\|set_symmetric_difference\|set_union\|sort\|sort_heap\|stable_partition\|stable_sort\|sto\(i\|l\|ll\|ul\|ull\|f\|d\|ld\)\|str\(cat\|chr\|cmp\|coll\|cpy\|cspn\|error\|len\|ncat\|ncmp\|ncpy\|pbrk\|rchr\|spn\|str\|to\(d\|f\|k\|l\|ld\|ll\|ul\|ull\)\|xfrm\)\|swap\|swap_ranges\|to\(_string\|_wstring\|wctrans\|w\?lower\|w\?upper\)\|transform\|unique\|unique_copy\|upper_bound\|\)\>/ contains=stlNamespaceId,stlFunctionId
+syntax match   stlFunction		/std::\(abs\|accumulate\|acos\|adjacent_difference\|adjacent_find\|arg\|asin\|atan2\?\|ato\(f\|i\|l\|ll\)\|binary_search\|bsearch\|ceil\|conj\|copy\|copy_backward\|cosh\?\|count\|count_if\|div\|equal\|equal_range\|exp\|fabs\|fill\|fill_n\|find\|find_end\|find_first_of\|find_if\|floor\|fmod\|for_each\|frexp\|generate\|generate_n\|imag\|includes\|inner_product\|inplace_merge\|isw\?\(alnum\|alpha\|cntrl\|digit\|graph\|lower\|print\|punct\|space\|upper\|xdigit\)\|iswctype\|iter_swap\|labs\|ldexp\|ldiv\|lexicographical_compare\|log\|log10\|lower_bound\|max\|max_element\|make_heap\|w\?mem\(chr\|cmp\|cpy\|move\|set\)\|merge\|min\|min_element\|mismatch\|modf\|next_permutation\|norm\|nth_element\|partial_sort\|partial_sort_copy\|partial_sum\|partition\|polar\|pop_heap\|pow\|prev_permutation\|push_heap\|qsort\|real\|remove\|remove_copy\|remove_copy_if\|remove_if\|replace\|replace_copy\|replace_copy_if\|replace_if\|reverse\|reverse_copy\|rotate\|rotate_copy\|search\|search_n\|set_difference\|set_intersection\|set_symmetric_difference\|set_union\|sinh\?\|sort\|sort_heap\|sqrt\|s\?rand\|stable_partition\|stable_sort\|sto\(i\|l\|ll\|ul\|ull\|f\|d\|ld\)\|str\(cat\|chr\|cmp\|coll\|cpy\|cspn\|error\|len\|ncat\|ncmp\|ncpy\|pbrk\|rchr\|spn\|str\|to\(d\|f\|k\|l\|ld\|ll\|ul\|ull\)\|xfrm\)\|swap\|swap_ranges\|tanh\?\|to\(_string\|_wstring\|wctrans\|w\?lower\|w\?upper\)\|transform\|unique\|unique_copy\|upper_bound\|\)\>/ contains=stlNamespaceId,stlFunctionId
 syntax match   stlFunction		/::\(assign\|compare\|copy\|eof\|eq\|eq_int_type\|find\|length\|lt\|move\|not_eof\|to_char_type\|to_int_type\)\>/ contains=stlMethodId,stlFunctionId
 
 " C++11
 if !exists('cpp_no_cpp11')
+	syntax keyword stlFunctionId	contained acosh
 	syntax keyword stlFunctionId	contained all_of
 	syntax keyword stlFunctionId	contained any_of
+	syntax keyword stlFunctionId	contained asinh
 	syntax keyword stlFunctionId	contained async
+	syntax keyword stlFunctionId	contained atanh
 	syntax keyword stlFunctionId	contained c16rtomb
 	syntax keyword stlFunctionId	contained c32rtomb
 	syntax keyword stlFunctionId	contained call_once
+	syntax keyword stlFunctionId	contained cbrt
 	syntax keyword stlFunctionId	contained copy_if
 	syntax keyword stlFunctionId	contained copy_n
+	syntax keyword stlFunctionId	contained copysign
+	syntax keyword stlFunctionId	contained erf
+	syntax keyword stlFunctionId	contained erfc
+	syntax keyword stlFunctionId	contained exp2
+	syntax keyword stlFunctionId	contained expm1
+	syntax keyword stlFunctionId	contained fdim
+	syntax keyword stlFunctionId	contained feclearexcept
+	syntax keyword stlFunctionId	contained fegetenv
+	syntax keyword stlFunctionId	contained fegetexceptflag
+	syntax keyword stlFunctionId	contained fegetround
+	syntax keyword stlFunctionId	contained feholdexcept
+	syntax keyword stlFunctionId	contained feraiseexcept
+	syntax keyword stlFunctionId	contained fesetenv
+	syntax keyword stlFunctionId	contained fesetexceptflag
+	syntax keyword stlFunctionId	contained fesetround
+	syntax keyword stlFunctionId	contained fetestexcept
+	syntax keyword stlFunctionId	contained feupdateenv
 	syntax keyword stlFunctionId	contained find_if_not
+	syntax keyword stlFunctionId	contained fma
+	syntax keyword stlFunctionId	contained fmax
+	syntax keyword stlFunctionId	contained fmin
+	syntax keyword stlFunctionId	contained fpclassify
 	syntax keyword stlFunctionId	contained future_category
+	syntax keyword stlFunctionId	contained generate_canonical
 	syntax keyword stlFunctionId	contained get
 	syntax keyword stlFunctionId	contained get_id
 	syntax keyword stlFunctionId	contained hardware_concurrency
 	syntax keyword stlFunctionId	contained hash
+	syntax keyword stlFunctionId	contained hypot
+	syntax keyword stlFunctionId	contained ilogb
+	syntax keyword stlFunctionId	contained imaxabs
+	syntax keyword stlFunctionId	contained imaxdiv
 	syntax keyword stlFunctionId	contained iota
 	syntax keyword stlFunctionId	contained is_heap
 	syntax keyword stlFunctionId	contained is_heap_until
@@ -343,8 +508,28 @@ if !exists('cpp_no_cpp11')
 	syntax keyword stlFunctionId	contained is_sorted
 	syntax keyword stlFunctionId	contained is_sorted_until
 	syntax keyword stlFunctionId	contained isblank
+	syntax keyword stlFunctionId	contained isfinite
+	syntax keyword stlFunctionId	contained isgreater
+	syntax keyword stlFunctionId	contained isgreaterequal
+	syntax keyword stlFunctionId	contained isinf
+	syntax keyword stlFunctionId	contained isless
+	syntax keyword stlFunctionId	contained islessequal
+	syntax keyword stlFunctionId	contained islessgreater
+	syntax keyword stlFunctionId	contained isnan
+	syntax keyword stlFunctionId	contained isnormal
+	syntax keyword stlFunctionId	contained isunordered
 	syntax keyword stlFunctionId	contained iswblank
+	syntax keyword stlFunctionId	contained lgamma
+	syntax keyword stlFunctionId	contained llabs
+	syntax keyword stlFunctionId	contained lldiv
+	syntax keyword stlFunctionId	contained llrint
+	syntax keyword stlFunctionId	contained llround
 	syntax keyword stlFunctionId	contained lock
+	syntax keyword stlFunctionId	contained log1p
+	syntax keyword stlFunctionId	contained log2
+	syntax keyword stlFunctionId	contained logb
+	syntax keyword stlFunctionId	contained lrint
+	syntax keyword stlFunctionId	contained lround
 	syntax keyword stlFunctionId	contained make_error_code
 	syntax keyword stlFunctionId	contained make_error_condition
 	syntax keyword stlFunctionId	contained mbrtoc16
@@ -353,23 +538,41 @@ if !exists('cpp_no_cpp11')
 	syntax keyword stlFunctionId	contained minmax_element
 	syntax keyword stlFunctionId	contained move
 	syntax keyword stlFunctionId	contained move_backward
+	syntax keyword stlFunctionId	contained nan
+	syntax keyword stlFunctionId	contained nanf
+	syntax keyword stlFunctionId	contained nanl
+	syntax keyword stlFunctionId	contained nearbyint
+	syntax keyword stlFunctionId	contained nextafter
+	syntax keyword stlFunctionId	contained nexttoward
 	syntax keyword stlFunctionId	contained none_of
 	syntax keyword stlFunctionId	contained notify_all_at_thread_exit
 	syntax keyword stlFunctionId	contained partition_copy
 	syntax keyword stlFunctionId	contained partition_point
+	syntax keyword stlFunctionId	contained proj
+	syntax keyword stlFunctionId	contained remainder
+	syntax keyword stlFunctionId	contained remquo
+	syntax keyword stlFunctionId	contained rint
+	syntax keyword stlFunctionId	contained round
+	syntax keyword stlFunctionId	contained scalbn
+	syntax keyword stlFunctionId	contained scalbln
 	syntax keyword stlFunctionId	contained shuffle
+	syntax keyword stlFunctionId	contained signbig
 	syntax keyword stlFunctionId	contained sleep_for
 	syntax keyword stlFunctionId	contained sleep_until
 	syntax keyword stlFunctionId	contained strtoimax
 	syntax keyword stlFunctionId	contained strtoumax
 	syntax keyword stlFunctionId	contained swap
+	syntax keyword stlFunctionId	contained tgamma
+	syntax keyword stlFunctionId	contained trunc
 	syntax keyword stlFunctionId	contained try_lock
 	syntax keyword stlFunctionId	contained yield
 	syntax keyword stlFunctionId	contained wcstoimax
 	syntax keyword stlFunctionId	contained wcstoumax
 	syntax match   stlFunction		/\<std::\(c\(16\|32\)rtomb\|mbrtoc\(16\|32\)\)\>/ contains=stlNamespaceId,stlFunctionId
-	syntax match   stlFunction		/\<std::\(all_of\|any_of\|async\|call_once\|copy_if\|copy_n\|find_if_not\|future_category\|get\|get_id\|hash\|iota\|is\(_heap\|_heap_until\|_partitioned\|_permutation\|_sorted\|_sorted_until\|w\?blank\)\|lock\|make_error_code\|make_error_condition\|minmax\|minmax_element\|move\|move_backward\|none_of\|notify_all_at_thread_exit\|partition_copy\|partition_point\|shuffle\|sleep_for\|sleep_until\|strto[iu]max\|swap\|try_lock\|wcsto[iu]max\|yield\)\>/ contains=stlNamespaceId,stlFunctionId
+	syntax match   stlFunction		/\<std::\(acosh\|all_of\|any_of\|asinh\|async\|atanh\|call_once\|cbrt\|copy_if\|copy_n\|copysign\|erfc\?\|exp2\|expm1\|fdim\|find_if_not\|fma\|fmax\|fmin\|fpclassify\|future_category\|generate_canonical\|get\|get_id\|hash\|hypot\|ilogb\|imaxabs\|imaxdiv\|iota\|is\(_heap\|_heap_until\|_partitioned\|_permutation\|_sorted\|_sorted_until\|finite\|greater\(equal\)\?\|inf\|less\(equal\|greater\)\?\|nan\|normal\|unordered\|w\?blank\)\|lgamma\|ll\(abs\|div\|rint\|round\)\|lock\|log\(1p\|2\|b\)\|lrint\|lround\|make_error_code\|make_error_condition\|minmax\|minmax_element\|move\|move_backward\|nan[fl]\?\|nearbyint\|next\(after\|toward\)\|none_of\|notify_all_at_thread_exit\|partition_copy\|partition_point\|proj\|remainder\|remquo\|rint\|round\|scalbl\?n\|shuffle\|signbig\|sleep_for\|sleep_until\|strto[iu]max\|swap\|tgamma\|trunc\|try_lock\|wcsto[iu]max\|yield\)\>/ contains=stlNamespaceId,stlFunctionId
 	syntax match   stlFunction		/\<std::thread::hardware_concurrency/ contains=stlNamespaceId,stlClassId,stlFunctionId
+	syntax match   stlFunction		/\<std::\(\(discard_block\|independent_bits\|linear_congruential\|mersenne_twister\|shuffle_order\|subtract_with_carry\)_engine\|random_device\)::m\(ax\|in\)\>/ contains=stlNamespaceId,stlClassId,stlFunctionId
+	syntax match   stlFunction		/\<std::fe\(\(clear\|hold\|raise\|test\)except\|[gs]et\(env\|exceptflag\|round\)\|updateenv\)/ contains=stlNamespaceId,stlFunctionId
 endif
 
 " deprecated in C++14
@@ -382,6 +585,7 @@ endif
 " methods {{{
 if exists('stl_highlight_members')
 	syntax keyword stlMethodId	contained append
+	syntax keyword stlMethodId	contained apply
 	syntax keyword stlMethodId	contained assign
 	syntax keyword stlMethodId	contained at
 	syntax keyword stlMethodId	contained back
@@ -396,6 +600,7 @@ if exists('stl_highlight_members')
 	syntax keyword stlMethodId	contained count
 	syntax keyword stlMethodId	contained crbegin
 	syntax keyword stlMethodId	contained crend
+	syntax keyword stlMethodId	contained cshift
 	syntax keyword stlMethodId	contained data
 	syntax keyword stlMethodId	contained empty
 	syntax keyword stlMethodId	contained end
@@ -408,12 +613,15 @@ if exists('stl_highlight_members')
 	syntax keyword stlMethodId	contained find_last_of
 	syntax keyword stlMethodId	contained front
 	syntax keyword stlMethodId	contained get_allocator
+	syntax keyword stlMethodId	contained imag
 	syntax keyword stlMethodId	contained insert
 	syntax keyword stlMethodId	contained key_comp
 	syntax keyword stlMethodId	contained length
 	syntax keyword stlMethodId	contained lower_bound
+	syntax keyword stlMethodId	contained max
 	syntax keyword stlMethodId	contained max_size
 	syntax keyword stlMethodId	contained merge
+	syntax keyword stlMethodId	contained min
 	syntax keyword stlMethodId	contained pop
 	syntax keyword stlMethodId	contained pop_back
 	syntax keyword stlMethodId	contained pop_front
@@ -421,6 +629,7 @@ if exists('stl_highlight_members')
 	syntax keyword stlMethodId	contained push_back
 	syntax keyword stlMethodId	contained push_front
 	syntax keyword stlMethodId	contained rbegin
+	syntax keyword stlMethodId	contained real
 	syntax keyword stlMethodId	contained remove
 	syntax keyword stlMethodId	contained remove_if
 	syntax keyword stlMethodId	contained rend
@@ -429,30 +638,40 @@ if exists('stl_highlight_members')
 	syntax keyword stlMethodId	contained resize
 	syntax keyword stlMethodId	contained reverse
 	syntax keyword stlMethodId	contained rfind
+	syntax keyword stlMethodId	contained shift
 	syntax keyword stlMethodId	contained size
 	syntax keyword stlMethodId	contained sort
 	syntax keyword stlMethodId	contained splice
 	syntax keyword stlMethodId	contained substr
+	syntax keyword stlMethodId	contained sum
 	syntax keyword stlMethodId	contained swap
 	syntax keyword stlMethodId	contained top
 	syntax keyword stlMethodId	contained unique
 	syntax keyword stlMethodId	contained upper_bound
 	syntax keyword stlMethodId	contained value_comp
-	syntax match   stlMethod	/\(->\|\.\)\(append\|assign\|at\|back\|begin\|c_str\|capacity\|cbegin\|cend\|clear\|compare\|copy\|count\|crbegin\|crend\|data\|empty\|end\|equal_range\|erase\|find\|find_first_not_of\|find_first_of\|find_last_not_of\|find_last_of\|front\|get_allocator\|insert\|key_comp\|length\|lower_bound\|max_size\|merge\|pop\|pop_back\|pop_front\|push\|push_back\|push_front\|rbegin\|remove\|remove_if\|rend\|replace\|reserve\|resize\|reverse\|rfind\|size\|sort\|splice\|substr\|swap\|top\|unique\|upper_bound\|value_comp\)\>/ contains=stlMethodId
+	syntax match   stlMethod	/\(->\|\.\)\(append\|apply\|assign\|at\|back\|begin\|c_str\|capacity\|cbegin\|cend\|clear\|compare\|copy\|count\|crbegin\|crend\|c\?shift\|data\|empty\|end\|equal_range\|erase\|find\|find_first_not_of\|find_first_of\|find_last_not_of\|find_last_of\|front\|get_allocator\|imag\|insert\|key_comp\|length\|lower_bound\|max\(_size\)\?\|merge\|min\|pop\|pop_back\|pop_front\|push\|push_back\|push_front\|rbegin\|real\|remove\|remove_if\|rend\|replace\|reserve\|resize\|reverse\|rfind\|size\|sort\|splice\|substr\|sum\|swap\|top\|unique\|upper_bound\|value_comp\)\>/ contains=stlMethodId
 
 	if !exists('cpp_no_cpp11')
+		syntax keyword stlMethodId	contained a
+		syntax keyword stlMethodId	contained alpha
+		syntax keyword stlMethodId	contained b
+		syntax keyword stlMethodId	contained base
 		syntax keyword stlMethodId	contained before_begin
+		syntax keyword stlMethodId	contained beta
 		syntax keyword stlMethodId	contained bucket
 		syntax keyword stlMethodId	contained bucket_count
 		syntax keyword stlMethodId	contained bucket_size
 		syntax keyword stlMethodId	contained cbefore_begin
 		syntax keyword stlMethodId	contained code
+		syntax keyword stlMethodId	contained densities
 		syntax keyword stlMethodId	contained detach
+		syntax keyword stlMethodId	contained discard
 		syntax keyword stlMethodId	contained emplace
 		syntax keyword stlMethodId	contained emplace_after
 		syntax keyword stlMethodId	contained emplace_back
 		syntax keyword stlMethodId	contained emplace_front
 		syntax keyword stlMethodId	contained emplace_hint
+		syntax keyword stlMethodId	contained entropy
 		syntax keyword stlMethodId	contained erase_after
 		syntax keyword stlMethodId	contained fill
 		syntax keyword stlMethodId	contained get
@@ -460,22 +679,33 @@ if exists('stl_highlight_members')
 		syntax keyword stlMethodId	contained get_id
 		syntax keyword stlMethodId	contained hash_function
 		syntax keyword stlMethodId	contained insert_after
+		syntax keyword stlMethodId	contained intervals
 		syntax keyword stlMethodId	contained join
 		syntax keyword stlMethodId	contained joinable
+		syntax keyword stlMethodId	contained k
 		syntax keyword stlMethodId	contained key_eq
+		syntax keyword stlMethodId	contained lambda
 		syntax keyword stlMethodId	contained load_factor
 		syntax keyword stlMethodId	contained lock
+		syntax keyword stlMethodId	contained m
 		syntax keyword stlMethodId	contained max_bucket_count
 		syntax keyword stlMethodId	contained max_load_factor
 		syntax keyword stlMethodId	contained make_ready_at_thread_exit
+		syntax keyword stlMethodId	contained mean
 		syntax keyword stlMethodId	contained mutex
+		syntax keyword stlMethodId	contained n
 		syntax keyword stlMethodId	contained native_handle
 		syntax keyword stlMethodId	contained notify_all
 		syntax keyword stlMethodId	contained notify_one
 		syntax keyword stlMethodId	contained owns_lock
+		syntax keyword stlMethodId	contained p
+		syntax keyword stlMethodId	contained param
+		syntax keyword stlMethodId	contained probabilities
 		syntax keyword stlMethodId	contained rehash
 		syntax keyword stlMethodId	contained release
 		syntax keyword stlMethodId	contained reset
+		syntax keyword stlMethodId	contained s
+		syntax keyword stlMethodId	contained seed
 		syntax keyword stlMethodId	contained set_exception
 		syntax keyword stlMethodId	contained set_exception_at_thread_exit
 		syntax keyword stlMethodId	contained set_value
@@ -483,6 +713,8 @@ if exists('stl_highlight_members')
 		syntax keyword stlMethodId	contained share
 		syntax keyword stlMethodId	contained shrink_to_fit
 		syntax keyword stlMethodId	contained splice_after
+		syntax keyword stlMethodId	contained stddev
+		syntax keyword stlMethodId	contained t
 		syntax keyword stlMethodId	contained try_lock
 		syntax keyword stlMethodId	contained try_lock_for
 		syntax keyword stlMethodId	contained try_lock_until
@@ -492,7 +724,7 @@ if exists('stl_highlight_members')
 		syntax keyword stlMethodId	contained wait_for
 		syntax keyword stlMethodId	contained wait_until
 		syntax keyword stlMethodId	contained what
-		syntax match   stlMethod	/\(->\|\.\)\(before_begin\|bucket\|bucket_count\|bucket_size\|cbefore_begin\|code\|detach\|emplace\|emplace_after\|emplace_back\|emplace_front\|emplace_hint\|erase_after\|fill\|get\|get_future\|get_id\|hash_function\|insert_after\|join\|joinable\|key_eq\|load_factor\|lock\|make_ready_at_thread_exit\|max_bucket_count\|max_load_factor\|mutex\|native_handle\|notify_all\|notify_one\|owns_lock\|rehash\|release\|reset\|set_exception\|set_exception_at_thread_exit\|set_value\|set_value_at_thread_exit\|share\|shrink_to_fit\|splice_after\|try_lock\|try_lock_for\|try_lock_until\|unlock\|valid\|wait\|wait_for\|wait_until\|what\)\>/ contains=stlMethodId
+		syntax match   stlMethod	/\(->\|\.\)\(a\|alpha\|b\|base\|before_begin\|beta\|bucket\|bucket_count\|bucket_size\|cbefore_begin\|code\|densities\|detach\|discard\|emplace\(_after\|_back\|_front\|_hint\)\?\|entropy\|erase_after\|fill\|get\|get_future\|get_id\|hash_function\|insert_after\|intervals\|join\|joinable\|k\|key_eq\|lambda\|load_factor\|lock\|m\|make_ready_at_thread_exit\|max_bucket_count\|max_load_factor\|mean\|mutex\|n\|native_handle\|notify_all\|notify_one\|owns_lock\|p\|param\|probabilities\|rehash\|release\|reset\|s\|seed\|set_exception\|set_exception_at_thread_exit\|set_value\|set_value_at_thread_exit\|share\|shrink_to_fit\|splice_after\|stddev\|t\|try_lock\|try_lock_for\|try_lock_until\|unlock\|valid\|wait\|wait_for\|wait_until\|what\)\>/ contains=stlMethodId
 	endif
 
 	if !exists('cpp_no_cpp14')
@@ -513,6 +745,10 @@ endif
 " }}}
 
 " typedefs {{{
+syntax keyword stlTypeId	contained div_t
+syntax keyword stlTypeId	contained fenv_t
+syntax keyword stlTypeId	contained fexcept_t
+syntax keyword stlTypeId	contained ldiv_t
 syntax keyword stlTypeId	contained allocator_type
 syntax keyword stlTypeId	contained char_type
 syntax keyword stlTypeId	contained const_iterator
@@ -544,17 +780,48 @@ syntax keyword stlTypeId	contained u32string
 syntax keyword stlTypeId	contained wstring
 syntax match   stlType		/::\(allocator_type\|char_type\|const_iterator\|const_pointer\|const_reference\|const_reverse_iterator\|container_type\|difference_type\|int_type\|iterator\|key_compare\|key_type\|mapped_type\|off_type\|pointer\|pos_type\|reference\|reverse_iterator\|size_type\|state_type\|traits_type\|value_type\)/ contains=stlTypeId
 syntax match   stlType		/::value_compare::\(first_argument_type\|result_type\|second_argument_type\)\>/ contains=stlClassId,stlTypeId
-syntax match   stlType		/std::\(u16\|u32\|w\)\?string/ contains=stlNamespaceId,stlTypeId
+syntax match   stlType		/std::\(fenv_t\|fexcept_t\|l\?div_t\|\(u16\|u32\|w\)\?string\)/ contains=stlNamespaceId,stlTypeId
 
 if !exists('cpp_no_cpp11')
+	syntax keyword stlTypeId	contained atto
+	syntax keyword stlTypeId	contained centi
 	syntax keyword stlTypeId	contained const_local_iterator
+	syntax keyword stlTypeId	contained deca
+	syntax keyword stlTypeId	contained deci
+	syntax keyword stlTypeId	contained double_t
+	syntax keyword stlTypeId	contained exa
+	syntax keyword stlTypeId	contained femto
+	syntax keyword stlTypeId	contained float_t
+	syntax keyword stlTypeId	contained giga
 	syntax keyword stlTypeId	contained hasher
+	syntax keyword stlTypeId	contained hecto
+	syntax keyword stlTypeId	contained imaxdiv_t
 	syntax keyword stlTypeId	contained key_equal
+	syntax keyword stlTypeId	contained kilo
+	syntax keyword stlTypeId	contained lldiv_t
 	syntax keyword stlTypeId	contained local_iterator
+	syntax keyword stlTypeId	contained mega
+	syntax keyword stlTypeId	contained micro
+	syntax keyword stlTypeId	contained milli
 	syntax keyword stlTypeId	contained mutex_type
+	syntax keyword stlTypeId	contained nano
 	syntax keyword stlTypeId	contained native_handle_type
+	syntax keyword stlTypeId	contained param_type
+	syntax keyword stlTypeId	contained peta
+	syntax keyword stlTypeId	contained pico
+	syntax keyword stlTypeId	contained tera
+	syntax keyword stlTypeId	contained type
+	syntax keyword stlTypeId	contained yocto
+	syntax keyword stlTypeId	contained yotta
+	syntax keyword stlTypeId	contained zepto
+	syntax keyword stlTypeId	contained zetta
 	syntax match   stlType		/::\(const_local_iterator\|hasher\|key_equal\|local_iterator\)/ contains=stlTypeId
 	syntax match   stlType		/std::\(\(condition_variable\|mutex\|thread\)::native_handle_type\|\(lock_guard\|unique_lock\)::mutex_type\)\>/ contains=stlNamespaceId,stlClassId,stlTypeId
+	syntax match   stlType		/std::\(double\|float\|imaxdiv\|lldiv\)_t/ contains=stlNamespaceId,stlTypeId
+	syntax match   stlType		/std::\(random_device\|\(discard_block\|independent_bits\|linear_congruential\|mersenne_twister\|shuffle_order\|subtract_with_carry\)_engine\)::result_type/ contains=stlNamespaceId,stlClassId,stlTypeId
+	syntax match   stlType		/std::\(bernoulli\|\(negative_\)\?binomial\|cauchy\|chi_squared\|discrete\|exponential\|extreme_value\|fisher_f\|gamma\|geometric\|\(log\)\?normal\|piecewise_\(constant\|linear\)\|poisson\|student_t\|uniform_\(int\|real\)\|weibull\)_distribution::\(result_type\|param_type\)/ contains=stlNamespaceId,stlClassId,stlTypeId
+	syntax match   stlClass		/std::ratio\(_add\|_divide\|_equal\|_greater\(_equal\)\?\|_less\(_equal\)\?\|_multiply\|_not_equal\|_subtract\)\?::type/ contains=stlNamespaceId,stlClassId,stlTypeId
+	syntax match   stlClass		/std::\(atto\|centi\|deca\|deci\|exa\|femto\|giga\|hecto\|kilo\|mega\|micro\|milli\|nano\|peta\|pico\|tera\|yocto\|yotta\|zepto\|zetta\)/ contains=stlNamespaceId,stlTypeId
 endif
 
 if !exists('cpp_no_cpp14')
@@ -563,9 +830,24 @@ if !exists('cpp_no_cpp14')
 endif
 " }}}
 
+" variables {{{
+if !exists('cpp_no_cpp11')
+	syntax keyword stlVariableId	contained default_random_engine
+	syntax keyword stlVariableId	contained knuth_b
+	syntax keyword stlVariableId	contained minstd_rand
+	syntax keyword stlVariableId	contained minstd_rand0
+	syntax keyword stlVariableId	contained mt19937
+	syntax keyword stlVariableId	contained mt19937_64
+	syntax keyword stlVariableId	contained ranlux24
+	syntax keyword stlVariableId	contained ranlux24_base
+	syntax keyword stlVariableId	contained ranlux48
+	syntax keyword stlVariableId	contained ranlux48_base
+	syntax match   stlVariable		/std::\(default_random_engine\|knuth_b\|minstd_rand\|minstd_rand0\|mt19937\|mt19937_64\|ranlux24\|ranlux24_base\|ranlux48\|ranlux48_base\)/ contains=stlNamespaceId,stlVariableId
+endif
+" }}}
+
 " TODO	{{{
 " iterators 
-" numerics 
 " input/output 
 " localizations 
 " regular expressions 
@@ -706,9 +988,10 @@ highlight default link stlEnumerationId	Structure
 highlight default link stlEnumeratorId	Constant
 highlight default link stlError			Error
 highlight default link stlFunctionId	Function
-highlight default link stlMemberId		Identifier
+highlight default link stlMemberId		stlVariableId
 highlight default link stlMethodId		Function
 highlight default link stlNamespaceId	Structure
 highlight default link stlTypeId		Typedef
+highlight default link stlVariableId	Identifier
 "}}}
 
