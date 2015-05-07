@@ -1,0 +1,48 @@
+*make_tools.txt*	    For Vim version 7.4.    Last Change: 2015 May 6
+
+Plugin with some helpful commands for editing make files.
+
+This plugin loads |codeTools|, which adds more functionality than is listed
+here.
+
+This plugin adds the following functionality:
+1. Replacement of Autovariables				|make_tools-autovariables|
+2. Comment/Uncomment Lines					|vim_tools-comment|
+											|vim_tools-uncomment|
+
+=================================================================================
+1. Replacement of Autovariables			    *vim_tools-code-folding*
+
+In insert mode, typing a certain words will insert make automatic variables.
+For example, if you type "make-target", the text will be replaced with "$@",
+the make variable representing a rule target. The list of words and variables
+is:
+	make-target			$@
+	make-archive		$%
+	make-first-prereq	$<
+	make-newer-prereqs	$?
+	make-prereqs		$^
+	make-all-prereqs	$+
+	make-target-stem	$*
+
+=================================================================================
+2. Comment/Uncomment Lines					*vim_tools-comment*
+											*vim_tools-uncomment*
+
+A range of lines can be commented with #. If no count is given, 1 (one) is
+used. To comment the lines, use the normal map [count]<Leader>c. Blank lines are
+not commented.
+
+Similarly, a range of lines can be uncommented by typing [count]<Leader>u.
+
+Note that these commands do not work as expected with folded code. With the
+cursor on this fold:
+    [    10 lines ]    define the function~
+and pressing <Leader>c, will result in
+    #" define the function {{{~
+    # the rest of the make code, unfolded~
+To comment the entire fold, use n<Leader>c, where n is the number of lines
+folded; you don't need to open the fold before-hand.
+
+vim:tw=78:ts=8:ft=help:norl:
+
