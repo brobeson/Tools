@@ -34,19 +34,20 @@ Copy `vim/colors/vs2013dark.vim` to `~/.vim/colors/`. Then, in your vimrc file, 
 I don't recommend that you use mine.vim. It's basically here for archive purposes right now.
 
 ### Filetype Plugins
-The `vim/vim/ftplugin/` folder has tools for editing C++, LaTeX, and Vim code. In addition, the `vim/vim/plugin` directory has some functionality that is for editing code, but is common to all file types. Examples are the comment and uncomment functions, which are called from the file type plugins. The table below summarizes the functionality of each script. Read the corresponding Vim documentation for details.
+The `vim/vim/ftplugin/` folder has tools for editing C++, LaTeX, Vim, and makefile code. In addition, the `vim/vim/plugin` directory has some functionality that is for editing code, but is common to all file types. Examples are the comment and uncomment functions, which are called from the file type plugins. The table below summarizes the functionality of each script. Read the corresponding Vim documentation for details.
 
-| Functionality | C++ | LaTeX | Vim |
-|---------------|:---:|:-----:|:---:|
-| comment/uncomment | x | x | x |
-| insert before last character | x | x | x |
-| remove last character, then append | x | x | x |
-| remove last character | x | x | x |
-| set the fold level | x | x | x |
-| code fold text | x | x | x |
+| Functionality | C++ | LaTeX | Vim | Make |
+|---------------|:---:|:-----:|:---:|:----:|
+| comment/uncomment | x | x | x | X |
+| insert before last character | x | x | x | X |
+| remove last character, then append | x | x | x | X |
+| remove last character | x | x | x | X |
+| set the fold level | x | x | x | X |
+| code fold text | x | x | x | X |
 | insert Doxygen | x | | |
 | insert new class | x | | |
 | extract to new function | x | | |
+| insert autovariables | | | | X |
 
 Copy the files you want to `~/.vim/ftplugin/`. You might need to confirm that Vim is configured to load them:
 
