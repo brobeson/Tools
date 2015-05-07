@@ -17,13 +17,13 @@ In insert mode, typing a certain words will insert make automatic variables.
 For example, if you type "make-target", the text will be replaced with "$@",
 the make variable representing a rule target. The list of words and variables
 is:
-	make-target			$@
-	make-archive		$%
-	make-first-prereq	$<
-	make-newer-prereqs	$?
-	make-prereqs		$^
-	make-all-prereqs	$+
-	make-target-stem	$*
+	make_target			$@
+	make_archive		$%
+	make_first_prereq	$<
+	make_newer_prereqs	$?
+	make_prereqs		$^
+	make_all_prereqs	$+
+	make_target_stem	$*
 
 =================================================================================
 2. Comment/Uncomment Lines					*vim_tools-comment*
