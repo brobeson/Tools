@@ -1,0 +1,17 @@
+*cpp-syntax-extra.txt*	For Vim version 7.4.	Last change: 2015 Mar 9
+
+Enhancements for C++ syntax highlighting.
+
+The identifier NULL is highlighted as an Error (C++11 provides nullptr, which
+is superior to NULL).
+
+The keywords class and struct are highlighted according the Statement group.
+
+Doxygen "todo" tags are highlighted according to the Todo highlight group.
+These tags take the form of @todo or \\todo.
+
+stl.vim is loaded, unless it is turned off by defining cpp_no_stl. This file
+provides syntax highlighting for the Standard Template Library.
+
+vim:tw=78:ts=8:ft=help:norl:
+

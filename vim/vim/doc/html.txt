@@ -1,0 +1,20 @@
+*html.txt*	    For Vim version 7.4.    Last Change: 2015 Mar 11
+
+This is a new syntax file for HTML. This meant to replace the default
+html.vim, not add to it. As such, I recommend you drop it in syntax/ instead
+of after/syntax/.
+
+Setting			Possible Values		Default~
+*html_version*		    4|5			    5
+    This variable controls highlighting of keywords introduced or deprecated
+    by HTML 5. This also controls the value of |b:current_syntax|. 
+*html_use_w3_style*	undefined|defined	undefined
+    This variable controls whether deviated from W3C's style recommendations
+    are highlighted. For example, if |html_use_w3_style| is set, tag and
+    attribute names are forced to be lowercase.
+
+After loading this |b:current_syntax| is set to 'html4' or 'html5', depending
+on the value of |html_version|.
+
+vim:tw=78:ts=8:ft=help:norl:
+

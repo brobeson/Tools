@@ -1,0 +1,95 @@
+*code_tools.txt*	    For Vim version 7.4.    Last Change: 2015 Mar 10
+
+Plugin with some helpful commands for editing code. As a general plugin, this
+functionality is available for all types of code.
+
+This plugin adds the following functionality:
+1. Code Editing Commands			|code_tools-editing|
+2. Comment & Uncomment Functions		|code_tools-comment|
+
+=================================================================================
+1. Code Editing Commands			*code_tools-editing*
+
+*<Leader>i*
+    Enter insert mode before the last character on the current line.
+
+*<Leader>r*
+    Remove the last character on the current line, then enter insert mode at
+the end of the line.
+
+*<Leader>x*
+    Remove the last character on the current line.
+
+*zN*
+    Set the fold level to N. N is a number between 1 and 5.
+
+=================================================================================
+2. Comment & Uncomment Functions		*code_tools-comment*
+
+These functions allow a filetype plugin to comment and uncomment a range of
+lines.
+
+Note	These functions are meant to be used by filetype plugins. There's no
+reason that a user can't call them directly, but it's easier to create a map
+in a filetype plugin. See ftplugin/cpp_tools.vim for an example.
+
+Comment({commentString})			*code_tools-Comment()*
+    This function will comment a range of lines. The default range is 1 line.
+    {commentString} should be the character(s) which begin a single line
+    comment, for example, '"' for Vim script comments. The function searches
+    the range of lines, calculating the left-most column which does not
+    contain white space. That column is where {commentString} is placed. Blank
+    lines are not commented.
+    Example:
+	Given the C++ code:
+	    void foo(int& a)
+	    {
+		if (a < 0)	// cursor on this line
+		    --a;
+		else if (0 < a)
+		    ++a;
+	    }
+
+	The call
+	    :call Comment('//')	" with a range of 4
+
+	results in
+	    void foo(int& a)
+	    {
+		//if (a < 0)	// cursor on this line
+		//  --a;
+		//else if (0 < a)
+		//  ++a;
+	    }
+		    
+Uncomment({commentString})			*code_tools-Uncomment()*
+    This function will uncomment a range of lines. The default range is 1
+    line. {commentString} should be the character(s) which begin a single line
+    comment, for example, '"' for Vim script comments. The function removes
+    the first occurance of {commentString} from each line in the range.
+    Note that if the range includes lines which have comments after code,
+    those comments will be uncommented, likely resulting in build errors.
+    Example:
+	Given the C++ code:
+	    void foo(int& a)
+	    {
+		//if (a < 0)	// cursor on this line
+		//  --a;
+		//else if (0 < a)
+		//  ++a;
+	    }
+
+	The call
+	    :call Uncomment('//')   " with a range of 4
+
+	results in
+	    void foo(int& a)
+	    {
+		if (a < 0)	// cursor on this line
+		    --a;
+		else if (0 < a)
+		    ++a;
+	    }
+		    
+vim:tw=78:ts=8:ft=help:norl:
+
