@@ -7,11 +7,11 @@ here.
 
 This plugin adds the following functionality:
 1. Replacement of Autovariables				|make_tools-autovariables|
-2. Comment/Uncomment Lines					|vim_tools-comment|
-											|vim_tools-uncomment|
+2. Comment/Uncomment Lines					|make_tools-comment|
+											|make_tools-uncomment|
 
 =================================================================================
-1. Replacement of Autovariables			    *vim_tools-code-folding*
+1. Replacement of Autovariables			    *make_tools-autovariables*
 
 In insert mode, typing a certain words will insert make automatic variables.
 For example, if you type "make-target", the text will be replaced with "$@",
@@ -26,8 +26,8 @@ is:
 	make_target_stem	$*
 
 =================================================================================
-2. Comment/Uncomment Lines					*vim_tools-comment*
-											*vim_tools-uncomment*
+2. Comment/Uncomment Lines					*make_tools-comment*
+											*make_tools-uncomment*
 
 A range of lines can be commented with #. If no count is given, 1 (one) is
 used. To comment the lines, use the normal map [count]<Leader>c. Blank lines are

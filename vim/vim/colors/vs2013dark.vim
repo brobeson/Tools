@@ -21,7 +21,7 @@ highlight Normal ctermfg=white ctermbg=black guifg=#dcdcdc guibg=#1e1e1e
 " new
 " TODO on windows, cterm has no effect.  check on linux
 " TODO the cursor apparently can't be changed in dos. check it on linux
-highlight ColorColumn   cterm=none                     ctermbg=darkred   gui=none                       guibg=darkred
+highlight ColorColumn   cterm=none                     ctermbg=darkred   gui=none                       guibg=black
 "Conceal
 highlight Cursor        cterm=none                                                      guifg=bg        guibg=fg
 highlight CursorColumn  cterm=none                     ctermbg=darkgray  gui=none                       guibg=black
