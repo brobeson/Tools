@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
 error=0
+version="2015.01.12"
 
 function PrintError
 {
@@ -16,9 +17,27 @@ function CheckExistance
 	fi
 }
 
-#==========================================
-# error checking
-#==========================================
+#=================================================
+# parse the command options and check for errors
+#=================================================
+#http://linuxaria.com/howto/parse-options-in-your-bash-script-with-getopt
+#http://www.bahmanm.com/blogs/command-line-options-how-to-parse-in-bash-using-getopt
+http://linux.die.net/man/1/getopt
+options=`getopt --long version -- "$@"`
+eval set -- "$options"
+while true
+do
+	case "$1" in
+		--version)
+			echo $version
+			exit 0
+			shift;;
+		--epub-version)
+			echo "--epub-version is not yet implemented"
+			shift;;
+	esac
+done
+
 # the directory is required as a command line argument
 if [[ $# < 1 ]]
 then
