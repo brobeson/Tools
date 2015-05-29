@@ -54,6 +54,9 @@ Copy the files you want to `~/.vim/ftplugin/`. You might need to confirm that Vi
 1. Start Vim and run `:filetype?`
 2. If that reports "plugin:off", add "filetype plugin on" to your vimrc.
 
+#### Running Cppcheck
+The filetype plugin, cpp_cppcheck.vim, allows you to run [Cppcheck](http://cppcheck.sourceforge.net) on a buffer. In addition to the above steps for installing filetype plugins, you need to install Cppcheck and ensure it can be found through your PATH environment variable. For instructions on using Cppcheck, read [it's documentation](http://cppcheck.sourceforge.net/manual.pdf). For instructions on using the Vim plugin, read the plugin documentation; instructions for installing plugin documentation are written above.
+
 ### Syntax Highlighting
 Syntax definitions for HTML and the C++ STL are in the `vim/vim/syntax/` directory. The `vim/vim/after/syntax/` directory has a syntax file to modify a bit of C++ syntax highlighting, and to load the STL syntax items. Some of the syntax definitions have configuration variables; check the corresponding documentation for details.
 
