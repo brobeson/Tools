@@ -417,82 +417,30 @@ endif
 
 
 "==============================================================================
-" create a command to run Cppcheck on the buffer {{{
-"==============================================================================
-" ensure that the options and path variables have been defined. if the
-" user hasn't done so, set them up with defaults
-if !exists('g:cpp_check_options')
-	let g:cpp_check_options = ''
-endif
-if !exists('g:cpp_check_path')
-	let g:cpp_check_path = 'cppcheck'
-endif
-if !exists('g:cpp_check_error_file')
-	let g:cpp_check_error_file = '~/.vim/.cppcheck'
-endif
+"command -buffer Define :call s:DefineMethod()
+"if !exists('*s:DefineMethod')
+"	function s:DefineMethod()
+"		" extract the whole header
+"		let functionDeclaration = []
+"		let lastLine = search(';', 'cnW')
+"		let currentLine = line('.')
+"		while currentLine <= lastLine
+"			call insert(functionDeclaration, getline(currentLine))
+"			let currentLine = currentLine + 1
+"		endwhile
 
-" set up the command and function to set the Cppcheck output template. setting
-" this is done in this manner because we really need two format strings: one
-" for Cppcheck and a second for Vim. Having the user set 1 format should
-" eliminate errors; let the computer generate the other format to match.
-if !exists(':SetCppcheckTemplate')
-	command -buffer -nargs=1 SetCppcheckTemplate :call s:SetCppcheckTemplate(<args>)
-endif
-
-if !exists('*s:SetCppcheckTemplate')
-	function s:SetCppcheckTemplate(newTemplate)
-		" 1. remove the old vim pattern from the errorformat option
-		" 2. set the new cppcheck template
-		" 3. convert the new cppcheck template to a vim errorformat pattern
-		" 4. append the new vim pattern to the errorformat option
-		if s:cpp_check_vim_format != ''
-			execute 'setlocal efm-=' . s:cpp_check_vim_format
-		endif
-		let s:cpp_check_error_format = a:newTemplate
-
-		" special handling for gcc and vs. these are keywords cppcheck accepts
-		" for the template.
-		if s:cpp_check_error_format == 'gcc'
-			let s:cpp_check_vim_format = '%f:%l:%m'
-		elseif s:cpp_check_error_format == 'vs'
-			let s:cpp_check_vim_format = '%f(%l):%m'
-		else
-			" first, replase backslashes, commas, and percents. these have
-			" special meaning in the vim errorformat, so if the user wants
-			" them in the cppcheck template, we need to handle them correctly.
-			let s:cpp_check_vim_format = substitute(s:cpp_check_error_format, '\', '\\\\', 'g')
-			let s:cpp_check_vim_format = substitute(s:cpp_check_vim_format,   ',', '\\,',  'g')
-			let s:cpp_check_vim_format = substitute(s:cpp_check_vim_format,   '%', '%%',   'g')
-
-			" now replace the cppcheck template tags with vim errorformat tags
-			" TODO	{callstack}, {id}, and {severity}
-			let s:cpp_check_vim_format = substitute(s:cpp_check_vim_format, '{file}',    '%f', 'g')
-			let s:cpp_check_vim_format = substitute(s:cpp_check_vim_format, '{line}',    '%l', 'g')
-			let s:cpp_check_vim_format = substitute(s:cpp_check_vim_format, '{message}', '%m', 'g')
-		endif
-
-		execute 'setlocal efm+=' . s:cpp_check_vim_format
-	endfunction
-endif
-
-let s:cpp_check_error_format = ''
-let s:cpp_check_vim_format = ''
-call s:SetCppcheckTemplate('gcc')
-
-if !exists(':Cppcheck')
-	command -buffer Cppcheck :call s:RunCppcheck()
-endif
-
-" the function to do the work
-if !exists('*s:RunCppcheck')
-	function s:RunCppcheck()
-		execute 'silent !' . g:cpp_check_path .  ' --template=' . s:cpp_check_error_format .  ' ' . g:cpp_check_options .  ' ' . expand('%:p') .  ' 2> ' . g:cpp_check_error_file
-		execute 'cgetfile '. g:cpp_check_error_file
-		copen
-	endfunction
-endif
-" }}}
-
+"		" open the source file and append the declaration
+"		let sourceFile = substitute(expand('%:p'), 'hpp$', 'cpp', '')
+"		execute 'tabnew' sourceFile
+"		normal G
+"		let pasteLine = line('.')
+"		call add(functionDeclaration, '{')
+"		call add(functionDeclaration, '}')
+"		call append(pasteLine, functionDeclaration)
+"		"call cursor(pasteLine, 1)
+"		"execute 'normal ' . line('G') - pasteLine . '=='
+"	endfunction
+"endif
 
 " restore the original cpoptions
 let &cpo = s:save_cpo

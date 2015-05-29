@@ -1,0 +1,85 @@
+*cpp_cppcheck.txt*  For Vim version 7.4.  Last Change: 2015 May 29
+
+
+                    C++ Cppcheck Reference Manual
+
+                       by Brendan Robeson
+
+This is a plugin to run Cppcheck on the current C++ buffer. For details about
+Cppcheck, see http://cppcheck.sourceforge.net. For feature requests, or bugs,
+create an issue at https://github.com/brobeson/Tools. This plugin was written
+against Cppcheck 1.67. I have not tested it with other versions.
+
+This plugin adds the following functionality:
+1. Running Cppcheck						|cpp_cppcheck|
+2. Configuring cpp_cppcheck				|cpp_cppcheck-configuration|
+
+=============================================================================
+1. Running Cppcheck								*cpp_cppcheck* *:Cppcheck*
+
+To check the current buffer, just use the command :Cppcheck. Errors will be
+presented in the |quickfix-window|. Then you can use the |quickfix| commands
+to navigate through any errors.
+
+1.1 Design Rationale
+
+I've seen similar plugins for Vim, which use |makepgr| to run various code
+checking tools. I chose not to do that for a couple of reasons:
+1) A tool like Cppcheck isn't a build tool, therefore, I don't want to violate
+   that conceptual difference.
+2) I don't want to have to swich compilers in Vim to do various tasks with my
+   code. This way, I use the appropriate command for the desired task.
+
+=============================================================================
+2. Configuring cpp_cppcheck                     *cpp_cppcheck-configuraiton*
+
+
+Cpp_cppcheck can be configured with the following global variables. They have
+default values, but you can change them in your vimrc if those don't work for
+you.
+
+
+*g:cpp_cppcheck_options*  The command line options you want to pass to
+                        Cppcheck. View your Cppcheck documentation for the
+                        possible options.
+
+                        Note that you shouldn't specify a template here! If
+                        you do so, Vim won't be able to correctly parse the
+                        output of Cppcheck for the |quickfix-window|.
+
+                        The default value is empty (no options).
+
+												*:SetCppcheckTemplate*
+:SetCppcheckTemplate {template}
+						Set the template for Cppcheck error messages. The
+						template should be a quoted string of a form accepted
+						by Cppcheck. See the documentation for Cppcheck for
+						details about specifying a template. This command will
+						accept the "gcc" and "vs" template keywords acceptable
+						to Cppcheck.
+
+						You should use this command to set the template
+						instead of adding it directory to g:cpp_check_options.
+						This command will add a matching |errorformat| string.
+						This allows the |quickfix-window| to correctly present
+						the output of Cppcheck.
+
+						The default template is "gcc".
+
+						Note that right now, the Cppcheck template tags
+						{callstack}, {id}, and {severity} are not converted to
+						Vim's |errorformat|. Use of these tags is undefined.
+
+						Examples: >
+							:SetCppcheckTemplate 'vs'
+							:SetCppcheckTemplate '{file} \ {line} \ {message}'
+<
+						The first example will use the Visual Studio template
+						defined by Cppcheck.  The second example uses the
+						pattern "filename \ line number \ error message".
+						SetCppcheckTemplate allows the use of backslashes,
+						commas, and percent signs in the template; they are
+						converted appropriately for use in |errorformat|.
+
+vim:tw=78:ts=8:ft=help:norl:
+

@@ -16,7 +16,6 @@ This plugin adds the following functionality:
                                         |cpp_tools_uncomment|
 4. Insert a New Class                   |cpp_tools_new_class|
 5. Extract a New Function               |cpp_tools_function_extract|
-6. Run Cppcheck                         |cpp_tools_cppcheck|
 
 =============================================================================
 Mappings Reference                              *cpp_tools_mappings*
@@ -149,55 +148,6 @@ The new line is added for you.
 The new function is put on the next line by typing <Leader>fp. After
 inserting the new function, the code is autoindented and a Doxygen comment
 block is added.
-
-=============================================================================
-6. Mappings Reference                           *cpp_tools_cppcheck*
-                                                *cppcheck*
-                                                *:Cppcheck*
-
-You can run the current buffer through Cppcheck with the command :Cppcheck.
-Output is presented in the |quickfix| window. Execution of Cppcheck can be
-configured with the following global variables. They have default values, but
-you can change them in your vimrc if those don't work for you.
-
-g:cpp_check_error_file  This variable holds the path for the file to which
-                        Cppcheck should write errors. The default is
-                        "~/.vim/.cppcheck".
-
-g:cpp_check_options     The command line options you want to pass to
-                        Cppcheck. View your Cppcheck documentation for the
-                        possible options.
-
-                        Note that you shouldn't specify a template here! If
-                        you do so, Vim won't be able to correctly parse the
-                        output of Cppcheck for the |quickfix| window.
-
-                        The default value is empty (no options).
-
-g:cpp_check_path        The path to Cppcheck. If the path is in your PATH
-                        environment variable, you use the default. If not,
-                        you need to set the full path: >
-                            let g:cpp_check_path = /home/me/bin/cppcheck
-<
-                        The default value is "cppcheck".
-
-You can set the Cppcheck error template with the command
-:SetCppcheckTemplate. This command accepts the Cppcheck keywords "gcc" and
-"vs". Alternatively, you can set a pattern; read the Cppcheck documenation
-for details. The default pattern is "gcc".
-
-Note that right now, the Cppcheck template tags {callstack}, {id}, and
-{severity} are not converted to Vim's |errorformat|. Use of these tags is
-undefined.
-
-Examples: >
-    :SetCppcheckTemplate 'vs'
-    :SetCppcheckTemplate '{file} \ {line} \ {message}'
-<
-The first example will use the Visual Studio template defined by Cppcheck.
-The second example uses the pattern "filename \ line number \ error message".
-SetCppcheckTemplate allows the use of backslashes, commas, and percent signs
-in the template; they are converted appropriately for use in |errorformat|.
 
 vim:tw=78:ts=8:ft=help:norl:
 
