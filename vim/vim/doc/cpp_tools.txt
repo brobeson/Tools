@@ -1,52 +1,57 @@
-*cpp_tools.txt*	    For Vim version 7.4.    Last Change: 2015 Mar 9
+*cpp_tools.txt*  For Vim version 7.4.  Last Change: 2015 May 29
 
-Plugin with some helpful commands for editing C++ code
 
-This plugin loads |codeTools|, which adds more functionality than is listed
-here.
+                    Cpp Tools Reference Manual
+
+                       by Brendan Robeson
+
+This is a plugin with some helpful commands for editing C++ code. This plugin
+relies on |codeTools|, which adds more functionality than is listed here.
+Codetools can be found at http://github.com/brobeson/Tools.
 
 This plugin adds the following functionality:
-1. Insert Doxygen Comment			|cpp_tools-doxygen|
-2. Code Folding Text				|cpp_tools-code-folding|
-3. Comment/Uncomment Lines			|cpp_tools-comment|
-						|cpp_tools-uncomment|
-4. Insert a New Class				|cpp_tools-new-class|
-5. Extract a New Function			|cpp_tools-function-extract|
+1. Insert a Doxygen Comment             |cpp_tools_doxygen|
+2. Code Folding Text                    |cpp_tools_code_folding|
+3. Comment/Uncomment Lines              |cpp_tools_comment|
+                                        |cpp_tools_uncomment|
+4. Insert a New Class                   |cpp_tools_new_class|
+5. Extract a New Function               |cpp_tools_function_extract|
+6. Run Cppcheck                         |cpp_tools_cppcheck|
 
-=================================================================================
-Mappings Reference				*cpp_tools-mappings*
+=============================================================================
+Mappings Reference                              *cpp_tools_mappings*
 
 Here is a quick, alphabetical, reference for the mappings introduced by this
 plugin.
 
-Command		    Use~
+Command            Use~
 [count]<Leader>c    Comment a range of lines.
        <Leader>d    Insert a Doxygen comment before the current line.
 [count]<Leader>fd   Extract a range of lines, to be pasted later as a new
                     function.
-       <Leader>fp   Put the lines previously extracted as a function below the
-                    current line.
+       <Leader>fp   Put the lines previously extracted as a function below
+                    the current line.
        <Leader>pc   Put a new class below the current the line.
 [count]<Leader>u    Uncomment a range of lines.
 
-=================================================================================
-1. Insert a Doxygen Comment			*cpp_tools-doxygen*
+=============================================================================
+1. Insert a Doxygen Comment                     *cpp_tools_doxygen*
 
 To insert a comment template suitable for Doxygen, place the cursor on the
 line of a struct, class, namespace, or function declaration and press
-<Leader>d. Above the declaration will be inserted the comment. It contains the
-brief and details tags. Functions will also have the param, return, and
+<Leader>d. Above the declaration will be inserted the comment. It contains
+the brief and details tags. Functions will also have the param, return, and
 exception tags. Parameters are deduced to be in; out; or in,out from context.
 If the function returns a boolean, two retval tags are added instead of the
 return tag. If the structure being documented is a template, tparam tags are
 also included.
 
-Note	This plugin will not update a Doxygen comment (yet). If you try that,
-	a new comment will be added between the existing comment and the code
-	structure.
+Note    This plugin will not update a Doxygen comment (yet). If you try that,
+a new comment will be added between the existing comment and the code
+structure.
 
-=================================================================================
-2. Code Folding Text			    *cpp_tools-code-folding*
+=============================================================================
+2. Code Folding Text                            *cpp_tools_code_folding*
 
 The code folding text varies depending on what is folded.
 
@@ -66,20 +71,20 @@ All the fold text options indent the fold text to match the original
 indentation of the first line of the fold. The leading white space in the
 examples above are simply to offset the examples from the normal help text.
 
-=================================================================================
-3. Comment/Uncomment Lines		    *cpp_tools-comment*
-					    *cpp_tools-uncomment*
+=============================================================================
+3. Comment/Uncomment Lines                      *cpp_tools_comment*
+                                                *cpp_tools_uncomment*
 
-A range of lines can be commented with C++ style comment text: //. If no count
-is given, 1 (one) is used. To comment the lines, use the normal map:
+A range of lines can be commented with C++ style comment text: //. If no
+count is given, 1 (one) is used. To comment the lines, use the normal map:
 [count]<Leader>c. Blank lines are not commented.
 
 Similarly, a range of lines can be uncommented by typing [count]<Leader>u.
 This is the inverse of the comment function, so it will not uncomment C style
-comments (/* ... */). Note that this function just removes the first '//' that
-it encounters on each line. It's possible, if the count is incorrect, to
+comments (/* ... */). Note that this function just removes the first '//'
+that it encounters on each line. It's possible, if the count is incorrect, to
 uncomment a legitimate comment at the end of a line:
-    class Foo;	// this is a foo class~
+    class Foo;    // this is a foo class~
 Using <Leader>u on the above line will produce this result:
     class Foo;   this is a foo class~
 
@@ -95,8 +100,8 @@ and pressing <Leader>c, will result in
 To comment the entire fold, use 5<Leader>c; you don't need to open the fold
 before-hand.
 
-=================================================================================
-4. Insert a New Class			    *cpp_tools-new-class*
+=============================================================================
+4. Insert a New Class                           *cpp_tools_new_class*
 
 Skeleton code for a new class can be inserted by typing <Leader>pc. Vim will
 prompt your for a class name, using the current file name, without the
@@ -115,10 +120,10 @@ class YourClassName~
         YourClassName& operator=(const YourClassName& source) = delete;~
         /** @endcond */~
 
-	/**~
-	 * @brief	Destroy a YourClassName object.~
-	 * @exception	None.~
-	 */~
+        /**~
+         * @brief       Destroy a YourClassName object.~
+         * @exception   None.~
+         */~
         ~YourClassName() = default;~
 
     private:~
@@ -131,18 +136,68 @@ Note a few things from that code:
 4. Compiler generated construction & assignment are excluded from Doxygen
    processing.
 
-=================================================================================
-5. Extract a New Function		    *cpp_tools-function-extract*
+=============================================================================
+5. Extract a New Function                       *cpp_tools_function_extract*
 
 A range of lines can be deleted and prepped for putting as a new function.
-Typing [count]<Leader>fd will do this.  The default count is 1 (one). Vim will
-first prompt you for the declaration of the new function. It will then prompt
-your for the line of code to replace the deleted lines. The default for this
-new line is just the new function name and an opening parenthesis. The new
-line is added for you.
+Typing [count]<Leader>fd will do this.  The default count is 1 (one). Vim
+will first prompt you for the declaration of the new function. It will then
+prompt your for the line of code to replace the deleted lines. The default
+for this new line is just the new function name and an opening parenthesis.
+The new line is added for you.
 
-The new function is put on the next line by typing <Leader>fp. After inserting
-the new function, the code is autoindented and a Doxygen comment block is added.
+The new function is put on the next line by typing <Leader>fp. After
+inserting the new function, the code is autoindented and a Doxygen comment
+block is added.
+
+=============================================================================
+6. Mappings Reference                           *cpp_tools_cppcheck*
+                                                *cppcheck*
+                                                *:Cppcheck*
+
+You can run the current buffer through Cppcheck with the command :Cppcheck.
+Output is presented in the |quickfix| window. Execution of Cppcheck can be
+configured with the following global variables. They have default values, but
+you can change them in your vimrc if those don't work for you.
+
+g:cpp_check_error_file  This variable holds the path for the file to which
+                        Cppcheck should write errors. The default is
+                        "~/.vim/.cppcheck".
+
+g:cpp_check_options     The command line options you want to pass to
+                        Cppcheck. View your Cppcheck documentation for the
+                        possible options.
+
+                        Note that you shouldn't specify a template here! If
+                        you do so, Vim won't be able to correctly parse the
+                        output of Cppcheck for the |quickfix| window.
+
+                        The default value is empty (no options).
+
+g:cpp_check_path        The path to Cppcheck. If the path is in your PATH
+                        environment variable, you use the default. If not,
+                        you need to set the full path: >
+                            let g:cpp_check_path = /home/me/bin/cppcheck
+<
+                        The default value is "cppcheck".
+
+You can set the Cppcheck error template with the command
+:SetCppcheckTemplate. This command accepts the Cppcheck keywords "gcc" and
+"vs". Alternatively, you can set a pattern; read the Cppcheck documenation
+for details. The default pattern is "gcc".
+
+Note that right now, the Cppcheck template tags {callstack}, {id}, and
+{severity} are not converted to Vim's |errorformat|. Use of these tags is
+undefined.
+
+Examples: >
+    :SetCppcheckTemplate 'vs'
+    :SetCppcheckTemplate '{file} \ {line} \ {message}'
+<
+The first example will use the Visual Studio template defined by Cppcheck.
+The second example uses the pattern "filename \ line number \ error message".
+SetCppcheckTemplate allows the use of backslashes, commas, and percent signs
+in the template; they are converted appropriately for use in |errorformat|.
 
 vim:tw=78:ts=8:ft=help:norl:
 
