@@ -80,11 +80,8 @@ if !exists('*s:RunCppcheck')
 		if executable('cppcheck') == 0
 			echo 'Cppcheck cannot be found. Ensure the path to cppcheck is in your PATH environment variable.'
 		else
-			execute   'silent !cppcheck'
-					\ ' --template=' . s:cpp_check_error_format .
-					\ ' '            . g:cpp_cppcheck_options .
-					\ ' '            . expand('%:p') .
-					\ &shellpipe     . &errorfile
+			let cmd = 'silent !cppcheck --template=' . s:cpp_check_error_format . ' ' . g:cpp_cppcheck_options . ' ' . expand('%:p') . ' 2> ' . &errorfile
+			execute cmd
 			cgetfile
 			copen
 		endif
