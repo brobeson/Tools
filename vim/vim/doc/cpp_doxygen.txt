@@ -1,0 +1,97 @@
+*cpp_doxygen.txt*  For Vim version 7.4.  Last Change: 2015 June 2
+
+
+                    Cpp Doxygen Reference Manual
+
+                       by Brendan Robeson
+
+This plugin adds capability for using Doxygen in C++ source code. The plugin
+only help manipulate Doxygen style comments, not with actually running
+Doxygen. Thus, you don't need to have Doxygen installed to use this plugin.
+
+1. Using cpp_doxygen                    |cpp_doxygen|
+2. Cpp_doxygen command reference        |cpp_doxygen-ref|
+3. Configuring cpp_doxygen              |cpp_doxygen-config|
+
+=============================================================================
+1. Using cpp_doxygen                            *cpp_doxygen*
+
+Cpp_doxygen can be used to add a Doxygen template to the source code. The
+plugin performs a basic parse of the statement on the current line and
+generates a Doxygen comment appropriate for that bit of code. For example, if
+the cursor is on a function declaration, the Doxygen block will include the
+brief, details, parameters, return, and exception commands. If the cursor is
+on a class declaration, it will have just the brief and details commands.
+A few special cases detected by cpp_doxygen are:
+    1 - Template parameters cause tparam commands to be added to the Doxygen
+        block.
+    2 - For a function which returns a boolean, the returns command is
+        omitted, and two retval commands are used.
+    3 - For functions with parameters, cpp_doxygen attempts to determine if
+        each parameter is in, out, or in,out.
+
+To insert a comment template suitable for Doxygen, place the cursor on the
+line of a struct, class, namespace, or function declaration and press
+<Leader>d. It's ok if the C++ statement spans multiple lines. A Doxygen
+comment will be inserted above the statement. Note that if the C++ statement
+is not one of those listed above, the results are undefined.
+
+Another case is to insert the file documentation. This occurs if the cursor is
+on the first line of the file. Note that this will prevent documenting a
+statement if that statement is on the first line.
+
+=============================================================================
+2. Cpp_doxygen Command Reference                *cpp_doxygen-ref*
+
+This section describes the default commands, mappings, and menu items. For
+instructions about customizing these, see |cpp_doxygen-config|.
+
+<Leader>d               Insert a Doxygen comment before the current line.
+
+=============================================================================
+3. Configuring cpp_doxygen                      *cpp_doxygen-ref*
+
+Cpp_doxygen has quite a few configuration options. Generally, speaking, you
+just need to add the appropriate Vim commands to your vimrc.
+
+                                                *g:cpp_doxygen_block_style*
+g:cpp_doxygen_block_style
+                        Use this variable to control the style of the Doxygen
+                        comment blocks. Possible values are, and their
+                        appearances, are:
+                        'javadoc'   /**
+                                     * \brief
+                                     */
+
+                        'qt'        /*!
+                                     * \brief
+                                     */
+
+                        'triple_slash'  /// \brief
+                                        /// \details
+
+                        'exclamation'   //! \brief
+                                        //! \details
+
+                        The default is 'javadoc', and this is used if you set
+                        an unknown value.
+
+                                                *g:cpp_doxygen_command_mark*
+g:cpp_doxygen_command_mark
+                        Set this variable to either '\' or '@' to mark Doxygen
+                        commands. The default is '\', which is used if an
+                        unknown value is set. This controls whether a Doxygen
+                        command is written as
+                            \brief
+                        of
+                            @brief
+
+                                                *<Plug>cpp_doxygenInsert*
+<Plug>cpp_doxygenInsert If you prefer a different map for inserting Doxygen,
+                        you need to map to this in your vimrc. For example, if
+                        you prefer '+d' you would add: >
+                            map +d <Plug>cpp_doxygenInsert
+<
+
+vim:tw=78:ts=8:ft=help:norl:
+
