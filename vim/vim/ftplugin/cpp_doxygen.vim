@@ -29,6 +29,10 @@ endif
 if !exists('g:cpp_doxygen_command_mark')
 	let g:cpp_doxygen_command_mark = '\'
 endif
+
+let s:block_open = ''
+let s:block_continue = '//! '
+let s:block_close = ''
 " }}}
 
 
@@ -56,7 +60,14 @@ if !exists('*s:InsertDoxygen')
 		
 		" insert the file documentation
 		if line('.') == 1
-			let fileHeader = ['/**', ' * ' . mrk . 'file', ' * ' . mrk . 'brief', ' * ' . mrk . 'details', ' * ' . mrk . 'author', ' */']
+			let fileHeader = [ s:block_continue . mrk . 'file     ' . expand('%:t'),
+							 \ s:block_continue . mrk . 'brief    ',
+							 \ s:block_continue . mrk . 'details  ',
+							 \ s:block_continue . mrk . 'author   ' ]
+			if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
+				call insert(fileHeader, s:block_open)
+				call add(fileHeader, s:block_close)
+			endif
 			call append(0, fileHeader)
 			call cursor(3, strlen(getline(3)))
 
@@ -72,17 +83,22 @@ if !exists('*s:InsertDoxygen')
 			endwhile
 
 			" look for deleted functions
+			" note that this is hard coded to use /** ... */ block style.
+			" doxygen's manual states that /// and //! require at least two
+			" lines, but these are one line each, so...
 			if match(text, 'delete') != -1
-				execute ':normal! O/** ' . mrk . 'cond */'
-				execute ':normal! jo/** ' . mrk . 'endcond */'
+				execute ':normal! O'  . s:block_open . ' ' . mrk . 'cond' . s:block_close
+				execute ':normal! jo' . s:block_open . ' ' . mrk . 'endcond' . s:block_close
 
 				" if this code block is not a deleted function
 			else
 				" start building up the doxygen comment
 				let commentBody = []
-				call add(commentBody, '/**')
-				call add(commentBody, ' * ' . mrk . 'brief')
-				call add(commentBody, ' * ' . mrk . 'details')
+				if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
+					call add(commentBody, s:block_open)
+				endif
+				call add(commentBody, s:block_continue . mrk . 'brief')
+				call add(commentBody, s:block_continue . mrk . 'details')
 
 				" check if this is a template class or function. if it is,
 				" add the tparam tags.
@@ -95,7 +111,7 @@ if !exists('*s:InsertDoxygen')
 					let paramList = split(templateParameters)
 					let index = 1
 					while index < len(paramList)
-						call add(commentBody, ' * ' . mrk . 'tparam	' . paramList[index])
+						call add(commentBody, s:block_continue . mrk . 'tparam	' . paramList[index])
 						let index = index + 2
 					endwhile
 				endif
@@ -129,7 +145,7 @@ if !exists('*s:InsertDoxygen')
 							let paramText .= '[in]	'
 						endif
 
-						call add(commentBody, ' * ' . paramText . paramName)
+						call add(commentBody, s:block_continue . paramText . paramName)
 						let index = index + 1
 					endwhile
 
@@ -138,22 +154,24 @@ if !exists('*s:InsertDoxygen')
 					let returnType = substitute(text, '\s\+\(\w\+\|operator.*\)(.*', '', '')
 					let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
 					if returnType == 'bool'
-						call add(commentBody, ' * ' . mrk . 'retval	true')
-						call add(commentBody, ' * ' . mrk . 'retval	false')
+						call add(commentBody, s:block_continue . mrk . 'retval	true')
+						call add(commentBody, s:block_continue . mrk . 'retval	false')
 					elseif returnType != 'void' && returnType != ''
-						call add(commentBody, ' * ' . mrk . 'return')
+						call add(commentBody, s:block_continue . mrk . 'return')
 					endif
 
 					" tack on a report about if the function throws any exceptions
 					if match(text, 'noexcept') != -1
-						call add(commentBody, ' * ' . mrk . 'exception	None')
+						call add(commentBody, s:block_continue . mrk . 'exception	None')
 					else
-						call add(commentBody, ' * ' . mrk . 'exception')
+						call add(commentBody, s:block_continue . mrk . 'exception')
 					endif
 				endif
 
 				" close the comment, add it to the buffer, and format the comment
-				call add(commentBody, ' */')
+				if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
+					call add(commentBody, s:block_close)
+				endif
 				call append(line('.') - 1, commentBody)
 				call cursor(cursorStartLine, 1)
 				execute 'normal' len(commentBody) . '=='
