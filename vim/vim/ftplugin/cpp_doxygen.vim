@@ -100,7 +100,19 @@ if !exists('*s:InsertDeletedDoxygen')
 		" doxygen's manual states that /// and //! require at least two
 		" lines, but these are one line each, so...
 		execute ':normal! O'  . s:block_open . ' ' . g:cpp_doxygen_command_mark . 'cond' . s:block_close
-		execute ':normal! jo' . s:block_open . ' ' . g:cpp_doxygen_command_mark . 'endcond' . s:block_close
+		execute ':normal! 2j'
+
+		" loop over subsequent statements. all consecutive deleted functions
+		" are wrapped in one set of condition commands.
+		let done = 0
+		while done == 0
+			if match(join(getline('.', search('[;{]', 'cnW'))), 'delete') != -1
+				execute ':normal j'
+			else
+				let done = 1
+			endif
+		endwhile
+		execute ':normal! O' . s:block_open . ' ' . g:cpp_doxygen_command_mark . 'endcond' . s:block_close
 	endfunction
 endif
 
@@ -137,93 +149,93 @@ if !exists('*s:InsertDoxygen')
 				call s:InsertDeletedDoxygen()
 
 			" if this code block is not a deleted function
-			else
-				" start building up the doxygen comment
-				let commentBody = []
-				if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
-					call add(commentBody, s:block_open)
-				endif
-				call add(commentBody, s:block_continue . mrk . 'brief')
-				call add(commentBody, s:block_continue . mrk . 'details')
+			"else
+			"	" start building up the doxygen comment
+			"	let commentBody = []
+			"	if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
+			"		call add(commentBody, s:block_open)
+			"	endif
+			"	call add(commentBody, s:block_continue . mrk . 'brief')
+			"	call add(commentBody, s:block_continue . mrk . 'details')
 
-				" check if this is a template class or function. if it is,
-				" add the tparam tags.
-				let hasTemplate = match(text, 'template')
-				if hasTemplate != -1
-					let start = stridx(text, '<') + 1
-					let end = stridx(text, '>', start)
-					let templateParameters = strpart(text, start, end - start)
-					let templateParameters = substitute(templateParameters, '\(<\|,\|>\)', '', 'g')
-					let paramList = split(templateParameters)
-					let index = 1
-					while index < len(paramList)
-						call add(commentBody, s:block_continue . mrk . 'tparam	' . paramList[index])
-						let index = index + 2
-					endwhile
-				endif
-				" done checking for template parameters
+			"	" check if this is a template class or function. if it is,
+			"	" add the tparam tags.
+			"	let hasTemplate = match(text, 'template')
+			"	if hasTemplate != -1
+			"		let start = stridx(text, '<') + 1
+			"		let end = stridx(text, '>', start)
+			"		let templateParameters = strpart(text, start, end - start)
+			"		let templateParameters = substitute(templateParameters, '\(<\|,\|>\)', '', 'g')
+			"		let paramList = split(templateParameters)
+			"		let index = 1
+			"		while index < len(paramList)
+			"			call add(commentBody, s:block_continue . mrk . 'tparam	' . paramList[index])
+			"			let index = index + 2
+			"		endwhile
+			"	endif
+			"	" done checking for template parameters
 
-				" check if this is a function. it will have ()s.
-				let isFunction = match(text, '(')
-				if (isFunction != -1)
-					let start = stridx(text, '(') + 1
-					let end = stridx(text, ')', start)
-					let parameters = strpart(text, start, end - start)
-					let parameterList = split(parameters, ',')
-					let index = 0
-					while index < len(parameterList)
-						let paramText = '' . mrk . 'param'
-						let paramName = matchstr(parameterList[index], '\w\+$')
+			"	" check if this is a function. it will have ()s.
+			"	let isFunction = match(text, '(')
+			"	if (isFunction != -1)
+			"		let start = stridx(text, '(') + 1
+			"		let end = stridx(text, ')', start)
+			"		let parameters = strpart(text, start, end - start)
+			"		let parameterList = split(parameters, ',')
+			"		let index = 0
+			"		while index < len(parameterList)
+			"			let paramText = '' . mrk . 'param'
+			"			let paramName = matchstr(parameterList[index], '\w\+$')
 
-						" the rules for determining if a parameter is in or out:
-						" 1 - if const appears first, it is input only
-						" 2 - if it's a reference or a constant pointer, it is input &
-						"     output
-						" 3 - otherwise it is input only
-						" to really know whether something is output only, one needs
-						" to examine the function code, which is beyond the scope of
-						" this plugin, so we default to [in,out] instead of [out].
-						if match(parameterList[index], '^\s*const') != -1
-							let paramText .= '[in]	'
-						elseif match(parameterList[index], '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
-							let paramText .= '[in,out]	'
-						else
-							let paramText .= '[in]	'
-						endif
+			"			" the rules for determining if a parameter is in or out:
+			"			" 1 - if const appears first, it is input only
+			"			" 2 - if it's a reference or a constant pointer, it is input &
+			"			"     output
+			"			" 3 - otherwise it is input only
+			"			" to really know whether something is output only, one needs
+			"			" to examine the function code, which is beyond the scope of
+			"			" this plugin, so we default to [in,out] instead of [out].
+			"			if match(parameterList[index], '^\s*const') != -1
+			"				let paramText .= '[in]	'
+			"			elseif match(parameterList[index], '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
+			"				let paramText .= '[in,out]	'
+			"			else
+			"				let paramText .= '[in]	'
+			"			endif
 
-						call add(commentBody, s:block_continue . paramText . paramName)
-						let index = index + 1
-					endwhile
+			"			call add(commentBody, s:block_continue . paramText . paramName)
+			"			let index = index + 1
+			"		endwhile
 
-					" figure out the return type, at this point isFunction holds the
-					" location of the opening (
-					let returnType = substitute(text, '\s\+\(\w\+\|operator.*\)(.*', '', '')
-					let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
-					if returnType == 'bool'
-						call add(commentBody, s:block_continue . mrk . 'retval	true')
-						call add(commentBody, s:block_continue . mrk . 'retval	false')
-					elseif returnType != 'void' && returnType != ''
-						call add(commentBody, s:block_continue . mrk . 'return')
-					endif
+			"		" figure out the return type, at this point isFunction holds the
+			"		" location of the opening (
+			"		let returnType = substitute(text, '\s\+\(\w\+\|operator.*\)(.*', '', '')
+			"		let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
+			"		if returnType == 'bool'
+			"			call add(commentBody, s:block_continue . mrk . 'retval	true')
+			"			call add(commentBody, s:block_continue . mrk . 'retval	false')
+			"		elseif returnType != 'void' && returnType != ''
+			"			call add(commentBody, s:block_continue . mrk . 'return')
+			"		endif
 
-					" tack on a report about if the function throws any exceptions
-					if match(text, 'noexcept') != -1
-						call add(commentBody, s:block_continue . mrk . 'exception	None')
-					else
-						call add(commentBody, s:block_continue . mrk . 'exception')
-					endif
-				endif
+			"		" tack on a report about if the function throws any exceptions
+			"		if match(text, 'noexcept') != -1
+			"			call add(commentBody, s:block_continue . mrk . 'exception	None')
+			"		else
+			"			call add(commentBody, s:block_continue . mrk . 'exception')
+			"		endif
+			"	endif
 
-				" close the comment, add it to the buffer, and format the comment
-				if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
-					call add(commentBody, s:block_close)
-				endif
-				call append(line('.') - 1, commentBody)
-				call cursor(cursorStartLine, 1)
-				execute 'normal' len(commentBody) . '=='
+			"	" close the comment, add it to the buffer, and format the comment
+			"	if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
+			"		call add(commentBody, s:block_close)
+			"	endif
+			"	call append(line('.') - 1, commentBody)
+			"	call cursor(cursorStartLine, 1)
+			"	execute 'normal' len(commentBody) . '=='
 
-				" move the cursor to the end of the brief tag.
-				normal j$
+			"	" move the cursor to the end of the brief tag.
+			"	normal j$
 			endif
 		endif
 	endfunction
