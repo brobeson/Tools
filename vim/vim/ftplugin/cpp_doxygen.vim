@@ -94,8 +94,8 @@ if !exists('*s:InsertFileDoxygen')
 endif
 
 " \brief	Insert a doxygen comment block.
-"if !exists('*s:InsertDoxygen')
-	function! s:InsertDoxygen()
+if !exists('*s:InsertDoxygen')
+	function s:InsertDoxygen()
 		" make sure the command mark is correct. only \ and @ are allowed. If
 		" it's not @, just set the default: \. Also, use a local variable,
 		" mrk, for brevity in the code later.
@@ -117,15 +117,9 @@ endif
 		" if the cursor is not on the first line, the user is attempting to
 		" document a code statement.
 		else
-			" extract the whole header
-			let lastLine = search('[;{]', 'cnW')
-			let currentLine = line('.')
-			let cursorStartLine = currentLine
-			let text = ''
-			while currentLine <= lastLine
-				let text .= getline(currentLine)
-				let currentLine = currentLine + 1
-			endwhile
+			" extract the whole statement
+			let cursorStartLine = line('.')
+			let text = join(getline('.', search('[;{]', 'cnW')))
 
 			" look for deleted functions
 			" note that this is hard coded to use /** ... */ block style.
