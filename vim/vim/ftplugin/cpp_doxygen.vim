@@ -149,6 +149,20 @@ endif
 	endfunction
 "endif
 
+"if !exists('*s:AddTemplateParameters')
+	function! s:AddTemplateParameters(comment, statement)
+		let start = stridx(a:statement, '<') + 1
+		let end = stridx(a:statement, '>', start)
+		let templateParameters = strpart(a:statement, start, end - start)
+		let templateParameters = substitute(templateParameters, '\(<\|,\|>\)', '', 'g')
+		let paramList = split(templateParameters)
+		let index = 1
+		while index < len(paramList)
+			call add(a:comment, s:line_start . 'tparam   ' . paramList[index])
+			let index = index + 2
+		endwhile
+	endfunction
+"endif
 
 " \brief	Insert a doxygen comment block.
 "if !exists('*s:InsertDoxygen')
@@ -166,39 +180,27 @@ endif
 		else
 			" extract the whole statement
 			let cursorStartLine = line('.')
-			let text = join(getline('.', search('[;{]', 'cnW')))
+			let statement = join(getline('.', search('[;{]', 'cnW')))
 
 			" look for deleted functions
-			if match(text, 'delete') != -1
+			if match(statement, 'delete') != -1
 				call s:InsertDeletedDoxygen()
 
 			" if this code block is not a deleted function
 			else
 				let comment = s:CreateDoxygenComment()
 
-			"	" check if this is a template class or function. if it is,
-			"	" add the tparam tags.
-			"	let hasTemplate = match(text, 'template')
-			"	if hasTemplate != -1
-			"		let start = stridx(text, '<') + 1
-			"		let end = stridx(text, '>', start)
-			"		let templateParameters = strpart(text, start, end - start)
-			"		let templateParameters = substitute(templateParameters, '\(<\|,\|>\)', '', 'g')
-			"		let paramList = split(templateParameters)
-			"		let index = 1
-			"		while index < len(paramList)
-			"			call add(comment, s:block_continue . mrk . 'tparam	' . paramList[index])
-			"			let index = index + 2
-			"		endwhile
-			"	endif
-			"	" done checking for template parameters
+				" handle any template parameters
+				if match(statement, 'template') != -1
+					call s:AddTemplateParameters(comment, statement)
+				endif
 
 			"	" check if this is a function. it will have ()s.
-			"	let isFunction = match(text, '(')
+			"	let isFunction = match(statement, '(')
 			"	if (isFunction != -1)
-			"		let start = stridx(text, '(') + 1
-			"		let end = stridx(text, ')', start)
-			"		let parameters = strpart(text, start, end - start)
+			"		let start = stridx(statement, '(') + 1
+			"		let end = stridx(statement, ')', start)
+			"		let parameters = strpart(statement, start, end - start)
 			"		let parameterList = split(parameters, ',')
 			"		let index = 0
 			"		while index < len(parameterList)
@@ -227,7 +229,7 @@ endif
 
 			"		" figure out the return type, at this point isFunction holds the
 			"		" location of the opening (
-			"		let returnType = substitute(text, '\s\+\(\w\+\|operator.*\)(.*', '', '')
+			"		let returnType = substitute(statement, '\s\+\(\w\+\|operator.*\)(.*', '', '')
 			"		let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
 			"		if returnType == 'bool'
 			"			call add(comment, s:block_continue . mrk . 'retval	true')
@@ -237,7 +239,7 @@ endif
 			"		endif
 
 			"		" tack on a report about if the function throws any exceptions
-			"		if match(text, 'noexcept') != -1
+			"		if match(statement, 'noexcept') != -1
 			"			call add(comment, s:block_continue . mrk . 'exception	None')
 			"		else
 			"			call add(comment, s:block_continue . mrk . 'exception')

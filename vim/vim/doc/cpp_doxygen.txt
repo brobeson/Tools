@@ -96,9 +96,9 @@ g:cpp_doxygen_command_mark
 =============================================================================
 4. Comment block details                        *cpp_doxygen-details*
 
-Cpp_doxygen will insert the following Doxygen comment blocks. Doxygen commands
-marked with an * are only inserted when relevant. For example, \tparam is only
-added to class documentation if the class is a template.
+Cpp_doxygen will insert the following Doxygen comment blocks. The examples
+below show all possible Doxygen commands; some of the commands are only
+written when necessary.
 
 File                    File blocks document the file. The filename is deduced
                         by the plugin and filled in for you, stripped of all
@@ -108,6 +108,21 @@ File                    File blocks document the file. The filename is deduced
                              * \brief~
                              * \details~
                              * \author~
+                             */~
+
+Namespace               This is used to document a namespace.
+                            /**~
+                             * \brief~
+                             * \details~
+                             */~
+
+Class or Struct         Class blocks are used to document a class or struct.
+                        If the class is a template class, the plugin will add
+                        \tparam commands to document the template parameters.
+                            /**~
+                             * \brief~
+                             * \details~
+                             * \tparam   Type~
                              */~
 
 Deleted Functions       Deleted functions are removed from the Doxygen
