@@ -34,31 +34,45 @@ endif
 " mechanism. the user sets g:cpp_doxygen_block_style. when a command is
 " executed, the command should check if g:cpp_doxygen_block_style is the same
 " as s:block_style. if they're different, the user has changed the block style
-" and the script needs to run SetBlockStyle() (detailed below) to set all the
+" and the script needs to run VerifyConfig() (detailed below) to set all the
 " script-local variables.
 let s:block_style = ''
 
 " \brief	Set up script-local variables based on the global block style.
-if !exists('*s:SetBlockStyle')
-	function s:SetBlockStyle()
-		if g:cpp_doxygen_block_style == 'qt'
-			let s:block_open = '/*!'
-			let s:block_continue = ' * '
-			let s:block_close = ' */'
-		elseif g:cpp_doxygen_block_style == 'triple_slash'
-			let s:block_open = ''
-			let s:block_continue = '/// '
-			let s:block_close = ''
-		elseif g:cpp_doxygen_block_style == 'exclamation'
-			let s:block_open = ''
-			let s:block_continue = '//! '
-			let s:block_close = ''
-		else
-			let s:block_open = '/**'
-			let s:block_continue = ' * '
-			let s:block_close = ' */'
+if !exists('*s:VerifyConfig')
+	function s:VerifyConfig()
+		" verify the block style
+		if s:block_style != g:cpp_doxygen_block_style
+			if g:cpp_doxygen_block_style == 'qt'
+				let s:block_open = '/*!'
+				let s:block_continue = ' * '
+				let s:block_close = ' */'
+			elseif g:cpp_doxygen_block_style == 'triple_slash'
+				let s:block_open = ''
+				let s:block_continue = '/// '
+				let s:block_close = ''
+			elseif g:cpp_doxygen_block_style == 'exclamation'
+				let s:block_open = ''
+				let s:block_continue = '//! '
+				let s:block_close = ''
+			else
+				let s:block_open = '/**'
+				let s:block_continue = ' * '
+				let s:block_close = ' */'
+			endif
+			let s:block_style = g:cpp_doxygen_block_style
 		endif
-		let s:block_style = g:cpp_doxygen_block_style
+
+		" make sure the command mark is correct. only \ and @ are allowed. If
+		" it's not @, just set the default: \. Also, use a local variable,
+		" mrk, for brevity in the code later.
+		if g:cpp_doxygen_command_mark != '@' && g:cpp_doxygen_command_mark != '\'
+			let g:cpp_doxygen_command_mark = '\'
+		endif
+
+		" set the characters which start a line in the comment block. this
+		" makes the code more straight forward later.
+		let s:list_start = s:block_continue . g:cpp_doxygen_command_mark
 	endfunction
 endif
 " }}}
@@ -93,6 +107,7 @@ if !exists('*s:InsertFileDoxygen')
 	endfunction
 endif
 
+
 " \brief	This function adds \cond and \endcond around deleted functions.
 if !exists('*s:InsertDeletedDoxygen')
 	function s:InsertDeletedDoxygen()
@@ -119,20 +134,10 @@ endif
 " \brief	Insert a doxygen comment block.
 if !exists('*s:InsertDoxygen')
 	function s:InsertDoxygen()
-		" make sure the command mark is correct. only \ and @ are allowed. If
-		" it's not @, just set the default: \. Also, use a local variable,
-		" mrk, for brevity in the code later.
-		if g:cpp_doxygen_command_mark != '@' && g:cpp_doxygen_command_mark != '\'
-			let g:cpp_doxygen_command_mark = '\'
-		endif
-		let mrk = g:cpp_doxygen_command_mark
+		" verify the configuration. anything incorrect should be corrected
+		" after this.
+		call s:VerifyConfig()
 
-		" check if the comment block style has changed. if it has, the comment
-		" tokens need to change
-		if s:block_style != g:cpp_doxygen_block_style
-			call s:SetBlockStyle()
-		endif
-		
 		" if the cursor is on the first line, insert the file documentation
 		if line('.') == 1
 			call s:InsertFileDoxygen()
