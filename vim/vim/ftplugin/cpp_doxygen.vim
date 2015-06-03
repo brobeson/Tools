@@ -4,9 +4,9 @@
 " License:		Public Domain
 
 " check if this plugin (or one with the same name) has already been loaded
-if exists('b:loaded_cpp_doxygen')
-	finish
-endif
+"if exists('b:loaded_cpp_doxygen')
+"	finish
+"endif
 let b:loaded_cpp_doxygen = 1
 
 " save cpoptions and reset to avoid problems in the script
@@ -39,8 +39,8 @@ endif
 let s:block_style = ''
 
 " \brief	Set up script-local variables based on the global block style.
-if !exists('*s:VerifyConfig')
-	function s:VerifyConfig()
+"if !exists('*s:VerifyConfig')
+	function! s:VerifyConfig()
 		" verify the block style
 		if s:block_style != g:cpp_doxygen_block_style
 			if g:cpp_doxygen_block_style == 'qt'
@@ -72,9 +72,9 @@ if !exists('*s:VerifyConfig')
 
 		" set the characters which start a line in the comment block. this
 		" makes the code more straight forward later.
-		let s:list_start = s:block_continue . g:cpp_doxygen_command_mark
+		let s:line_start = s:block_continue . g:cpp_doxygen_command_mark
 	endfunction
-endif
+"endif
 " }}}
 
 
@@ -91,13 +91,14 @@ if !exists('no_plugin_maps') && !exists('no_cpp_maps')
 endif
 endif
 
+
 " \brief	This function adds the file level Doxygen block.
 if !exists('*s:InsertFileDoxygen')
 	function s:InsertFileDoxygen()
-		let fileHeader = [ s:block_continue . g:cpp_doxygen_command_mark . 'file     ' . expand('%:t'),
-						 \ s:block_continue . g:cpp_doxygen_command_mark . 'brief    ',
-						 \ s:block_continue . g:cpp_doxygen_command_mark . 'details  ',
-						 \ s:block_continue . g:cpp_doxygen_command_mark . 'author   ' ]
+		let fileHeader = [ s:line_start . 'file     ' . expand('%:t'),
+						 \ s:line_start . 'brief',
+						 \ s:line_start . 'details',
+						 \ s:line_start . 'author' ]
 		if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
 			call insert(fileHeader, s:block_open)
 			call add(fileHeader, s:block_close)
@@ -131,9 +132,27 @@ if !exists('*s:InsertDeletedDoxygen')
 	endfunction
 endif
 
+
+" \brief	This function begins creating the doxygen comment block.
+" \details	It intializes the comment with commands common to all the blocks.
+"           This function does not apply to the file comment, or to deleted
+"           functions.
+"if !exists('*s:CreateDoxygenComment')
+	function! s:CreateDoxygenComment()
+		" add the lines which are common to all the doxygen comments
+		let comment =	[ s:line_start . 'brief',
+						\ s:line_start . 'details' ]
+		if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
+			call insert(comment, s:block_open)
+		endif
+		return comment
+	endfunction
+"endif
+
+
 " \brief	Insert a doxygen comment block.
-if !exists('*s:InsertDoxygen')
-	function s:InsertDoxygen()
+"if !exists('*s:InsertDoxygen')
+	function! s:InsertDoxygen()
 		" verify the configuration. anything incorrect should be corrected
 		" after this.
 		call s:VerifyConfig()
@@ -154,14 +173,8 @@ if !exists('*s:InsertDoxygen')
 				call s:InsertDeletedDoxygen()
 
 			" if this code block is not a deleted function
-			"else
-			"	" start building up the doxygen comment
-			"	let commentBody = []
-			"	if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
-			"		call add(commentBody, s:block_open)
-			"	endif
-			"	call add(commentBody, s:block_continue . mrk . 'brief')
-			"	call add(commentBody, s:block_continue . mrk . 'details')
+			else
+				let comment = s:CreateDoxygenComment()
 
 			"	" check if this is a template class or function. if it is,
 			"	" add the tparam tags.
@@ -174,7 +187,7 @@ if !exists('*s:InsertDoxygen')
 			"		let paramList = split(templateParameters)
 			"		let index = 1
 			"		while index < len(paramList)
-			"			call add(commentBody, s:block_continue . mrk . 'tparam	' . paramList[index])
+			"			call add(comment, s:block_continue . mrk . 'tparam	' . paramList[index])
 			"			let index = index + 2
 			"		endwhile
 			"	endif
@@ -208,7 +221,7 @@ if !exists('*s:InsertDoxygen')
 			"				let paramText .= '[in]	'
 			"			endif
 
-			"			call add(commentBody, s:block_continue . paramText . paramName)
+			"			call add(comment, s:block_continue . paramText . paramName)
 			"			let index = index + 1
 			"		endwhile
 
@@ -217,34 +230,36 @@ if !exists('*s:InsertDoxygen')
 			"		let returnType = substitute(text, '\s\+\(\w\+\|operator.*\)(.*', '', '')
 			"		let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
 			"		if returnType == 'bool'
-			"			call add(commentBody, s:block_continue . mrk . 'retval	true')
-			"			call add(commentBody, s:block_continue . mrk . 'retval	false')
+			"			call add(comment, s:block_continue . mrk . 'retval	true')
+			"			call add(comment, s:block_continue . mrk . 'retval	false')
 			"		elseif returnType != 'void' && returnType != ''
-			"			call add(commentBody, s:block_continue . mrk . 'return')
+			"			call add(comment, s:block_continue . mrk . 'return')
 			"		endif
 
 			"		" tack on a report about if the function throws any exceptions
 			"		if match(text, 'noexcept') != -1
-			"			call add(commentBody, s:block_continue . mrk . 'exception	None')
+			"			call add(comment, s:block_continue . mrk . 'exception	None')
 			"		else
-			"			call add(commentBody, s:block_continue . mrk . 'exception')
+			"			call add(comment, s:block_continue . mrk . 'exception')
 			"		endif
 			"	endif
 
-			"	" close the comment, add it to the buffer, and format the comment
-			"	if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
-			"		call add(commentBody, s:block_close)
-			"	endif
-			"	call append(line('.') - 1, commentBody)
-			"	call cursor(cursorStartLine, 1)
-			"	execute 'normal' len(commentBody) . '=='
+				" close the comment
+				if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
+					call add(comment, s:block_close)
+				endif
+
+				" add the comment to the buffer, and format it
+				call append(line('.') - 1, comment)
+				call cursor(cursorStartLine, 1)
+				execute 'normal' len(comment) . '=='
 
 			"	" move the cursor to the end of the brief tag.
 			"	normal j$
 			endif
 		endif
 	endfunction
-endif
+"endif
 "}}}
 
 
