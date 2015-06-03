@@ -125,6 +125,16 @@ Class or Struct         Class blocks are used to document a class or struct.
                              * \tparam   Type~
                              */~
 
+Function                This documents a function or method.
+                            /**~
+                             * \brief~
+                             * \details~
+                             * \tparam   Type~
+                             * \return~
+                             * \retval   true~
+                             * \retval   false~
+                             */~
+
 Deleted Functions       Deleted functions are removed from the Doxygen
                         documentation by wrapping them in empty \cond
                         commands. Note that this comment block ignores

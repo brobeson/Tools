@@ -149,6 +149,9 @@ endif
 	endfunction
 "endif
 
+
+" \brief	Add tparam commands to the doxygen comment.
+" \details	The template parameter names are also added.
 "if !exists('*s:AddTemplateParameters')
 	function! s:AddTemplateParameters(comment, statement)
 		let start = stridx(a:statement, '<') + 1
@@ -163,6 +166,63 @@ endif
 		endwhile
 	endfunction
 "endif
+
+
+"if !exists('*s:AddFunction')
+	function! s:AddFunction(comment, statement)
+		"" start with the list of parameters
+		"let param_start   = stridx(a:statement, '(') + 1
+		"let param_end     = stridx(a:statement, ')', param_start)
+		""let parameters    = strpart(a:statement, param_start, param_end - param_start)
+		""let parameterList = split(parameters, ',')
+		"let parameterList = split(strpart(a:statement, param_start, param_end - param_start))
+		"let index = 0
+		"while index < len(parameterList)
+		"	let param_text = s:line_start . 'param'
+		"	let param_name = matchstr(parameterList[index], '\w\+$')
+
+		"	" the rules for determining if a parameter is in or out:
+		"	" 1 - if const appears first, it is input only
+		"	" 2 - if it's a reference or a constant pointer, it is input &
+		"	"     output
+		"	" 3 - otherwise it is input only
+		"	" to really know whether something is output only, one needs
+		"	" to examine the function code, which is beyond the scope of
+		"	" this plugin, so we default to [in,out] instead of [out].
+		"	if match(parameterList[index], '^\s*const') != -1
+		"		let param_text .= '[in]      '
+		"	elseif match(parameterList[index], '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
+		"		let param_text .= '[in,out]  '
+		"	else
+		"		let param_text .= '[in]      '
+		"	endif
+
+		"	call add(a:comment, param_text . param_name)
+		"	let index = index + 1
+		"endwhile
+
+		" figure out the return type, at this point isFunction holds the
+		" location of the opening (
+		let return_type = substitute(a:statement, '\s\+\(\w\+\|operator.*\)(.*', '', '')
+		let return_type = matchstr(return_type, '[a-zA-Z0-9_<>]\+$')
+		if return_type != 'explicit'
+			if return_type == 'bool'
+				call add(a:comment, s:line_start . 'retval	true')
+				call add(a:comment, s:line_start . 'retval	false')
+			elseif return_type != 'void' && return_type != ''
+				call add(a:comment, s:line_start . 'return')
+			endif
+		endif
+
+		"" tack on a report about if the function throws any exceptions
+		"if match(a:statement, 'noexcept') != -1
+		"	call add(a:comment, s:block_continue . mrk . 'exception	None')
+		"else
+		"	call add(a:comment, s:block_continue . mrk . 'exception')
+		"endif
+	endfunction
+"endif
+
 
 " \brief	Insert a doxygen comment block.
 "if !exists('*s:InsertDoxygen')
@@ -195,56 +255,10 @@ endif
 					call s:AddTemplateParameters(comment, statement)
 				endif
 
-			"	" check if this is a function. it will have ()s.
-			"	let isFunction = match(statement, '(')
-			"	if (isFunction != -1)
-			"		let start = stridx(statement, '(') + 1
-			"		let end = stridx(statement, ')', start)
-			"		let parameters = strpart(statement, start, end - start)
-			"		let parameterList = split(parameters, ',')
-			"		let index = 0
-			"		while index < len(parameterList)
-			"			let paramText = '' . mrk . 'param'
-			"			let paramName = matchstr(parameterList[index], '\w\+$')
-
-			"			" the rules for determining if a parameter is in or out:
-			"			" 1 - if const appears first, it is input only
-			"			" 2 - if it's a reference or a constant pointer, it is input &
-			"			"     output
-			"			" 3 - otherwise it is input only
-			"			" to really know whether something is output only, one needs
-			"			" to examine the function code, which is beyond the scope of
-			"			" this plugin, so we default to [in,out] instead of [out].
-			"			if match(parameterList[index], '^\s*const') != -1
-			"				let paramText .= '[in]	'
-			"			elseif match(parameterList[index], '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
-			"				let paramText .= '[in,out]	'
-			"			else
-			"				let paramText .= '[in]	'
-			"			endif
-
-			"			call add(comment, s:block_continue . paramText . paramName)
-			"			let index = index + 1
-			"		endwhile
-
-			"		" figure out the return type, at this point isFunction holds the
-			"		" location of the opening (
-			"		let returnType = substitute(statement, '\s\+\(\w\+\|operator.*\)(.*', '', '')
-			"		let returnType = matchstr(returnType, '[a-zA-Z0-9_<>]\+$')
-			"		if returnType == 'bool'
-			"			call add(comment, s:block_continue . mrk . 'retval	true')
-			"			call add(comment, s:block_continue . mrk . 'retval	false')
-			"		elseif returnType != 'void' && returnType != ''
-			"			call add(comment, s:block_continue . mrk . 'return')
-			"		endif
-
-			"		" tack on a report about if the function throws any exceptions
-			"		if match(statement, 'noexcept') != -1
-			"			call add(comment, s:block_continue . mrk . 'exception	None')
-			"		else
-			"			call add(comment, s:block_continue . mrk . 'exception')
-			"		endif
-			"	endif
+				" handle a function
+				if match(statement, '(') != -1
+					call s:AddFunction(comment, statement)
+				endif
 
 				" close the comment
 				if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
