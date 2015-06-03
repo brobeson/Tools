@@ -77,7 +77,7 @@ if !exists('no_plugin_maps') && !exists('no_cpp_maps')
 endif
 endif
 
-" \brief		This function adds the file level Doxygen block.
+" \brief	This function adds the file level Doxygen block.
 if !exists('*s:InsertFileDoxygen')
 	function s:InsertFileDoxygen()
 		let fileHeader = [ s:block_continue . g:cpp_doxygen_command_mark . 'file     ' . expand('%:t'),
@@ -90,6 +90,17 @@ if !exists('*s:InsertFileDoxygen')
 		endif
 		call append(0, fileHeader)
 		call cursor(3, strlen(getline(3)))
+	endfunction
+endif
+
+" \brief	This function adds \cond and \endcond around deleted functions.
+if !exists('*s:InsertDeletedDoxygen')
+	function s:InsertDeletedDoxygen()
+		" note that this is hard coded to use /** ... */ block style.
+		" doxygen's manual states that /// and //! require at least two
+		" lines, but these are one line each, so...
+		execute ':normal! O'  . s:block_open . ' ' . g:cpp_doxygen_command_mark . 'cond' . s:block_close
+		execute ':normal! jo' . s:block_open . ' ' . g:cpp_doxygen_command_mark . 'endcond' . s:block_close
 	endfunction
 endif
 
@@ -122,14 +133,10 @@ if !exists('*s:InsertDoxygen')
 			let text = join(getline('.', search('[;{]', 'cnW')))
 
 			" look for deleted functions
-			" note that this is hard coded to use /** ... */ block style.
-			" doxygen's manual states that /// and //! require at least two
-			" lines, but these are one line each, so...
 			if match(text, 'delete') != -1
-				execute ':normal! O'  . s:block_open . ' ' . mrk . 'cond' . s:block_close
-				execute ':normal! jo' . s:block_open . ' ' . mrk . 'endcond' . s:block_close
+				call s:InsertDeletedDoxygen()
 
-				" if this code block is not a deleted function
+			" if this code block is not a deleted function
 			else
 				" start building up the doxygen comment
 				let commentBody = []
