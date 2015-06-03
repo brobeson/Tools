@@ -78,14 +78,12 @@ endif
 endif
 
 " \brief		This function adds the file level Doxygen block.
-" \param[in]	mrk		The Doxygen command mark.
-" \pre			mrk has been set to a valid character ('\' or '@')
 if !exists('*s:InsertFileDoxygen')
-	function s:InsertFileDoxygen(mrk)
-		let fileHeader = [ s:block_continue . a:mrk . 'file     ' . expand('%:t'),
-						 \ s:block_continue . a:mrk . 'brief    ',
-						 \ s:block_continue . a:mrk . 'details  ',
-						 \ s:block_continue . a:mrk . 'author   ' ]
+	function s:InsertFileDoxygen()
+		let fileHeader = [ s:block_continue . g:cpp_doxygen_command_mark . 'file     ' . expand('%:t'),
+						 \ s:block_continue . g:cpp_doxygen_command_mark . 'brief    ',
+						 \ s:block_continue . g:cpp_doxygen_command_mark . 'details  ',
+						 \ s:block_continue . g:cpp_doxygen_command_mark . 'author   ' ]
 		if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
 			call insert(fileHeader, s:block_open)
 			call add(fileHeader, s:block_close)
@@ -114,7 +112,7 @@ endif
 		
 		" if the cursor is on the first line, insert the file documentation
 		if line('.') == 1
-			call s:InsertFileDoxygen(mrk)
+			call s:InsertFileDoxygen()
 
 		" if the cursor is not on the first line, the user is attempting to
 		" document a code statement.
