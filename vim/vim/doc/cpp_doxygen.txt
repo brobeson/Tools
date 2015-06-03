@@ -12,6 +12,7 @@ Doxygen. Thus, you don't need to have Doxygen installed to use this plugin.
 1. Using cpp_doxygen                    |cpp_doxygen|
 2. Cpp_doxygen command reference        |cpp_doxygen-ref|
 3. Configuring cpp_doxygen              |cpp_doxygen-config|
+4. Comment block details                |cpp_doxygen-details|
 
 =============================================================================
 1. Using cpp_doxygen                            *cpp_doxygen*
@@ -92,6 +93,17 @@ g:cpp_doxygen_command_mark
                         you prefer '+d' you would add: >
                             map +d <Plug>cpp_doxygenInsert
 <
+=============================================================================
+4. Comment block details                        *cpp_doxygen-details*
+
+Cpp_doxygen will insert the following Doxygen comment blocks. Doxygen commands
+marked with an * are only inserted when relevant. For example, \tparam is only
+added to class documentation if the class is a template.
+
+File                    \file    $filename
+                        \brief
+                        \details
+                        \author
 
 vim:tw=78:ts=8:ft=help:norl:
 

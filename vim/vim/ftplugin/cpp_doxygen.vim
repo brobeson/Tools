@@ -38,24 +38,7 @@ endif
 " script-local variables.
 let s:block_style = ''
 
-" the values for s:block_open, s:block_continue, and s:block_close will be set
-" when the first doxygen comment is inserted.
-" }}}
-
-
-"==============================================================================
-" create a command to insert doxygen comments {{{
-"==============================================================================
-" map the doxygen comment command
-if !exists('no_plugin_maps') && !exists('no_cpp_maps')
-	if !hasmapto('<Plug>cpp_doxygenInsert')
-		map <buffer> <unique> <Leader>d <Plug>cpp_doxygenInsert
-	endif
-	noremap  <buffer> <unique> <script> <Plug>cpp_doxygenInsert :call <SID>InsertDoxygen()<CR>
-endif
-
-" this function is used to set up script-local variables based on the global
-" block style variable.
+" \brief	Set up script-local variables based on the global block style.
 if !exists('*s:SetBlockStyle')
 	function s:SetBlockStyle()
 		if g:cpp_doxygen_block_style == 'qt'
@@ -78,10 +61,43 @@ if !exists('*s:SetBlockStyle')
 		let s:block_style = g:cpp_doxygen_block_style
 	endfunction
 endif
+" }}}
 
-" insert the doxygen comment
-if !exists('*s:InsertDoxygen')
-	function s:InsertDoxygen()
+
+"==============================================================================
+" create a command to insert doxygen comments {{{
+"==============================================================================
+" map the doxygen comment command
+if !exists('b:loaded_cpp_doxygen')
+if !exists('no_plugin_maps') && !exists('no_cpp_maps')
+	if !hasmapto('<Plug>cpp_doxygenInsert')
+		map <buffer> <unique> <Leader>d <Plug>cpp_doxygenInsert
+	endif
+	noremap  <buffer> <unique> <script> <Plug>cpp_doxygenInsert :call <SID>InsertDoxygen()<CR>
+endif
+endif
+
+" \brief		This function adds the file level Doxygen block.
+" \param[in]	mrk		The Doxygen command mark.
+" \pre			mrk has been set to a valid character ('\' or '@')
+if !exists('*s:InsertFileDoxygen')
+	function s:InsertFileDoxygen(mrk)
+		let fileHeader = [ s:block_continue . a:mrk . 'file     ' . expand('%:t'),
+						 \ s:block_continue . a:mrk . 'brief    ',
+						 \ s:block_continue . a:mrk . 'details  ',
+						 \ s:block_continue . a:mrk . 'author   ' ]
+		if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
+			call insert(fileHeader, s:block_open)
+			call add(fileHeader, s:block_close)
+		endif
+		call append(0, fileHeader)
+		call cursor(3, strlen(getline(3)))
+	endfunction
+endif
+
+" \brief	Insert a doxygen comment block.
+"if !exists('*s:InsertDoxygen')
+	function! s:InsertDoxygen()
 		" make sure the command mark is correct. only \ and @ are allowed. If
 		" it's not @, just set the default: \. Also, use a local variable,
 		" mrk, for brevity in the code later.
@@ -96,19 +112,12 @@ if !exists('*s:InsertDoxygen')
 			call s:SetBlockStyle()
 		endif
 		
-		" insert the file documentation
+		" if the cursor is on the first line, insert the file documentation
 		if line('.') == 1
-			let fileHeader = [ s:block_continue . mrk . 'file     ' . expand('%:t'),
-							 \ s:block_continue . mrk . 'brief    ',
-							 \ s:block_continue . mrk . 'details  ',
-							 \ s:block_continue . mrk . 'author   ' ]
-			if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
-				call insert(fileHeader, s:block_open)
-				call add(fileHeader, s:block_close)
-			endif
-			call append(0, fileHeader)
-			call cursor(3, strlen(getline(3)))
+			call s:InsertFileDoxygen(mrk)
 
+		" if the cursor is not on the first line, the user is attempting to
+		" document a code statement.
 		else
 			" extract the whole header
 			let lastLine = search('[;{]', 'cnW')
