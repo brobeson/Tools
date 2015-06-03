@@ -30,9 +30,16 @@ if !exists('g:cpp_doxygen_command_mark')
 	let g:cpp_doxygen_command_mark = '\'
 endif
 
-let s:block_open = ''
-let s:block_continue = '//! '
-let s:block_close = ''
+" remember the block style set by the user. this uses a double variable
+" mechanism. the user sets g:cpp_doxygen_block_style. when a command is
+" executed, the command should check if g:cpp_doxygen_block_style is the same
+" as s:block_style. if they're different, the user has changed the block style
+" and the script needs to run SetBlockStyle() (detailed below) to set all the
+" script-local variables.
+let s:block_style = ''
+
+" the values for s:block_open, s:block_continue, and s:block_close will be set
+" when the first doxygen comment is inserted.
 " }}}
 
 
@@ -47,6 +54,31 @@ if !exists('no_plugin_maps') && !exists('no_cpp_maps')
 	noremap  <buffer> <unique> <script> <Plug>cpp_doxygenInsert :call <SID>InsertDoxygen()<CR>
 endif
 
+" this function is used to set up script-local variables based on the global
+" block style variable.
+if !exists('*s:SetBlockStyle')
+	function s:SetBlockStyle()
+		if g:cpp_doxygen_block_style == 'qt'
+			let s:block_open = '/*!'
+			let s:block_continue = ' * '
+			let s:block_close = ' */'
+		elseif g:cpp_doxygen_block_style == 'triple_slash'
+			let s:block_open = ''
+			let s:block_continue = '/// '
+			let s:block_close = ''
+		elseif g:cpp_doxygen_block_style == 'exclamation'
+			let s:block_open = ''
+			let s:block_continue = '//! '
+			let s:block_close = ''
+		else
+			let s:block_open = '/**'
+			let s:block_continue = ' * '
+			let s:block_close = ' */'
+		endif
+		let s:block_style = g:cpp_doxygen_block_style
+	endfunction
+endif
+
 " insert the doxygen comment
 if !exists('*s:InsertDoxygen')
 	function s:InsertDoxygen()
@@ -57,6 +89,12 @@ if !exists('*s:InsertDoxygen')
 			let g:cpp_doxygen_command_mark = '\'
 		endif
 		let mrk = g:cpp_doxygen_command_mark
+
+		" check if the comment block style has changed. if it has, the comment
+		" tokens need to change
+		if s:block_style != g:cpp_doxygen_block_style
+			call s:SetBlockStyle()
+		endif
 		
 		" insert the file documentation
 		if line('.') == 1
