@@ -207,19 +207,19 @@ endif
 		let return_type = matchstr(return_type, '[a-zA-Z0-9_<>]\+$')
 		if return_type != 'explicit'
 			if return_type == 'bool'
-				call add(a:comment, s:line_start . 'retval	true')
-				call add(a:comment, s:line_start . 'retval	false')
+				call add(a:comment, s:line_start . 'retval  true')
+				call add(a:comment, s:line_start . 'retval  false')
 			elseif return_type != 'void' && return_type != ''
 				call add(a:comment, s:line_start . 'return')
 			endif
 		endif
 
-		"" tack on a report about if the function throws any exceptions
-		"if match(a:statement, 'noexcept') != -1
-		"	call add(a:comment, s:block_continue . mrk . 'exception	None')
-		"else
-		"	call add(a:comment, s:block_continue . mrk . 'exception')
-		"endif
+		" tack on a report about if the function throws any exceptions
+		if match(a:statement, 'noexcept') != -1
+			call add(a:comment, s:line_start . 'exception   None')
+		else
+			call add(a:comment, s:line_start . 'exception')
+		endif
 	endfunction
 "endif
 

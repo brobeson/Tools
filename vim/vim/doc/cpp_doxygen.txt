@@ -129,10 +129,12 @@ Function                This documents a function or method.
                             /**~
                              * \brief~
                              * \details~
-                             * \tparam   Type~
+                             * \tparam     Type~
                              * \return~
-                             * \retval   true~
-                             * \retval   false~
+                             * \retval     true~
+                             * \retval     false~
+                             * \exception~
+                             * \execption  None~
                              */~
 
 Deleted Functions       Deleted functions are removed from the Doxygen
