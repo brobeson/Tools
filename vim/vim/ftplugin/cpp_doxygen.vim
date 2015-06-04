@@ -272,106 +272,81 @@ endif
 
 
 "==============================================================================
-"" code folding {{{
-""==============================================================================
-"" adapted from http://dhruvasagar.com/2013/03/28/vim-better-foldtext
-"" and another that I accidentally erased. i'm not sure why, but i can't make
-"" this a script local function. if i do, then use 'set foldtext=<SID>CppFoldText',
-"" then the folding doesn't display correctly.
-"if !exists('*CppFoldText')
-"	function CppFoldText()
-"		" get the first line. we need it to determine what type of fold text
-"		" to create. also initialize the fold text in a way to indicate a
-"		" folding case I haven't handled.
-"		let firstLine = getline(v:foldstart)
-"		let foldText = 'NO FOLD TEXT DEFINED'
+" code folding {{{
+"==============================================================================
+if !exists('*FoldDoxygen')
+	function FoldDoxygen(foldstart, foldend)
+		" assume this isn't a doxygen comment
+		let fold_text = ''
 
-"		" 'commented' code via #if 0, or #ifdef 0
-"		if match(firstLine, '^\s*#if\(def\)\?\s*0') == 0
-"			let codeLine = getline(v:foldstart + 1)
-"			let spaceCount = match(codeLine, '\S')
-"			let foldText = repeat(' ', spaceCount) . '[ commented code ]  '
-"			let foldText .= substitute(codeLine, '^\s*', '', '')
+		" get the first line. we need it to determine what type of fold text
+		" to create. also initialize the fold text in a way to indicate a
+		" folding case I haven't handled.
+		let firstLine = getline(a:foldstart)
 
-"		" javadoc comment blocks
-"		elseif match(firstLine, '^\s*\/\*') == 0
-"			" i want this fold text to show the brief part of the comment:
-"			" /** this is some brief description of the class */
+		" doxygen comment blocks
+		if match(firstLine, '^\s*\/\*\*') == 0
+			" i want this fold text to show the brief part of the comment:
+			" /** this is some brief description of the class */
 
-"			" put a space between /** and the brief text
-"			let foldText = substitute(firstLine, '\/\*\*.*', '\/\*\* ', '')
+			" put a space between /** and the brief text
+			let fold_text = substitute(firstLine, '\/\*\*.*', '\/\*\* ', '')
 
-"			" locate the brief text in the comment. the brief text goes from
-"			" '@brief' (or '\brief') until the next '@' (or '\').  get all
-"			" the lines in the block comment, then find the line which
-"			" contains the 'brief' tag.
-"			let comments   = getline(v:foldstart, v:foldend)
-"			let briefStart = match(comments, '[@|\\]brief')
+			" locate the brief text in the comment. the brief text goes from
+			" '@brief' (or '\brief') until the next '@' (or '\').  get all
+			" the lines in the block comment, then find the line which
+			" contains the 'brief' tag.
+			let comments   = getline(a:foldstart, a:foldend)
+			let briefStart = match(comments, '[@|\\]brief')
 "			let groupStart = match(comments, '[a|\\]\(addto\|def\|in\|weak\)group')
 
-"			" if the brief tag was found...
-"			if 0 < briefStart
-"				" find the next javadoc tag, which marks the end of the brief
-"				" text. then crop the comments array.
-"				let briefEnd = match(comments, '[@|\\]', briefStart + 1) - 1
-"				let comments = comments[briefStart : briefEnd]
+			" if the brief tag was found...
+			if 0 < briefStart
+				" find the next javadoc tag, which marks the end of the brief
+				" text. then crop the comments array.
+				let briefEnd = match(comments, '[@|\\]', briefStart + 1) - 1
+				let comments = comments[briefStart : briefEnd]
 
-"				" from the first brief line, remove everything except the
-"				" actual text: ' * @brief blah' becomes 'blah'
-"				let comments[0] = substitute(comments[0], '^\s*\*\s*[@\\]brief\s*', '', '')
+				" from the first brief line, remove everything except the
+				" actual text: ' * @brief blah' becomes 'blah'
+				let comments[0] = substitute(comments[0], '^\s*\*\s*[@\\]brief\s*', '', '')
 
-"				" remove leading *s from subsequent lines in the brief text
-"				let index = 1
-"				while index < len(comments)
-"					let comments[index] = substitute(comments[index], '^\s*\*\?\s*', '', '')
-"					let index           = index + 1
-"				endwhile
+				" remove leading *s from subsequent lines in the brief text
+				let index = 1
+				while index < len(comments)
+					let comments[index] = substitute(comments[index], '^\s*\*\?\s*', '', '')
+					let index           = index + 1
+				endwhile
 
-"				" finally, combine all the lines into the fold's fill text
-"				let commentString = join(comments)
-"				if 0 < strlen(commentString)
-"					let foldText .= commentString . ' */'
-"				else
-"					let foldText .= 'no brief description */'
-"				endif
+				" finally, combine all the lines into the fold's fill text
+				let commentString = join(comments)
+				if 0 < strlen(commentString)
+					let fold_text .= commentString . ' */'
+				else
+					let fold_text .= 'no brief description */'
+				endif
 
 "			" if there is no brief tag, but there is a grouping tag
 "			"elseif 0 < groupStart
-"			"	let foldText = comments
+"			"	let fold_text = comments
 "			"endif
 
-"			" if there is no brief tag, set the fill text to indicate that
-"			else
-"				let foldText .= 'no brief description */'
-"			endif
+			" if there is no brief tag, set the fill text to indicate that
+			else
+				let fold_text .= 'no brief description */'
+			endif
+		endif
 
-"		" code blocks
-"		else
-"			" remove text following the block's opening '{'. it's not just set
-"			" to a brace, because we want to keep the leading white space so
-"			" the fold text remains aligned with the block identifier
-"			" (function name, class name, etc).
-"			let foldText = substitute(firstLine, '{.*', '{', '')
-
-"			" the fill text is the number of folded lines, right justified
-"			let foldText .= printf(' %5d lines }', v:foldend - v:foldstart + 1)
-"		endif
-
-"		" vim sets the tab character to 1 space in the fold text.  I want
-"		" the braces to remain aligned as in the code, so swap out the
-"		" tabs for enough spaces to match the tabstop
-"		let spaces = repeat(' ', &tabstop)
-"		let foldText = substitute(foldText, '\t', spaces, 'g')
-"		return foldText
-"	endfunction
-"endif
+		return fold_text
+	endfunction
+endif
 
 "" turn on folding, remove the fold column, use the syntax method, use my
 "" function to generate the fold text, and make the fill character a space
 "setlocal foldenable
 "setlocal foldcolumn=0
 "setlocal foldmethod=syntax
-"setlocal foldtext=CppFoldText()
+"setlocal foldtext=FoldDoxygen()
 "setlocal fillchars=fold:\ 
 ""}}}
 
