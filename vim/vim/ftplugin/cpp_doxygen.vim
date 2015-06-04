@@ -196,11 +196,11 @@ if !exists('*s:AddFunction')
 		" figure out the return type.
 		let return_type = substitute(a:statement, '\s\+\(\w\+\|operator.*\)(.*', '', '')
 		let return_type = matchstr(return_type, '[a-zA-Z0-9_<>]\+$')
-		if return_type != 'explicit'
+		if return_type != 'explicit' && return_type != 'void' && return_type != ''
 			if return_type == 'bool'
 				call add(a:comment, s:line_start . 'retval  true')
 				call add(a:comment, s:line_start . 'retval  false')
-			elseif return_type != 'void' && return_type != ''
+			else
 				call add(a:comment, s:line_start . 'return')
 			endif
 		endif

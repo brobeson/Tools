@@ -6,13 +6,14 @@
                        by Brendan Robeson
 
 This plugin adds capability for using Doxygen in C++ source code. The plugin
-only help manipulate Doxygen style comments, not with actually running
+only helps manipulate Doxygen style comments, not with actually running
 Doxygen. Thus, you don't need to have Doxygen installed to use this plugin.
 
 1. Using cpp_doxygen                    |cpp_doxygen|
 2. Cpp_doxygen command reference        |cpp_doxygen-ref|
 3. Configuring cpp_doxygen              |cpp_doxygen-config|
 4. Comment block details                |cpp_doxygen-details|
+5. Folding Doxygen comments             |cpp_doxygen-folding|
 
 =============================================================================
 1. Using cpp_doxygen                            *cpp_doxygen*
@@ -110,7 +111,8 @@ File                    File blocks document the file. The filename is deduced
                              * \author~
                              */~
 
-Namespace               This is used to document a namespace.
+Namespace               This is used to document a namespace. The doxygen
+                        comment appears exactly as shown here.
                             /**~
                              * \brief~
                              * \details~
@@ -125,7 +127,24 @@ Class or Struct         Class blocks are used to document a class or struct.
                              * \tparam   Type~
                              */~
 
-Function                This documents a function or method.
+Function                This documents a function or method. The \brief and
+                        \details commands are always present. If the function
+                        is a template, \tparam commands are added, with the
+                        template parameter names. If any function parameters
+                        are present, those are added, too. The plugin attempts
+                        to deduce the direction of the parameters. If a
+                        parameter is a non-const reference, or a pointer, or a
+                        pointer-to-const; the parameter is labeled [in,out].
+                        Otherwise, the parameter is labeled as [in]. Note that
+                        you may need to edit these labels; it's really not
+                        possible to get these exactly right without examining
+                        the function definition. If the function returns
+                        something, a \return command is added to the comment.
+                        However, if the return type is bool, the \return
+                        command is replaced with two \retval commands: true
+                        and false. Finally, an \exception command is added. If
+                        the function is specified with "noexcept", the
+                        \exception command is appended with "None".
                             /**~
                              * \brief~
                              * \details~
@@ -141,15 +160,59 @@ Function                This documents a function or method.
 
 Deleted Functions       Deleted functions are removed from the Doxygen
                         documentation by wrapping them in empty \cond
-                        commands. Note that this comment block ignores
+                        commands. If multiple deleted functions are declared
+                        consecutively, they are all wrapped in one set of
+                        commands.  Note that this comment block ignores
                         g:cpp_doxygen_block_style if it is equal to
                         "triple_slash" or "exclamation". This is because
                         Doxygen requires that such comment blocks span
-                        multiple lines, but these are single line comments. 
+                        multiple lines, but these are single line comments.
                             /** \cond */~
                             Foo(const Foo& source) = delete;~
+
+                            Foo& operator=(const Foo& source) = delete;~
                             /** \endcond */~
-                        
+
+=============================================================================
+5. Folding Doxygen comments                     *cpp_doxygen-folding*
+                                                *FoldDoxygen()*
+
+Cpp_doxygen provides a global function you can use for folding Doxygen comment
+blocks. Note that, with the C++ syntax included with Vim, only C style
+comments can fold. This function was written with that in mind. If you've
+gotten multiline C++ style comments to fold, this function won't work for
+them. Ergo, this function only works with "javadoc" and "qt" style Doxygen
+comments.
+
+The folding function looks for the brief description and presents that, with
+comment tokens around it. If no brief description is found, the phrase "no
+brief description" is used instead.
+
+    /** This is a brief description. */~
+    /*! So is this. */~
+    /** no brief description */~
+
+To use it, call |FoldDoxygen()| from within your own fold text function. The
+function will only return text if the folded block is a Doxygen comment; if it
+starts with "/**" or "/*!". Otherwise, '' is returned. Here is an example of
+how you might use it: >
+    1   function CppFoldText()
+    2       " start by folding a doxygen comment
+    3       let fold_text = ''
+    4       if exists('*FoldDoxygen')
+    5           let fold_text = FoldDoxygen()
+    6       endif
+    7
+    8       " if the folded block isn't a doxygen comment, the function will
+    9       " return '' and we can try something else
+   10       if foldText == ''
+   11           " generate some other fold text
+   12       endif
+   13       return fold_text
+   14   endfunction
+   15
+   16   setlocal foldtext=CppFoldText()
+
 
 vim:tw=78:ts=8:ft=help:norl:
 

@@ -111,9 +111,9 @@ highlight urlGrp               cterm=none ctermfg=darkcyan gui=underline guifg=#
 " diff
 " i don't use VS 2013 for diff, nor do I have diff capability in vim. so i
 " just copied this verbatim and didn't check it.
-highlight DiffAdd     cterm=none  ctermfg=green      ctermbg=darkgreen  gui=none  guifg=#76923c  guibg=#265e4d
+highlight DiffAdd     cterm=none  ctermfg=green      ctermbg=darkgreen  gui=none                 guibg=#265e4d
 highlight DiffChange  cterm=none  ctermbg=green                                                  guibg=#296958
-highlight DiffDelete  cterm=none  ctermfg=red        ctermbg=darkred    gui=none  guifg=#ff6666  guibg=#3c0000
+highlight DiffDelete  cterm=none  ctermfg=red        ctermbg=darkred    gui=none  guifg=#3c0000  guibg=#3c0000
 highlight DiffText    cterm=none  ctermbg=darkgreen                     gui=none                 guibg=#15352c
 
 " old
