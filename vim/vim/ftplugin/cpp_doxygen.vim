@@ -295,35 +295,51 @@ if !exists('*FoldDoxygen')
 			" text after the /**.
 			let fold_text = substitute(first_line, '\(\/\*[!\*]\).*', '\1 ', '')
 
+			let comments = getline(a:foldstart, a:foldend)
+
+			" remove leading *s and white space from subsequent lines in
+			" the comments. note that we can't use
+			" 'for comment in comments' here; the assignment in the loop
+			" would assign to a copy, not the actual list item.
+			for i in range(1, len(comments) - 1)
+				let comments[i] = substitute(comments[i], '^\s*\*\?\s*', '', '')
+			endfor
+
 			" locate the brief text in the comment. the brief text goes from
 			" '@brief' (or '\brief') until the next '@' (or '\').  get all
 			" the lines in the block comment, then find the line which
 			" contains the 'brief' tag.
-			let comments    = getline(a:foldstart, a:foldend)
 			let brief_start = match(comments, '[@|\\]brief')
 
 			" if the brief tag was found...
 			if 0 <= brief_start
-				" find the next javadoc tag, which marks the end of the brief
-				" text. then crop the comments array.
-				let comments = comments[brief_start : match(comments, '[@|\\]', brief_start + 1) - 1]
+				" find the end of the brief description. this occurs when:
+				" 1 - the next doxygen command is found,
+				" 2 - a blank line occurs after the brief text
+				" then crop the comments array, so we only have the brief text
+				let comments = comments[brief_start : match(comments, '\([@|\\]\|^\s*$\)', brief_start + 1) - 1]
 
 				" from the first brief line, remove everything except the
 				" actual text: ' * @brief blah' becomes 'blah'
 				let comments[0] = substitute(comments[0], '^.*[@\\]brief\s*', '', '')
 
-				" remove leading *s and white space from subsequent lines in
-				" the brief text. note that we can't use
-				" 'for comment in comments' here; the assignment in the loop
-				" would assign to a copy, not the actual list item.
-				for i in range(1, len(comments) - 1)
-					let comments[i] = substitute(comments[i], '^\s*\*\?\s*', '', '')
-				endfor
+			" if a brief command wasn't found, it's possible for a javadoc
+			" style comment to use the first sentence as the brief comment.
+			elseif match(first_line, '^\s*\/\*\*') == 0
+				let brief_start = match(comments, '\w.*')
+				if 0 <= brief_start
+					" this match is a bit tricky. the javadoc autobrief ends
+					" with the first period followed by a space or newline.
+					" Since we're searching an array, there are no newline
+					" characters.
+					let comments = comments[brief_start : match(comments, '\.\s\?', brief_start)]
+				endif
+			endif
 
-				" finally, combine all the lines into the fold text
+			" if we found a brief, use that as the fold text, otherwise state
+			" that no fold text was found.
+			if 0 <= brief_start
 				let fold_text .= join(comments) . ' */'
-
-			" if there is no brief tag, set the fill text to indicate that
 			else
 				let fold_text .= 'no brief description */'
 			endif
