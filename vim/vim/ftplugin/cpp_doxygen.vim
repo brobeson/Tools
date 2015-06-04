@@ -161,7 +161,7 @@ endif
 		let paramList = split(templateParameters)
 		let index = 1
 		while index < len(paramList)
-			call add(a:comment, s:line_start . 'tparam   ' . paramList[index])
+			call add(a:comment, s:line_start . 'tparam  ' . paramList[index])
 			let index = index + 2
 		endwhile
 	endfunction
@@ -170,39 +170,32 @@ endif
 
 "if !exists('*s:AddFunction')
 	function! s:AddFunction(comment, statement)
-		"" start with the list of parameters
-		"let param_start   = stridx(a:statement, '(') + 1
-		"let param_end     = stridx(a:statement, ')', param_start)
-		""let parameters    = strpart(a:statement, param_start, param_end - param_start)
-		""let parameterList = split(parameters, ',')
-		"let parameterList = split(strpart(a:statement, param_start, param_end - param_start))
-		"let index = 0
-		"while index < len(parameterList)
-		"	let param_text = s:line_start . 'param'
-		"	let param_name = matchstr(parameterList[index], '\w\+$')
+		" start with the list of parameters. find the '(' and ')' in the
+		" statement. extract the text between them and split it into a list of
+		" parameters. then we can examine each parameter for constness,
+		" reference, etc. to determine if it's [in] or [in,out], and also
+		" extract the parameter name.
+		let param_cmd     = s:line_start . 'param'
+		let param_start   = stridx(a:statement, '(') + 1
+		let param_end     = stridx(a:statement, ')', param_start)
+		for parameter in split(strpart(a:statement, param_start, param_end - param_start), ',')
+			let param_name = matchstr(parameter, '\w\+$')
 
-		"	" the rules for determining if a parameter is in or out:
-		"	" 1 - if const appears first, it is input only
-		"	" 2 - if it's a reference or a constant pointer, it is input &
-		"	"     output
-		"	" 3 - otherwise it is input only
-		"	" to really know whether something is output only, one needs
-		"	" to examine the function code, which is beyond the scope of
-		"	" this plugin, so we default to [in,out] instead of [out].
-		"	if match(parameterList[index], '^\s*const') != -1
-		"		let param_text .= '[in]      '
-		"	elseif match(parameterList[index], '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
-		"		let param_text .= '[in,out]  '
-		"	else
-		"		let param_text .= '[in]      '
-		"	endif
+			" the rules for determining if a parameter is in or out:
+			" 1 - if it's a reference or a constant pointer, it is input &
+			"     output
+			" 2 - otherwise it is input only
+			" to really know whether something is output only, one needs
+			" to examine the function code, which is beyond the scope of
+			" this plugin, so we default to [in,out] instead of [out].
+			if match(parameter, '\(&\s*[a-zA-Z0-9_]$\|\*\s*const\|const\s*\*\)') != -1
+				call add(a:comment, param_cmd . '[in,out]  ' . param_name)
+			else
+				call add(a:comment, param_cmd . '[in]  ' . param_name)
+			endif
+		endfor
 
-		"	call add(a:comment, param_text . param_name)
-		"	let index = index + 1
-		"endwhile
-
-		" figure out the return type, at this point isFunction holds the
-		" location of the opening (
+		" figure out the return type.
 		let return_type = substitute(a:statement, '\s\+\(\w\+\|operator.*\)(.*', '', '')
 		let return_type = matchstr(return_type, '[a-zA-Z0-9_<>]\+$')
 		if return_type != 'explicit'
@@ -214,9 +207,9 @@ endif
 			endif
 		endif
 
-		" tack on a report about if the function throws any exceptions
+		" tack on a report about any exceptions
 		if match(a:statement, 'noexcept') != -1
-			call add(a:comment, s:line_start . 'exception   None')
+			call add(a:comment, s:line_start . 'exception  None')
 		else
 			call add(a:comment, s:line_start . 'exception')
 		endif
@@ -241,6 +234,7 @@ endif
 			" extract the whole statement
 			let cursorStartLine = line('.')
 			let statement = join(getline('.', search('[;{]', 'cnW')))
+			let statement = substitute(statement, '\s\+', ' ', 'g')
 
 			" look for deleted functions
 			if match(statement, 'delete') != -1

@@ -129,10 +129,12 @@ Function                This documents a function or method.
                             /**~
                              * \brief~
                              * \details~
-                             * \tparam     Type~
+                             * \tparam  Type~
+                             * \param[in]  inputParameter~
+                             * \param[in,out]  inAndOutParameter~
                              * \return~
-                             * \retval     true~
-                             * \retval     false~
+                             * \retval  true~
+                             * \retval  false~
                              * \exception~
                              * \execption  None~
                              */~
