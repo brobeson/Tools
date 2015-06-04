@@ -4,9 +4,9 @@
 " License:		Public Domain
 
 " check if this plugin (or one with the same name) has already been loaded
-"if exists('b:loaded_cpp_doxygen')
-"	finish
-"endif
+if exists('b:loaded_cpp_doxygen')
+	finish
+endif
 let b:loaded_cpp_doxygen = 1
 
 " save cpoptions and reset to avoid problems in the script
@@ -39,8 +39,8 @@ endif
 let s:block_style = ''
 
 " \brief	Set up script-local variables based on the global block style.
-"if !exists('*s:VerifyConfig')
-	function! s:VerifyConfig()
+if !exists('*s:VerifyConfig')
+	function s:VerifyConfig()
 		" verify the block style
 		if s:block_style != g:cpp_doxygen_block_style
 			if g:cpp_doxygen_block_style == 'qt'
@@ -74,7 +74,7 @@ let s:block_style = ''
 		" makes the code more straight forward later.
 		let s:line_start = s:block_continue . g:cpp_doxygen_command_mark
 	endfunction
-"endif
+endif
 " }}}
 
 
@@ -82,13 +82,11 @@ let s:block_style = ''
 " create a command to insert doxygen comments {{{
 "==============================================================================
 " map the doxygen comment command
-if !exists('b:loaded_cpp_doxygen')
 if !exists('no_plugin_maps') && !exists('no_cpp_maps')
 	if !hasmapto('<Plug>cpp_doxygenInsert')
 		map <buffer> <unique> <Leader>d <Plug>cpp_doxygenInsert
 	endif
 	noremap  <buffer> <unique> <script> <Plug>cpp_doxygenInsert :call <SID>InsertDoxygen()<CR>
-endif
 endif
 
 
@@ -137,8 +135,8 @@ endif
 " \details	It intializes the comment with commands common to all the blocks.
 "           This function does not apply to the file comment, or to deleted
 "           functions.
-"if !exists('*s:CreateDoxygenComment')
-	function! s:CreateDoxygenComment()
+if !exists('*s:CreateDoxygenComment')
+	function s:CreateDoxygenComment()
 		" add the lines which are common to all the doxygen comments
 		let comment =	[ s:line_start . 'brief',
 						\ s:line_start . 'details' ]
@@ -147,13 +145,13 @@ endif
 		endif
 		return comment
 	endfunction
-"endif
+endif
 
 
 " \brief	Add tparam commands to the doxygen comment.
 " \details	The template parameter names are also added.
-"if !exists('*s:AddTemplateParameters')
-	function! s:AddTemplateParameters(comment, statement)
+if !exists('*s:AddTemplateParameters')
+	function s:AddTemplateParameters(comment, statement)
 		let start = stridx(a:statement, '<') + 1
 		let end = stridx(a:statement, '>', start)
 		let templateParameters = strpart(a:statement, start, end - start)
@@ -165,11 +163,11 @@ endif
 			let index = index + 2
 		endwhile
 	endfunction
-"endif
+endif
 
 
-"if !exists('*s:AddFunction')
-	function! s:AddFunction(comment, statement)
+if !exists('*s:AddFunction')
+	function s:AddFunction(comment, statement)
 		" start with the list of parameters. find the '(' and ')' in the
 		" statement. extract the text between them and split it into a list of
 		" parameters. then we can examine each parameter for constness,
@@ -214,12 +212,12 @@ endif
 			call add(a:comment, s:line_start . 'exception')
 		endif
 	endfunction
-"endif
+endif
 
 
 " \brief	Insert a doxygen comment block.
-"if !exists('*s:InsertDoxygen')
-	function! s:InsertDoxygen()
+if !exists('*s:InsertDoxygen')
+	function s:InsertDoxygen()
 		" verify the configuration. anything incorrect should be corrected
 		" after this.
 		call s:VerifyConfig()
@@ -259,17 +257,17 @@ endif
 					call add(comment, s:block_close)
 				endif
 
-				" add the comment to the buffer, and format it
+				" add the comment to the buffer, format it, and move the
+				" cursor to the end of the brief command.
 				call append(line('.') - 1, comment)
 				call cursor(cursorStartLine, 1)
 				execute 'normal' len(comment) . '=='
-
-			"	" move the cursor to the end of the brief tag.
-			"	normal j$
+				normal j$
+				startinsert!
 			endif
 		endif
 	endfunction
-"endif
+endif
 "}}}
 
 
