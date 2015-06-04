@@ -290,10 +290,10 @@ if !exists('*FoldDoxygen')
 		let first_line = getline(a:foldstart)
 
 		" doxygen comment blocks
-		if match(first_line, '^\s*\/\*\*') == 0
+		if match(first_line, '^\s*\/\*[!\*]') == 0
 			" put a space between /** and the brief text. also, remove any
 			" text after the /**.
-			let fold_text = substitute(first_line, '\/\*\*.*', '\/\*\* ', '')
+			let fold_text = substitute(first_line, '\(\/\*[!\*]\).*', '\1 ', '')
 
 			" locate the brief text in the comment. the brief text goes from
 			" '@brief' (or '\brief') until the next '@' (or '\').  get all
