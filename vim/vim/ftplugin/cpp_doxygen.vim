@@ -280,14 +280,16 @@ endif
 "				/*! so is this */
 "			If no brief desctiption can be found, the words 'no brief
 "			description' is used.
+" \returns  A string to be used as the fold text.
+" \retval   '' indicates that this folding block is not a doxygen comment.
 if !exists('*FoldDoxygen')
-	function FoldDoxygen(foldstart, foldend)
+	function FoldDoxygen()
 		" assume this isn't a doxygen comment
 		let fold_text = ''
 
 		" get the first line. we need it to determine what type of fold text
 		" to create.
-		let first_line = getline(a:foldstart)
+		let first_line = getline(v:foldstart)
 
 		" doxygen comment blocks
 		if match(first_line, '^\s*\/\*[!\*]') == 0
@@ -295,7 +297,7 @@ if !exists('*FoldDoxygen')
 			" text after the /**.
 			let fold_text = substitute(first_line, '\(\/\*[!\*]\).*', '\1 ', '')
 
-			let comments = getline(a:foldstart, a:foldend)
+			let comments = getline(v:foldstart, v:foldend)
 
 			" remove leading *s and white space from subsequent lines in
 			" the comments. note that we can't use
