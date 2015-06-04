@@ -274,62 +274,54 @@ endif
 "==============================================================================
 " code folding {{{
 "==============================================================================
+" \brief	Determine the fold text for a doxygen comment block.
+" \details	The fold text should present the brief command text as a comment:
+"				/** this is some brief description of the class */
+"				/*! so is this */
+"			If no brief desctiption can be found, the words 'no brief
+"			description' is used.
 if !exists('*FoldDoxygen')
 	function FoldDoxygen(foldstart, foldend)
 		" assume this isn't a doxygen comment
 		let fold_text = ''
 
 		" get the first line. we need it to determine what type of fold text
-		" to create. also initialize the fold text in a way to indicate a
-		" folding case I haven't handled.
-		let firstLine = getline(a:foldstart)
+		" to create.
+		let first_line = getline(a:foldstart)
 
 		" doxygen comment blocks
-		if match(firstLine, '^\s*\/\*\*') == 0
-			" i want this fold text to show the brief part of the comment:
-			" /** this is some brief description of the class */
-
-			" put a space between /** and the brief text
-			let fold_text = substitute(firstLine, '\/\*\*.*', '\/\*\* ', '')
+		if match(first_line, '^\s*\/\*\*') == 0
+			" put a space between /** and the brief text. also, remove any
+			" text after the /**.
+			let fold_text = substitute(first_line, '\/\*\*.*', '\/\*\* ', '')
 
 			" locate the brief text in the comment. the brief text goes from
 			" '@brief' (or '\brief') until the next '@' (or '\').  get all
 			" the lines in the block comment, then find the line which
 			" contains the 'brief' tag.
-			let comments   = getline(a:foldstart, a:foldend)
-			let briefStart = match(comments, '[@|\\]brief')
-"			let groupStart = match(comments, '[a|\\]\(addto\|def\|in\|weak\)group')
+			let comments    = getline(a:foldstart, a:foldend)
+			let brief_start = match(comments, '[@|\\]brief')
 
 			" if the brief tag was found...
-			if 0 < briefStart
+			if 0 <= brief_start
 				" find the next javadoc tag, which marks the end of the brief
 				" text. then crop the comments array.
-				let briefEnd = match(comments, '[@|\\]', briefStart + 1) - 1
-				let comments = comments[briefStart : briefEnd]
+				let comments = comments[brief_start : match(comments, '[@|\\]', brief_start + 1) - 1]
 
 				" from the first brief line, remove everything except the
 				" actual text: ' * @brief blah' becomes 'blah'
-				let comments[0] = substitute(comments[0], '^\s*\*\s*[@\\]brief\s*', '', '')
+				let comments[0] = substitute(comments[0], '^.*[@\\]brief\s*', '', '')
 
-				" remove leading *s from subsequent lines in the brief text
-				let index = 1
-				while index < len(comments)
-					let comments[index] = substitute(comments[index], '^\s*\*\?\s*', '', '')
-					let index           = index + 1
-				endwhile
+				" remove leading *s and white space from subsequent lines in
+				" the brief text. note that we can't use
+				" 'for comment in comments' here; the assignment in the loop
+				" would assign to a copy, not the actual list item.
+				for i in range(1, len(comments) - 1)
+					let comments[i] = substitute(comments[i], '^\s*\*\?\s*', '', '')
+				endfor
 
-				" finally, combine all the lines into the fold's fill text
-				let commentString = join(comments)
-				if 0 < strlen(commentString)
-					let fold_text .= commentString . ' */'
-				else
-					let fold_text .= 'no brief description */'
-				endif
-
-"			" if there is no brief tag, but there is a grouping tag
-"			"elseif 0 < groupStart
-"			"	let fold_text = comments
-"			"endif
+				" finally, combine all the lines into the fold text
+				let fold_text .= join(comments) . ' */'
 
 			" if there is no brief tag, set the fill text to indicate that
 			else
@@ -340,15 +332,7 @@ if !exists('*FoldDoxygen')
 		return fold_text
 	endfunction
 endif
-
-"" turn on folding, remove the fold column, use the syntax method, use my
-"" function to generate the fold text, and make the fill character a space
-"setlocal foldenable
-"setlocal foldcolumn=0
-"setlocal foldmethod=syntax
-"setlocal foldtext=FoldDoxygen()
-"setlocal fillchars=fold:\ 
-""}}}
+"}}}
 
 
 " restore the original cpoptions
