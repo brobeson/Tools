@@ -177,7 +177,9 @@ if !exists('*s:AddFunction')
 		let param_start   = stridx(a:statement, '(') + 1
 		let param_end     = stridx(a:statement, ')', param_start)
 		for parameter in split(strpart(a:statement, param_start, param_end - param_start), ',')
-			let param_name = matchstr(parameter, '\w\+$')
+			" remove any default value, then select the last word as the
+			" parameter name
+			let param_name = matchstr(substitute(parameter, '\s*=.*$', '', ''), '\w\+$')
 
 			" the rules for determining if a parameter is in or out:
 			" 1 - if it's a reference or a constant pointer, it is input &
