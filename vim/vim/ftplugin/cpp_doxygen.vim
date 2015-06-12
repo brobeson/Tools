@@ -21,8 +21,8 @@ setlocal cpo&vim
 "	qt				/*! ... */
 "	triple_slash	///
 "	exclamation		//!
-if !exists('g:cpp_doxygen_block_style')
-	let g:cpp_doxygen_block_style = 'javadoc'
+if !exists('g:cpp_doxygen_style')
+	let g:cpp_doxygen_style = 'javadoc'
 endif
 
 " set the default command mark, either a '\' or '@' character.
@@ -31,8 +31,8 @@ if !exists('g:cpp_doxygen_command_mark')
 endif
 
 " remember the block style set by the user. this uses a double variable
-" mechanism. the user sets g:cpp_doxygen_block_style. when a command is
-" executed, the command should check if g:cpp_doxygen_block_style is the same
+" mechanism. the user sets g:cpp_doxygen_style. when a command is
+" executed, the command should check if g:cpp_doxygen_style is the same
 " as s:block_style. if they're different, the user has changed the block style
 " and the script needs to run VerifyConfig() (detailed below) to set all the
 " script-local variables.
@@ -42,16 +42,16 @@ let s:block_style = ''
 if !exists('*s:VerifyConfig')
 	function s:VerifyConfig()
 		" verify the block style
-		if s:block_style != g:cpp_doxygen_block_style
-			if g:cpp_doxygen_block_style == 'qt'
+		if s:block_style != g:cpp_doxygen_style
+			if g:cpp_doxygen_style == 'qt'
 				let s:block_open = '/*!'
 				let s:block_continue = ' * '
 				let s:block_close = ' */'
-			elseif g:cpp_doxygen_block_style == 'triple_slash'
+			elseif g:cpp_doxygen_style == 'triple_slash'
 				let s:block_open = ''
 				let s:block_continue = '/// '
 				let s:block_close = ''
-			elseif g:cpp_doxygen_block_style == 'exclamation'
+			elseif g:cpp_doxygen_style == 'exclamation'
 				let s:block_open = ''
 				let s:block_continue = '//! '
 				let s:block_close = ''
@@ -60,7 +60,7 @@ if !exists('*s:VerifyConfig')
 				let s:block_continue = ' * '
 				let s:block_close = ' */'
 			endif
-			let s:block_style = g:cpp_doxygen_block_style
+			let s:block_style = g:cpp_doxygen_style
 		endif
 
 		" make sure the command mark is correct. only \ and @ are allowed. If
@@ -97,7 +97,7 @@ if !exists('*s:InsertFileDoxygen')
 						 \ s:line_start . 'brief',
 						 \ s:line_start . 'details',
 						 \ s:line_start . 'author' ]
-		if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
+		if g:cpp_doxygen_style == 'javadoc' || g:cpp_doxygen_style == 'qt'
 			call insert(fileHeader, s:block_open)
 			call add(fileHeader, s:block_close)
 		endif
@@ -140,7 +140,7 @@ if !exists('*s:CreateDoxygenComment')
 		" add the lines which are common to all the doxygen comments
 		let comment =	[ s:line_start . 'brief',
 						\ s:line_start . 'details' ]
-		if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
+		if g:cpp_doxygen_style == 'javadoc' || g:cpp_doxygen_style == 'qt'
 			call insert(comment, s:block_open)
 		endif
 		return comment
@@ -255,7 +255,7 @@ if !exists('*s:InsertDoxygen')
 				endif
 
 				" close the comment
-				if g:cpp_doxygen_block_style == 'javadoc' || g:cpp_doxygen_block_style == 'qt'
+				if g:cpp_doxygen_style == 'javadoc' || g:cpp_doxygen_style == 'qt'
 					call add(comment, s:block_close)
 				endif
 

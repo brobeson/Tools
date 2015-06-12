@@ -56,8 +56,8 @@ instructions about customizing these, see |cpp_doxygen-config|.
 Cpp_doxygen has quite a few configuration options. Generally, speaking, you
 just need to add the appropriate Vim commands to your vimrc.
 
-                                                *g:cpp_doxygen_block_style*
-g:cpp_doxygen_block_style
+                                                *g:cpp_doxygen_style*
+g:cpp_doxygen_style
                         Use this variable to control the style of the Doxygen
                         comment blocks. Possible values are, and their
                         appearances, are:
@@ -163,7 +163,7 @@ Deleted Functions       Deleted functions are removed from the Doxygen
                         commands. If multiple deleted functions are declared
                         consecutively, they are all wrapped in one set of
                         commands.  Note that this comment block ignores
-                        g:cpp_doxygen_block_style if it is equal to
+                        g:cpp_doxygen_style if it is equal to
                         "triple_slash" or "exclamation". This is because
                         Doxygen requires that such comment blocks span
                         multiple lines, but these are single line comments.
