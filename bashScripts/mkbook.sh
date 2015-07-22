@@ -3,6 +3,26 @@
 error=0
 version="2015.01.12"
 
+function print_help
+{
+	echo "NAME"
+	echo "    $script_name - compile an EPUB file from content"
+	echo
+	echo "SYNOPSIS"
+	echo "    $script_name [OPTIONS] [DIRECTORY]"
+	echo
+	echo "DESCRIPTION"
+	echo "    DIRECTORY should be the path to the root of the content. If DIRECTORY is"
+	echo "    omitted, the current working directory is used."
+	echo
+	echo "    -h --help"
+	echo "        Print this help and exit."
+	echo
+	echo "    -v --version"
+	echo "        Print the script version and exit."
+}
+
+
 function PrintError
 {
 	echo "error - " $1
@@ -17,40 +37,53 @@ function CheckExistance
 	fi
 }
 
+function check_is_directory
+{
+	if [[ ! -d $1 ]]
+	then
+		PrintError "$1 is not a directory"
+		error=1
+	fi
+}
+
 #=================================================
 # parse the command options and check for errors
 #=================================================
-#http://linuxaria.com/howto/parse-options-in-your-bash-script-with-getopt
-#http://www.bahmanm.com/blogs/command-line-options-how-to-parse-in-bash-using-getopt
-http://linux.die.net/man/1/getopt
-options=`getopt --long version -- "$@"`
+script_name=${0##.*/}
+options=$(getopt --options hv --longoptions help,version --name ${script_name} -- "$@")
 eval set -- "$options"
-while true
+while [[ $1 != "--" ]]
 do
 	case "$1" in
-		--version)
-			echo $version
-			exit 0
-			shift;;
-		--epub-version)
-			echo "--epub-version is not yet implemented"
-			shift;;
+		-h|--help)		print_help
+						exit 0
+						;;
+		-v|--version)	echo $version
+						exit 0
+						;;
+		#--epub-version)	echo "--epub-version is not yet implemented"
+		#				shift
+		#				;;
+		*)				PrintError "unknown argument $1"
+						exit 1
+						;;
 	esac
 done
 
-# the directory is required as a command line argument
-if [[ $# < 1 ]]
+# process the positional parameters:
+# 1st is the --
+# 2nd (optional) is the root directory of the EPUB content
+if [[ $# == 2 ]]
 then
-	PrintError "a source directory is required"
-	exit 1
+	directory=$2
+else
+	directory=$(pwd)
 fi
-directory=$1
 
-# check if the source directory exists, and is a directory
-CheckExistance $directory
+# check if the content directory exists, and is a directory
 if [[ ! -d $directory ]]
 then
-	PrintError "$1 is not a directory"
+	PrintError "$directory is not a directory"
 	exit 1
 fi
 
