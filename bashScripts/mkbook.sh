@@ -23,16 +23,16 @@ function print_help
 }
 
 
-function PrintError
+function print_error
 {
 	echo "error - " $1
 }
 
-function CheckExistance
+function check_exists
 {
 	if [[ ! -e $1 ]]
 	then
-		PrintError "cannot find $1"
+		print_error "cannot find $1"
 		error=1
 	fi
 }
@@ -41,7 +41,7 @@ function check_is_directory
 {
 	if [[ ! -d $1 ]]
 	then
-		PrintError "$1 is not a directory"
+		print_error "$1 is not a directory"
 		error=1
 	fi
 }
@@ -49,7 +49,7 @@ function check_is_directory
 #=================================================
 # parse the command options and check for errors
 #=================================================
-script_name=${0##.*/}
+script_name=$(basename --suffix=.sh "$0")
 options=$(getopt --options hv --longoptions help,version --name ${script_name} -- "$@")
 eval set -- "$options"
 while [[ $1 != "--" ]]
@@ -61,10 +61,7 @@ do
 		-v|--version)	echo $version
 						exit 0
 						;;
-		#--epub-version)	echo "--epub-version is not yet implemented"
-		#				shift
-		#				;;
-		*)				PrintError "unknown argument $1"
+		*)				print_error "unknown argument $1"
 						exit 1
 						;;
 	esac
@@ -73,28 +70,21 @@ done
 # process the positional parameters:
 # 1st is the --
 # 2nd (optional) is the root directory of the EPUB content
-if [[ $# == 2 ]]
-then
-	directory=$2
-else
-	directory=$(pwd)
-fi
+directory=${2-$(pwd)}
+directory=${directory%%/}
 
-# check if the content directory exists, and is a directory
-if [[ ! -d $directory ]]
-then
-	PrintError "$directory is not a directory"
-	exit 1
-fi
-
-# check that required contents exist
-CheckExistance $directory/META-INF
-CheckExistance $directory/META-INF/container.xml
+# check if some required directories and files exist
+check_is_directory $directory
+check_is_directory $directory/META-INF
+check_exists $directory/META-INF/container.xml
 
 epubFile=${directory##*/}.epub
-CheckExistance $directory/../$epubFile
+# TODO	finished here
+echo $epubFile
+exit 0
+check_exists $directory/../$epubFile
 
-if [[ error != 0 ]]
+if [[ $error != 0 ]]
 then
 	exit 1
 fi
@@ -105,7 +95,7 @@ if [[ ! -e $directory/mimetype ]]
 then
 	customMimetype=1
 	echo "application/epub+zip" > $directory/mimetype
-	CheckExistance $directory/mimetype
+	check_exists $directory/mimetype
 	if [[ error != 0 ]]
 	then
 		exit 1
