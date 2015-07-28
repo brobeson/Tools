@@ -77,17 +77,12 @@ directory=${directory%%/}
 check_is_directory $directory
 check_is_directory $directory/META-INF
 check_exists $directory/META-INF/container.xml
-
-epubFile=${directory##*/}.epub
-# TODO	finished here
-echo $epubFile
-exit 0
-check_exists $directory/../$epubFile
-
 if [[ $error != 0 ]]
 then
 	exit 1
 fi
+
+epubFile=${directory}.epub
 
 # if the mimetype is not present, we can attempt to create it
 customMimetype=0
