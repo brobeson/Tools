@@ -12,6 +12,7 @@ if exists('b:current_syntax')
     finish
 endif
 
+
 " GLSL numbers {{{
 " TODO	the floats using scientific notation do not color the decimal point
 
@@ -126,29 +127,131 @@ syntax keyword glslInvariance	invariant precise
 "}}}
 
 " GLSL types {{{
-syntax keyword	glslType	vec2        vec3       vec4
-syntax keyword	glslType	dvec2       dvec3      dvec4
-syntax keyword	glslType	bvec2       bvec3      bvec4
-syntax keyword	glslType	ivec2       ivec3      ivec4
-syntax keyword	glslType	uvec2       uvec3      uvec4
-syntax keyword	glslType	mat2        mat3       mat4
-syntax keyword	glslType	mat2x2      mat2x3     mat2x4
-syntax keyword	glslType	mat3x2      mat3x3     mat3x4
-syntax keyword	glslType	mat4x2      mat4x3     mat4x4
-syntax keyword	glslType	dmat2       dmat3      dmat4
-syntax keyword	glslType	dmat2x2     dmat2x3    dmat2x4
-syntax keyword	glslType	dmat3x2     dmat3x3    dmat3x4
-syntax keyword	glslType	dmat4x2     dmat4x3    dmat4x4
-syntax keyword	glslType	void        bool       int        uint         float          double
-syntax keyword	glslType	sampler1D   sampler2D  sampler3D  samplerCube  sampler2DRect  sampler1DArray  sampler2DArray  samplerBuffer  sampler2DMS  sampler2DMSArray  samplerCubeArray sampler1DShadow sampler2DShadow sampler2DRectShadow sampler1DArrayShadow sampler2DArrayShadow samplerCubeShadow samplerCubeArrayShadow
-syntax keyword	glslType	isampler1D  isampler2D isampler3D isamplerCube isampler2DRect isampler1DArray isampler2DArray isamplerBuffer isampler2DMS isampler2DMSArray isamplerCubeArray
-syntax keyword	glslType	usampler1D  usampler2D usampler3D usamplerCube usampler2DRect usampler1DArray usampler2DArray usamplerBuffer usampler2DMS usampler2DMSArray usamplerCubeArray
-syntax keyword	glslType	image1D     image2D    image3D    imageCube    image2DRect    image1DArray    image2DArray    imageBuffer    image2DMS    image2DMSArray    imageCubeArray
-syntax keyword	glslType	iimage1D    iimage2D   iimage3D   iimageCube   iimage2DRect   iimage1DArray   iimage2DArray   iimageBuffer   iimage2DMS   iimage2DMSArray   iimageCubeArray
-syntax keyword	glslType	uimage1D    uimage2D   uimage3D   uimageCube   uimage2DRect   uimage1DArray   uimage2DArray   uimageBuffer   uimage2DMS   uimage2DMSArray   uimageCubeArray
-syntax keyword	glslType	atomic_uint
-syntax keyword	glslType	struct
+" transparent types
+syntax keyword glslTransparentType	bool
+								\	bvec2
+								\	bvec3
+								\	bvec4
+								\	dmat2
+								\	dmat2x2
+								\	dmat2x3
+								\	dmat2x4
+								\	dmat3
+								\	dmat3x2
+								\	dmat3x3
+								\	dmat3x4
+								\	dmat4
+								\	dmat4x2
+								\	dmat4x3
+								\	dmat4x4
+								\	double
+								\	dvec2
+								\	dvec3
+								\	dvec4
+								\	float
+								\	int
+								\	ivec2
+								\	ivec3
+								\	ivec4
+								\	mat2
+								\	mat2x2
+								\	mat2x3
+								\	mat2x4
+								\	mat3
+								\	mat3x2
+								\	mat3x3
+								\	mat3x4
+								\	mat4
+								\	mat4x2
+								\	mat4x3
+								\	mat4x4
+								\	uint
+								\	uvec2
+								\	uvec3
+								\	uvec4
+								\	vec2
+								\	vec3
+								\	vec4
+								\	void
+
+" opaque types
+syntax keyword glslOpaqueType	atomic_uint
+							\	iimage1D
+							\	iimage1DArray
+							\	iimage2D
+							\	iimage2DArray
+							\	iimage2DMS
+							\	iimage2DMSArray
+							\	iimage2DRect
+							\	iimage3D
+							\	iimageBuffer
+							\	iimageCube
+							\	iimageCubeArray
+							\	image1D
+							\	image1DArray
+							\	image2D
+							\	image2DArray
+							\	image2DMS
+							\	image2DMSArray
+							\	image2DRect
+							\	image3D
+							\	imageBuffer
+							\	imageCube
+							\	imageCubeArray
+							\	isampler1D
+							\	isampler1DArray
+							\	isampler2D
+							\	isampler2DArray
+							\	isampler2DMS
+							\	isampler2DMSArray
+							\	isampler2DRect
+							\	isampler3D
+							\	isamplerBuffer
+							\	isamplerCube
+							\	isamplerCubeArray
+							\	sampler1D
+							\	sampler1DArray
+							\	sampler1DArrayShadow
+							\	sampler1DShadow
+							\	sampler2D
+							\	sampler2DArray
+							\	sampler2DMS
+							\	sampler2DMSArray
+							\	sampler2DArrayShadow
+							\	sampler2DRect
+							\	sampler2DRectShadow
+							\	sampler2DShadow
+							\	sampler3D
+							\	samplerBuffer
+							\	samplerCube
+							\	samplerCubeArray
+							\	samplerCubeArrayShadow
+							\	samplerCubeShadow
+							\	uimage1D
+							\	uimage1DArray
+							\	uimage2D
+							\	uimage2DArray
+							\	uimage2DMS
+							\	uimage2DMSArray
+							\	uimage2DRect
+							\	uimage3D
+							\	uimageBuffer
+							\	uimageCube
+							\	uimageCubeArray
+							\	usampler1D
+							\	usampler1DArray
+							\	usampler2D
+							\	usampler2DArray
+							\	usampler2DMS
+							\	usampler2DMSArray
+							\	usampler2DRect
+							\	usampler3D
+							\	usamplerBuffer
+							\	usamplerCube
+							\	usamplerCubeArray
 "}}}
+
+syntax keyword glslStructure struct
 
 " GLSL shader stage specific {{{
 " these all default to show an error.  the correct shader
@@ -179,11 +282,26 @@ syntax keyword glslNotAllowed	textureProjGrad       textureProjGradOffset textur
 "}}}
 
 " GLSL qualifiers {{{
-syn keyword glslQualifier   const    in        out           inout    uniform   buffer shared
-syn keyword glslQualifier   centroid sampler   patch
-syn keyword glslQualifier   smooth   flat      noperspective
-syn keyword glslQualifier   coherent volatile  restrict      readonly writeonly
-syn keyword glslQualifier   precise  invariant
+"buffer
+"centroid
+"coherent
+"const
+"flat
+"in
+"inout
+"invariant
+"out
+"noperspective
+"patch
+"precise
+"readonly
+"restrict
+"sampler
+"shared
+"smooth
+"uniform
+"volatile
+"writeonly
 "}}}
 
 " GLSL vector components {{{
@@ -217,26 +335,26 @@ syntax match	glslCompError	'\.[xyzwrgba]*[stpq]\+[xyzwrgba]\+'ms=s+1
 syntax keyword	glslMacro			__LINE__ __FILE__ __VERSION__ GL_core_profile GL_es_profile GL_compatibility_profile
 
 " macro definition
-syntax region	glslDefine			start='^\s*#\s*\(define\|undef\)\>'				skip='\\$' end='$'	keepend contains=ALLBUT
+syntax region	glslDefine			start='^\s*#\s*\(define\|undef\)\>'				skip='\\$' end='$'	keepend contains=ALL
 
 " preprocessor conditionals
-syntax region	glslPrecondition	start='^\s*#\s*\(if\|ifdef\|ifndef\|elif\)\>'	skip='\\$' end='$'	keepend contains=glslComment,glslcParenError,glslNumbers,glslCommentError
+syntax region	glslPrecondition	start='^\s*#\s*\(if\|ifdef\|ifndef\|elif\)\>'	skip='\\$' end='$'	keepend contains=glslComment,glslParenError,glslNumbers,glslCommentError
 syntax match	glslPrecondition	'^\s*#\s*\(else\|endif\)\>'
 
 " compiler control
-syntax keyword	glslPragmaDirs		optimize debug STDGL												contained
-syntax keyword	glslPragmaValues	on off																contained
-syntax region	glslPragma			start='^\s*#\s*pragma\>'						skip='\\$' end='$'	keepend contains=glslPragmaDirs,glslPragmaValues
+"syntax keyword	glslPragmaDirs		optimize debug STDGL												contained
+"syntax keyword	glslPragmaValues	on off																contained
+"syntax region	glslPragma			start='^\s*#\s*pragma\>'						skip='\\$' end='$'	keepend contains=glslPragmaDirs,glslPragmaValues
 "syntax match	glslExtName			'.\+'																contained
-syntax keyword	glslExtDir			require enable warn disable											contained
-syntax match	glslExtension		'^\s*#\s*extension\>.\+:\s\(require\|enable\|warn\|disable\)'		contains=glslExtName,glslExtDir
+"syntax keyword	glslExtDir			require enable warn disable											contained
+"syntax match	glslExtension		'^\s*#\s*extension\>.\+:\s\(require\|enable\|warn\|disable\)'		contains=glslExtName,glslExtDir
 
 " versioning
 syntax keyword	glslProfile			core compatibility es
 syntax region	glslVersion			start='^\s*#\s*version\>\s*\d\d\d\>'			skip='\\$' end='$'	keepend contains=glslComment,glslProfile,glslNumbers
 
 " diagnostics
-syntax region	glslPreprocessor	start='^\s*#\s*\(line\>\|error\>\)'				skip='\\$' end='$'	keepend contains=ALLBUT
+"syntax region	glslPreprocessor	start='^\s*#\s*\(line\>\|error\>\)'				skip='\\$' end='$'	keepend contains=ALLBUT
 "}}}
 
 " GLSL parenthesis errors {{{
@@ -261,46 +379,47 @@ syntax match	glslErrorInBracket	'[);{}]'			display contained
 
 " Define the default highlighting. {{{
 " Only used when an item doesn't have highlighting yet
-hi def link glslBoolean				Constant
-hi def link glslComment				Comment
-hi def link glslCommentError		Error
-hi def link glslCommentStartError	Error
-hi def link glslCompError			Error
-hi def link glslComponent			Special
-hi def link glslConditional			Conditional
-hi def link glslConstant			Constant
-hi def link glslCurlyError			Error
-hi def link glslDefine				Macro
-hi def link glslErrorInBracket		Error
-hi def link glslErrorInParen		Error
-hi def link glslExtDir				Keyword
-hi def link glslExtension			PreProc
-hi def link glslExtName				Constant
-hi def link glslFloat				Number
-hi def link glslFunction			Keyword
-hi def link glslHex					Number
-hi def link glslHexZero				PreProc
-hi def link glslInteger				Number
-hi def link glslInvariant			Keyword
-hi def link glslLabel				Label
-hi def link glslLayout				Keyword
-hi def link glslMacro				Macro
-hi def link glslNotAllowed			Error
-hi def link glslOctal				Number
-hi def link glslOctalError			Error
-hi def link glslOctalZero			PreProc
-hi def link glslParenError			Error
-hi def link glslPragma				PreProc
-hi def link glslPragmaDirs			Keyword
-hi def link glslPragmaValues		Constant
-hi def link glslPrecondition		PreCondit
-hi def link glslPreprocessor		PreProc
-hi def link glslProfile				Keyword
-hi def link glslQualifier			StorageClass
-hi def link glslRepeat				Repeat
-hi def link glslTodo				Todo
-hi def link glslType				Type
-hi def link glslVersion				PreProc
+"highlight default link glslBoolean				Constant
+"highlight default link glslComment				Comment
+"highlight default link glslCommentError		Error
+"highlight default link glslCommentStartError	Error
+"highlight default link glslCompError			Error
+"highlight default link glslComponent			Special
+"highlight default link glslConditional			Conditional
+"highlight default link glslConstant			Constant
+"highlight default link glslCurlyError			Error
+"highlight default link glslDefine				Macro
+"highlight default link glslErrorInBracket		Error
+"highlight default link glslErrorInParen		Error
+"highlight default link glslExtDir				Keyword
+"highlight default link glslExtension			PreProc
+"highlight default link glslExtName				Constant
+"highlight default link glslFloat				Number
+"highlight default link glslFunction			Keyword
+"highlight default link glslHex					Number
+"highlight default link glslHexZero				PreProc
+"highlight default link glslInteger				Number
+"highlight default link glslInvariant			Keyword
+"highlight default link glslLabel				Label
+"highlight default link glslLayout				Keyword
+"highlight default link glslMacro				Macro
+"highlight default link glslNotAllowed			Error
+"highlight default link glslOctal				Number
+"highlight default link glslOctalError			Error
+"highlight default link glslOctalZero			PreProc
+"highlight default link glslParenError			Error
+"highlight default link glslPragma				PreProc
+"highlight default link glslPragmaDirs			Keyword
+"highlight default link glslPragmaValues		Constant
+"highlight default link glslPrecondition		PreCondit
+"highlight default link glslPreprocessor		PreProc
+"highlight default link glslProfile				Keyword
+"highlight default link glslQualifier			StorageClass
+"highlight default link glslRepeat				Repeat
+"highlight default link glslTodo				Todo
+highlight default link glslTransparentType				Type
+highlight default link glslOpaqueType				Type
+"highlight default link glslVersion				PreProc
 "}}}
 
 let b:current_syntax = 'glsl'
