@@ -13,43 +13,43 @@ if exists('b:current_syntax')
 endif
 
 
-" GLSL numbers {{{
-" TODO	the floats using scientific notation do not color the decimal point
+"" GLSL numbers {{{
+"" TODO	the floats using scientific notation do not color the decimal point
 
-" ignore case for the type suffixes: f and F are both ok.
-syntax case ignore
-syntax match	glslNumbers		'\<\d\|\.\d'	transparent contains=glslInteger,glslFloat,glslOctalError,glslOctal,glslHex
+"" ignore case for the type suffixes: f and F are both ok.
+"syntax case ignore
+"syntax match	glslNumbers		'\<\d\|\.\d'	transparent contains=glslInteger,glslFloat,glslOctalError,glslOctal,glslHex
 
-" decimal integers
-syntax match	glslInteger		'\d\+u\='		contained
+"" decimal integers
+"syntax match	glslInteger		'\d\+u\='		contained
 
-" hex number
-syntax match	glslHexZero		'\<0x'			contained
-syntax match	glslHex			'0x\x\+u\='		contained contains=glslHexZero
+"" hex number
+"syntax match	glslHexZero		'\<0x'			contained
+"syntax match	glslHex			'0x\x\+u\='		contained contains=glslHexZero
 
-" flag the first zero of an octal number as something special
-syntax match	glslOctalZero	'\<0'			contained
-syntax match	glslOctal		'0\o\+u\=\>'	contained contains=glslOctalZero
-syntax match	glslOctalError	'0\o*[89]\d*'	contained
+"" flag the first zero of an octal number as something special
+"syntax match	glslOctalZero	'\<0'			contained
+"syntax match	glslOctal		'0\o\+u\=\>'	contained contains=glslOctalZero
+"syntax match	glslOctalError	'0\o*[89]\d*'	contained
 
-" floating point numbers
-syntax match	glslFloat		'\d\+\(f\|lf\)'							contained
-syntax match	glslFloat		'\d\+\.\d*\(e[-+]\=\d\+\)\=\(f\|lf\)'	contained
-syntax match	glslFloat		'\.\d\+\(e[-+]\=\d\+\)\=\(f\|lf\)=\>'	contained
-syntax match	glslFloat		'\d\+e[-+]\=\d\+\(f\|lf\)\=\>'			contained
+"" floating point numbers
+"syntax match	glslFloat		'\d\+\(f\|lf\)'							contained
+"syntax match	glslFloat		'\d\+\.\d*\(e[-+]\=\d\+\)\=\(f\|lf\)'	contained
+"syntax match	glslFloat		'\.\d\+\(e[-+]\=\d\+\)\=\(f\|lf\)=\>'	contained
+"syntax match	glslFloat		'\d\+e[-+]\=\d\+\(f\|lf\)\=\>'			contained
 
-" restore case sensitivity
-syntax case match
-"}}}
+"" restore case sensitivity
+"syntax case match
+""}}}
 
-" GLSL comments {{{
-" glslCommentGroup allows adding matches for special things in comments
-syntax cluster	glslCommentGroup	contains=glslTodo,cBadContinuation
-syntax keyword	glslTodo			TODO FIXME XXX HACK BUG			contained
-syntax region	glslComment			start='//'  skip='\\$' end='$'	keepend contains=@glslCommentGroup
-syntax region	glslComment			start='/\*'            end='\*/'
-syntax match	glslCommentError	'\*/'
-"}}}
+"" GLSL comments {{{
+"" glslCommentGroup allows adding matches for special things in comments
+"syntax cluster	glslCommentGroup	contains=glslTodo,cBadContinuation
+"syntax keyword	glslTodo			TODO FIXME XXX HACK BUG			contained
+"syntax region	glslComment			start='//'  skip='\\$' end='$'	keepend contains=@glslCommentGroup
+"syntax region	glslComment			start='/\*'            end='\*/'
+"syntax match	glslCommentError	'\*/'
+""}}}
 
 " GLSL built in constants {{{
 syntax keyword glslBoolean	true false
@@ -291,20 +291,20 @@ syntax keyword glslFunction	abs
 						\	usubBorrow
 "}}}
 
-" GLSL looping, logic control, etc. {{{
-syntax keyword glslConditional	if else switch
-syntax keyword glslLabel		case default
-syntax keyword glslRepeat		while for do
-syntax keyword glslControl		break return continue
-"}}}
+"" GLSL looping, logic control, etc. {{{
+"syntax keyword glslConditional	if else switch
+"syntax keyword glslLabel		case default
+"syntax keyword glslRepeat		while for do
+"syntax keyword glslControl		break return continue
+""}}}
 
-" GLSL interface blocks {{{
-syntax keyword glslLayout	layout shared packed std140 std430 row_major column_major
-"}}}
+"" GLSL interface blocks {{{
+"syntax keyword glslLayout	layout shared packed std140 std430 row_major column_major
+""}}}
 
-" GLSL invariance {{{
-syntax keyword glslInvariance	invariant precise
-"}}}
+"" GLSL invariance {{{
+"syntax keyword glslInvariance	invariant precise
+""}}}
 
 " GLSL types {{{
 " transparent types
@@ -431,7 +431,7 @@ syntax keyword glslOpaqueType	atomic_uint
 							\	usamplerCubeArray
 "}}}
 
-syntax keyword glslStructure struct
+"syntax keyword glslStructure struct
 
 " GLSL built in variables {{{
 syntax keyword glslVariable	gl_ClipDistance
@@ -470,105 +470,103 @@ syntax keyword glslVariable	gl_ClipDistance
 						\	gl_WorkGroupSize
 "}}}
 
-" stage syntax file will reset it's items to render correctly.
-syntax keyword glslNotAllowed	discard
-"}}}
+"syntax keyword glslNotAllowed	discard
 
-" GLSL qualifiers {{{
-"buffer
-"centroid
-"coherent
-"const
-"flat
-"in
-"inout
-"invariant
-"out
-"noperspective
-"patch
-"precise
-"readonly
-"restrict
-"sampler
-"shared
-"smooth
-"uniform
-"volatile
-"writeonly
-"}}}
+"" GLSL qualifiers {{{
+""buffer
+""centroid
+""coherent
+""const
+""flat
+""in
+""inout
+""invariant
+""out
+""noperspective
+""patch
+""precise
+""readonly
+""restrict
+""sampler
+""shared
+""smooth
+""uniform
+""volatile
+""writeonly
+""}}}
 
-" GLSL vector components {{{
-" use ms=s+1 to not highlight the period
-syntax match   glslComponent   '\.[xyzw]\+\>'ms=s+1
-syntax match   glslComponent   '\.[rgba]\+\>'ms=s+1
-syntax match   glslComponent   '\.[stpq]\+\>'ms=s+1
+"" GLSL vector components {{{
+"" use ms=s+1 to not highlight the period
+"syntax match   glslComponent   '\.[xyzw]\+\>'ms=s+1
+"syntax match   glslComponent   '\.[rgba]\+\>'ms=s+1
+"syntax match   glslComponent   '\.[stpq]\+\>'ms=s+1
 
-" it is erroneous to mix components from different conceptual
-" types. now, it is feasible that some permutation of these
-" letters could be used for a struct field. if such occurs in
-" your shaders, you can comment these lines.
-"
-" avoid mixing spacial components with color and texture
-syntax match	glslCompError	'\.[rgbastpq]\+[xyzw]\+[rgbastpq]*'ms=s+1
-syntax match	glslCompError	'\.[rgbastpq]*[xyzw]\+[rgbastpq]\+'ms=s+1
+"" it is erroneous to mix components from different conceptual
+"" types. now, it is feasible that some permutation of these
+"" letters could be used for a struct field. if such occurs in
+"" your shaders, you can comment these lines.
+""
+"" avoid mixing spacial components with color and texture
+"syntax match	glslCompError	'\.[rgbastpq]\+[xyzw]\+[rgbastpq]*'ms=s+1
+"syntax match	glslCompError	'\.[rgbastpq]*[xyzw]\+[rgbastpq]\+'ms=s+1
 
-" avoid mixing color with spacial and texture
-syntax match	glslCompError	'\.[xyzwstpq]\+[rgba]\+[xyzwstpq]*'ms=s+1
-syntax match	glslCompError	'\.[xyzwstpq]*[rgba]\+[xyzwstpq]\+'ms=s+1
+"" avoid mixing color with spacial and texture
+"syntax match	glslCompError	'\.[xyzwstpq]\+[rgba]\+[xyzwstpq]*'ms=s+1
+"syntax match	glslCompError	'\.[xyzwstpq]*[rgba]\+[xyzwstpq]\+'ms=s+1
 
-" avoid mixing texture with spacial and color
-syntax match	glslCompError	'\.[xyzwrgba]\+[stpq]\+[xyzwrgba]*'ms=s+1
-syntax match	glslCompError	'\.[xyzwrgba]*[stpq]\+[xyzwrgba]\+'ms=s+1
-"}}}
+"" avoid mixing texture with spacial and color
+"syntax match	glslCompError	'\.[xyzwrgba]\+[stpq]\+[xyzwrgba]*'ms=s+1
+"syntax match	glslCompError	'\.[xyzwrgba]*[stpq]\+[xyzwrgba]\+'ms=s+1
+""}}}
 
-" GLSL preprocessor {{{
-" TODO	extension name can't currently be colored differently
+"" GLSL preprocessor {{{
+"" TODO	extension name can't currently be colored differently
 
-" built in macros
-syntax keyword	glslMacro			__LINE__ __FILE__ __VERSION__ GL_core_profile GL_es_profile GL_compatibility_profile
+"" built in macros
+"syntax keyword	glslMacro			__LINE__ __FILE__ __VERSION__ GL_core_profile GL_es_profile GL_compatibility_profile
 
-" macro definition
-syntax region	glslDefine			start='^\s*#\s*\(define\|undef\)\>'				skip='\\$' end='$'	keepend contains=ALL
+"" macro definition
+"syntax region	glslDefine			start='^\s*#\s*\(define\|undef\)\>'				skip='\\$' end='$'	keepend contains=ALL
 
-" preprocessor conditionals
-syntax region	glslPrecondition	start='^\s*#\s*\(if\|ifdef\|ifndef\|elif\)\>'	skip='\\$' end='$'	keepend contains=glslComment,glslParenError,glslNumbers,glslCommentError
-syntax match	glslPrecondition	'^\s*#\s*\(else\|endif\)\>'
+"" preprocessor conditionals
+"syntax region	glslPrecondition	start='^\s*#\s*\(if\|ifdef\|ifndef\|elif\)\>'	skip='\\$' end='$'	keepend contains=glslComment,glslParenError,glslNumbers,glslCommentError
+"syntax match	glslPrecondition	'^\s*#\s*\(else\|endif\)\>'
 
-" compiler control
-"syntax keyword	glslPragmaDirs		optimize debug STDGL												contained
-"syntax keyword	glslPragmaValues	on off																contained
-"syntax region	glslPragma			start='^\s*#\s*pragma\>'						skip='\\$' end='$'	keepend contains=glslPragmaDirs,glslPragmaValues
-"syntax match	glslExtName			'.\+'																contained
-"syntax keyword	glslExtDir			require enable warn disable											contained
-"syntax match	glslExtension		'^\s*#\s*extension\>.\+:\s\(require\|enable\|warn\|disable\)'		contains=glslExtName,glslExtDir
+"" compiler control
+""syntax keyword	glslPragmaDirs		optimize debug STDGL												contained
+""syntax keyword	glslPragmaValues	on off																contained
+""syntax region	glslPragma			start='^\s*#\s*pragma\>'						skip='\\$' end='$'	keepend contains=glslPragmaDirs,glslPragmaValues
+""syntax match	glslExtName			'.\+'																contained
+""syntax keyword	glslExtDir			require enable warn disable											contained
+""syntax match	glslExtension		'^\s*#\s*extension\>.\+:\s\(require\|enable\|warn\|disable\)'		contains=glslExtName,glslExtDir
 
-" versioning
-syntax keyword	glslProfile			core compatibility es
-syntax region	glslVersion			start='^\s*#\s*version\>\s*\d\d\d\>'			skip='\\$' end='$'	keepend contains=glslComment,glslProfile,glslNumbers
+"" versioning
+"syntax keyword	glslProfile			core compatibility es
+"syntax region	glslVersion			start='^\s*#\s*version\>\s*\d\d\d\>'			skip='\\$' end='$'	keepend contains=glslComment,glslProfile,glslNumbers
 
-" diagnostics
-"syntax region	glslPreprocessor	start='^\s*#\s*\(line\>\|error\>\)'				skip='\\$' end='$'	keepend contains=ALLBUT
-"}}}
+"" diagnostics
+""syntax region	glslPreprocessor	start='^\s*#\s*\(line\>\|error\>\)'				skip='\\$' end='$'	keepend contains=ALLBUT
+""}}}
 
-" GLSL parenthesis errors {{{
-" catch errors caused by wrong parenthesis and brackets
-"
-" This should be before glslErrInParen to avoid problems with #define ({ xxx })
-" TODO	this is not working
-"if exists('glsl_curly_error')
-"    syntax match	glslCurlyError	'}'
-"    syntax region	glslBlock		start='{' end='}' contains=ALLBUT,glslCurlyError,@glslParenGroup,glslErrorInParen,glslErrorInBracket fold
-"else
-"    syntax region	glslBlock		start='{' end='}' transparent fold
-"endif
+"" GLSL parenthesis errors {{{
+"" catch errors caused by wrong parenthesis and brackets
+""
+"" This should be before glslErrInParen to avoid problems with #define ({ xxx })
+"" TODO	this is not working
+""if exists('glsl_curly_error')
+""    syntax match	glslCurlyError	'}'
+""    syntax region	glslBlock		start='{' end='}' contains=ALLBUT,glslCurlyError,@glslParenGroup,glslErrorInParen,glslErrorInBracket fold
+""else
+""    syntax region	glslBlock		start='{' end='}' transparent fold
+""endif
 
-syntax cluster	glslParenGroup		contains=glslParenError,@glslCommentGroup,glslOctalZero,glslNumber,glslFloat,glslOctal,glslOctalError
-syntax region	glslParenthesis		start='(' end=')'	transparent contains=ALLBUT,@glslParenGroup,glslErrorInBracket
-syntax match	glslParenError		'[\])]'				display
-syntax match	glslErrorInParen	'[\]{}]'			display contained
-syntax region	glslBracket			start='\[' end=']'	transparent contains=ALLBUT,@glslParenGroup,glslErrorInParen
-syntax match	glslErrorInBracket	'[);{}]'			display contained
-"}}}
+"syntax cluster	glslParenGroup		contains=glslParenError,@glslCommentGroup,glslOctalZero,glslNumber,glslFloat,glslOctal,glslOctalError
+"syntax region	glslParenthesis		start='(' end=')'	transparent contains=ALLBUT,@glslParenGroup,glslErrorInBracket
+"syntax match	glslParenError		'[\])]'				display
+"syntax match	glslErrorInParen	'[\]{}]'			display contained
+"syntax region	glslBracket			start='\[' end=']'	transparent contains=ALLBUT,@glslParenGroup,glslErrorInParen
+"syntax match	glslErrorInBracket	'[);{}]'			display contained
+""}}}
 
 " Define the default highlighting. {{{
 " Only used when an item doesn't have highlighting yet
