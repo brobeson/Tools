@@ -128,36 +128,167 @@ syntax keyword glslConstant	gl_MaxAtomicCounterBindings
 "}}}
 
 " GLSL built in functions {{{
-" trig
-syntax keyword glslFunction		radians degrees sin cos tan asin acos atan sinh cosh tanh asinh acosh atanh
-
-" exponential
-syntax keyword glslFunction		pow exp log exp2 log2 sqrt inversesqrt
-
-" other
-syntax keyword glslFunction		abs sign floor trunc round roundEven ceil fract mod modf min max clamp mix step smoothstep isnan isinf floatBitsToInt intBitsToFloat fma frexp ldexp
-syntax keyword glslFunction		barrier memoryBarrier groupMemoryBarrier memoryBarrierAtomicCounter memoryBarrierShared memoryBarrierBuffer memoryBarrierImage
-
-" packing
-syntax keyword glslFunction		packUnorm2x16 packUnorm4x8 unpackUnorm2x16 unpackUnorm4x8 packDouble2x32 unpackDouble2x32 packHalf2x16 unpackHalf2x16
-
-" geometric
-syntax keyword glslFunction		length distance dot cross normalize faceforward reflect refract
-
-" matrices
-syntax keyword glslFunction		matrixCompMult outerProduct transpose determinant inverse
-
-" vector relations
-syntax keyword glslFunction		lessThan lessThanEqual greaterThan greaterThanEqual equal notEqual any all not
-
-" integers
-syntax keyword glslFunction		uaddCarry usubBorrow umulExtended imulExtended bitfieldExtract bitfieldReverse bitfieldInsert bitCount findLSB findMSB
-
-" atomic counters & memory ops
-syntax keyword glslFunction		atomicCounterIncrement atomicCounterDecrement atomicCounter atomicOP
-
-" image functions
-syntax keyword glslFunction		imageSize imageLoad imageStore imageAtomicAdd imageAtomicMin imageAtomicMax imageAtomicAnd imageAtomicOr imageAtomicXor imageAtomicExchange imageAtomicCompSwap
+syntax keyword glslFunction	abs
+						\	acos
+						\	acosh
+						\	all
+						\	any
+						\	asin
+						\	asinh
+						\	atan
+						\	atanh
+						\	atomicCounter
+						\	atomicCounterDecrement
+						\	atomicCounterIncrement
+						\	atomicAdd
+						\	atomicAnd
+						\	atomicCompSwap
+						\	atomicExchange
+						\	atomicMax
+						\	atomicMin
+						\	atomicOr
+						\	atomicXor
+						\	barrier
+						\	bitCount
+						\	bitfieldExtract
+						\	bitfieldInsert
+						\	bitfieldReverse
+						\	ceil
+						\	clamp
+						\	cos
+						\	cosh
+						\	cross
+						\	degrees
+						\	determinant
+						\	dFdx
+						\	dFdxCoarse
+						\	dFdxFine
+						\	dFdy
+						\	dFdyCoarse
+						\	dFdyFine
+						\	distance
+						\	dot
+						\	EmitStreamVertex
+						\	EmitVertex
+						\	EndPrimitive
+						\	EndStreamPrimitive
+						\	equal
+						\	exp
+						\	exp2
+						\	faceforward
+						\	findLSB
+						\	findMSB
+						\	floatBitsToInt
+						\	floatBitsToUint
+						\	floor
+						\	fma
+						\	fract
+						\	frexp
+						\	fwidth
+						\	fwidthCoarse
+						\	fwidthFine
+						\	greaterThan
+						\	greaterThanEqual
+						\	groupMemoryBarrier
+						\	imageAtomicAdd
+						\	imageAtomicAnd
+						\	imageAtomicCompSwap
+						\	imageAtomicExchange
+						\	imageAtomicMax
+						\	imageAtomicMin
+						\	imageAtomicOr
+						\	imageAtomicXor
+						\	imageLoad
+						\	imageSamples
+						\	imageSize
+						\	imageStore
+						\	imulExtended
+						\	intBitsToFloat
+						\	interpolateAtCentroid
+						\	interpolateAtOffset
+						\	interpolateAtSample 
+						\	inverse
+						\	inversesqrt
+						\	isinf
+						\	isnan
+						\	ldexp
+						\	length
+						\	lessThan
+						\	lessThanEqual
+						\	log
+						\	log2
+						\	matrixCompMult
+						\	max
+						\	memoryBarrier
+						\	memoryBarrierAtomicCounter
+						\	memoryBarrierBuffer
+						\	memoryBarrierImage
+						\	memoryBarrierShared
+						\	min
+						\	mix
+						\	mod
+						\	modf
+						\	noise1
+						\	noise2
+						\	noise3
+						\	noise4
+						\	normalize
+						\	not
+						\	notEqual
+						\	outerProduct
+						\	packDouble2x32
+						\	packHalf2x16
+						\	packSnorm2x16
+						\	packSnorm4x8
+						\	packUnorm2x16
+						\	packUnorm4x8
+						\	pow
+						\	radians
+						\	reflect
+						\	refract
+						\	round
+						\	roundEven
+						\	sign
+						\	sin
+						\	sinh
+						\	smoothstep
+						\	sqrt
+						\	step
+						\	tan
+						\	tanh
+						\	texelFetch
+						\	texelFetchOffset
+						\	texture
+						\	textureGather
+						\	textureGatherOffset
+						\	textureGatherOffsets
+						\	textureGrad
+						\	textureGradOffset
+						\	textureLod
+						\	textureLodOffset
+						\	textureOffset
+						\	textureProj
+						\	textureProjGrad
+						\	textureProjGradOffset
+						\	textureProjLod
+						\	textureProjLodOffset
+						\	textureProjOffset
+						\	textureQueryLod
+						\	textureQueryLevels
+						\	textureSamples
+						\	textureSize
+						\	transpose
+						\	trunc
+						\	uaddCarry
+						\	uintBitsToFloat
+						\	umulExtended
+						\	unpackDouble2x32
+						\	unpackHalf2x16
+						\	unpackSnorm2x16
+						\	unpackSnorm4x8
+						\	unpackUnorm2x16
+						\	unpackUnorm4x8
+						\	usubBorrow
 "}}}
 
 " GLSL looping, logic control, etc. {{{
@@ -341,23 +472,6 @@ syntax keyword glslVariable	gl_ClipDistance
 
 " stage syntax file will reset it's items to render correctly.
 syntax keyword glslNotAllowed	discard
-
-" fragment, geometry, and vertex processing
-syntax keyword glslNotAllowed	noise1
-
-" fragment processing
-syntax keyword glslNotAllowed	dFdx dFdy fwidth interpolateAtCentroid interpolateAtSample interpolateAtOffset
-
-" geometry processing
-syntax keyword glslNotAllowed	EmitStreamVertex EndStreamPrimitive EmitVertex EndPrimitive
-
-" texture functions (available in vertex, geometry & fragment shaders)
-syntax keyword glslNotAllowed	textureSize           textureQueryLod       textureQueryLevels texture textureProj  textureLod           textureOffset texelFetch
-syntax keyword glslNotAllowed	texelFetchOffset      textureProjOffset     textureLodOffset   textureProjLod       textureProjLodOffset textureGrad   textureGradOffset
-syntax keyword glslNotAllowed	textureProjGrad       textureProjGradOffset textureGather      textureGatherOffset  textureGatherOffsets
-
-" we cannot include 'shared' here, because it is valid in all
-" shaders as a layout qualifier.
 "}}}
 
 " GLSL qualifiers {{{
@@ -474,7 +588,7 @@ highlight default link glslConstant			Constant
 "highlight default link glslExtension			PreProc
 "highlight default link glslExtName				Constant
 "highlight default link glslFloat				Number
-"highlight default link glslFunction			Keyword
+highlight default link glslFunction			Identifier
 "highlight default link glslHex					Number
 "highlight default link glslHexZero				PreProc
 "highlight default link glslInteger				Number
