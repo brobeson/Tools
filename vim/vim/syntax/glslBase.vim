@@ -568,6 +568,9 @@ syntax keyword glslVariable	gl_ClipDistance
 "syntax match	glslErrorInBracket	'[);{}]'			display contained
 ""}}}
 
+" GLSL errors
+syntax match glslReserved 'gl_\i*'
+
 " Define the default highlighting. {{{
 " Only used when an item doesn't have highlighting yet
 highlight default link glslBoolean				Constant
@@ -577,7 +580,7 @@ highlight default link glslBoolean				Constant
 "highlight default link glslCompError			Error
 "highlight default link glslComponent			Special
 "highlight default link glslConditional			Conditional
-highlight default link glslConstant			Constant
+highlight default link glslConstant				Constant
 "highlight default link glslCurlyError			Error
 "highlight default link glslDefine				Macro
 "highlight default link glslErrorInBracket		Error
@@ -586,7 +589,7 @@ highlight default link glslConstant			Constant
 "highlight default link glslExtension			PreProc
 "highlight default link glslExtName				Constant
 "highlight default link glslFloat				Number
-highlight default link glslFunction			Identifier
+highlight default link glslFunction				Identifier
 "highlight default link glslHex					Number
 "highlight default link glslHexZero				PreProc
 "highlight default link glslInteger				Number
@@ -598,6 +601,7 @@ highlight default link glslFunction			Identifier
 "highlight default link glslOctal				Number
 "highlight default link glslOctalError			Error
 "highlight default link glslOctalZero			PreProc
+highlight default link glslOpaqueType			Type
 "highlight default link glslParenError			Error
 "highlight default link glslPragma				PreProc
 "highlight default link glslPragmaDirs			Keyword
@@ -607,9 +611,9 @@ highlight default link glslFunction			Identifier
 "highlight default link glslProfile				Keyword
 "highlight default link glslQualifier			StorageClass
 "highlight default link glslRepeat				Repeat
+highlight default link glslReserved				Error
 "highlight default link glslTodo				Todo
-highlight default link glslTransparentType				Type
-highlight default link glslOpaqueType				Type
+highlight default link glslTransparentType		Type
 highlight default link glslVariable				Identifier
 "highlight default link glslVersion				PreProc
 "}}}
