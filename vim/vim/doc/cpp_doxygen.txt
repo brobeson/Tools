@@ -1,0 +1,218 @@
+*cpp_doxygen.txt*  For Vim version 7.4.  Last Change: 2015 June 2
+
+
+                    Cpp Doxygen Reference Manual
+
+                       by Brendan Robeson
+
+This plugin adds capability for using Doxygen in C++ source code. The plugin
+only helps manipulate Doxygen style comments, not with actually running
+Doxygen. Thus, you don't need to have Doxygen installed to use this plugin.
+
+1. Using cpp_doxygen                    |cpp_doxygen|
+2. Cpp_doxygen command reference        |cpp_doxygen-ref|
+3. Configuring cpp_doxygen              |cpp_doxygen-config|
+4. Comment block details                |cpp_doxygen-details|
+5. Folding Doxygen comments             |cpp_doxygen-folding|
+
+=============================================================================
+1. Using cpp_doxygen                            *cpp_doxygen*
+
+Cpp_doxygen can be used to add a Doxygen template to the source code. The
+plugin performs a basic parse of the statement on the current line and
+generates a Doxygen comment appropriate for that bit of code. For example, if
+the cursor is on a function declaration, the Doxygen block will include the
+brief, details, parameters, return, and exception commands. If the cursor is
+on a class declaration, it will have just the brief and details commands.
+A few special cases detected by cpp_doxygen are:
+    1 - Template parameters cause tparam commands to be added to the Doxygen
+        block.
+    2 - For a function which returns a boolean, the returns command is
+        omitted, and two retval commands are used.
+    3 - For functions with parameters, cpp_doxygen attempts to determine if
+        each parameter is in, out, or in,out.
+
+To insert a comment template suitable for Doxygen, place the cursor on the
+line of a struct, class, namespace, or function declaration and press
+<Leader>d. It's ok if the C++ statement spans multiple lines. A Doxygen
+comment will be inserted above the statement. Note that if the C++ statement
+is not one of those listed above, the results are undefined.
+
+Another case is to insert the file documentation. This occurs if the cursor is
+on the first line of the file. Note that this will prevent documenting a
+statement if that statement is on the first line.
+
+=============================================================================
+2. Cpp_doxygen Command Reference                *cpp_doxygen-ref*
+
+This section describes the default commands, mappings, and menu items. For
+instructions about customizing these, see |cpp_doxygen-config|.
+
+<Leader>d               Insert a Doxygen comment before the current line.
+
+=============================================================================
+3. Configuring cpp_doxygen                      *cpp_doxygen-ref*
+
+Cpp_doxygen has quite a few configuration options. Generally, speaking, you
+just need to add the appropriate Vim commands to your vimrc.
+
+                                                *g:cpp_doxygen_style*
+g:cpp_doxygen_style
+                        Use this variable to control the style of the Doxygen
+                        comment blocks. Possible values are, and their
+                        appearances, are:
+                        'javadoc'   /**
+                                     * \brief
+                                     */
+
+                        'qt'        /*!
+                                     * \brief
+                                     */
+
+                        'triple_slash'  /// \brief
+                                        /// \details
+
+                        'exclamation'   //! \brief
+                                        //! \details
+
+                        The default is 'javadoc', and this is used if you set
+                        an unknown value.
+
+                                                *g:cpp_doxygen_command_mark*
+g:cpp_doxygen_command_mark
+                        Set this variable to either '\' or '@' to mark Doxygen
+                        commands. The default is '\', which is used if an
+                        unknown value is set. This controls whether a Doxygen
+                        command is written as
+                            \brief
+                        of
+                            @brief
+
+                                                *<Plug>cpp_doxygenInsert*
+<Plug>cpp_doxygenInsert If you prefer a different map for inserting Doxygen,
+                        you need to map to this in your vimrc. For example, if
+                        you prefer '+d' you would add: >
+                            map +d <Plug>cpp_doxygenInsert
+<
+=============================================================================
+4. Comment block details                        *cpp_doxygen-details*
+
+Cpp_doxygen will insert the following Doxygen comment blocks. The examples
+below show all possible Doxygen commands; some of the commands are only
+written when necessary.
+
+File                    File blocks document the file. The filename is deduced
+                        by the plugin and filled in for you, stripped of all
+                        path information.
+                            /**~
+                             * \file     Foo.hpp~
+                             * \brief~
+                             * \details~
+                             * \author~
+                             */~
+
+Namespace               This is used to document a namespace. The doxygen
+                        comment appears exactly as shown here.
+                            /**~
+                             * \brief~
+                             * \details~
+                             */~
+
+Class or Struct         Class blocks are used to document a class or struct.
+                        If the class is a template class, the plugin will add
+                        \tparam commands to document the template parameters.
+                            /**~
+                             * \brief~
+                             * \details~
+                             * \tparam   Type~
+                             */~
+
+Function                This documents a function or method. The \brief and
+                        \details commands are always present. If the function
+                        is a template, \tparam commands are added, with the
+                        template parameter names. If any function parameters
+                        are present, those are added, too. The plugin attempts
+                        to deduce the direction of the parameters. If a
+                        parameter is a non-const reference, or a pointer, or a
+                        pointer-to-const; the parameter is labeled [in,out].
+                        Otherwise, the parameter is labeled as [in]. Note that
+                        you may need to edit these labels; it's really not
+                        possible to get these exactly right without examining
+                        the function definition. If the function returns
+                        something, a \return command is added to the comment.
+                        However, if the return type is bool, the \return
+                        command is replaced with two \retval commands: true
+                        and false. Finally, an \exception command is added. If
+                        the function is specified with "noexcept", the
+                        \exception command is appended with "None".
+                            /**~
+                             * \brief~
+                             * \details~
+                             * \tparam  Type~
+                             * \param[in]  inputParameter~
+                             * \param[in,out]  inAndOutParameter~
+                             * \return~
+                             * \retval  true~
+                             * \retval  false~
+                             * \exception~
+                             * \execption  None~
+                             */~
+
+Deleted Functions       Deleted functions are removed from the Doxygen
+                        documentation by wrapping them in empty \cond
+                        commands. If multiple deleted functions are declared
+                        consecutively, they are all wrapped in one set of
+                        commands.  Note that this comment block ignores
+                        g:cpp_doxygen_style if it is equal to
+                        "triple_slash" or "exclamation". This is because
+                        Doxygen requires that such comment blocks span
+                        multiple lines, but these are single line comments.
+                            /** \cond */~
+                            Foo(const Foo& source) = delete;~
+
+                            Foo& operator=(const Foo& source) = delete;~
+                            /** \endcond */~
+
+=============================================================================
+5. Folding Doxygen comments                     *cpp_doxygen-folding*
+                                                *FoldDoxygen()*
+
+Cpp_doxygen provides a global function you can use for folding Doxygen comment
+blocks. Note that, with the C++ syntax included with Vim, only C style
+comments can fold. This function was written with that in mind. If you've
+gotten multiline C++ style comments to fold, this function won't work for
+them. Ergo, this function only works with "javadoc" and "qt" style Doxygen
+comments.
+
+The folding function looks for the brief description and presents that, with
+comment tokens around it. If no brief description is found, the phrase "no
+brief description" is used instead.
+
+    /** This is a brief description. */~
+    /*! So is this. */~
+    /** no brief description */~
+
+To use it, call |FoldDoxygen()| from within your own fold text function. The
+function will only return text if the folded block is a Doxygen comment; if it
+starts with "/**" or "/*!". Otherwise, '' is returned. Here is an example of
+how you might use it: >
+    1   function CppFoldText()
+    2       " start by folding a doxygen comment
+    3       let fold_text = ''
+    4       if exists('*FoldDoxygen')
+    5           let fold_text = FoldDoxygen()
+    6       endif
+    7
+    8       " if the folded block isn't a doxygen comment, the function will
+    9       " return '' and we can try something else
+   10       if foldText == ''
+   11           " generate some other fold text
+   12       endif
+   13       return fold_text
+   14   endfunction
+   15
+   16   setlocal foldtext=CppFoldText()
+
+
+vim:tw=78:ts=8:ft=help:norl:
+

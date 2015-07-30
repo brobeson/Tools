@@ -18,6 +18,10 @@ let s:save_cpo = &cpo
 setlocal cpo&vim
 
 
+" this column helps me guide output via echo commands. it gives me 11 columns
+" for tab, command and opening ". Then 80 columns for the echo text.
+setlocal colorcolumn=92
+
 "==============================================================================
 " code folding {{{
 "==============================================================================

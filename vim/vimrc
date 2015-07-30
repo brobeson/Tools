@@ -32,6 +32,8 @@ set guioptions-=L	" disable the left hand scroll bar
 set guioptions-=l	" disable the left hand scroll bar
 set guifont=DejaVu\ Sans\ Mono\ 9
 
+let g:netrw_sort_sequence='[\/]$,*'
+
 " set up variables for specific programming & markup languages
 let html_use_w3_style = 1
 let html_version = 5
