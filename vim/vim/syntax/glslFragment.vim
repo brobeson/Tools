@@ -7,7 +7,7 @@
 " For version 6.x: Quit when a syntax file was already loaded
 if version < 600
 	syntax clear
-elseif exists("b:current_syntax")
+elseif exists('b:current_syntax')
 	finish
 endif
 
@@ -19,7 +19,7 @@ else
 	unlet b:current_syntax
 endif
 
-" override the "not allowed" items from the base syntax
+" override the 'not allowed' items from the base syntax
 syntax keyword glslBuiltIn	gl_FragCoord     gl_FrontFacing   gl_ClipDistance   gl_PointCoord
 syntax keyword glslBuiltIn	gl_PrimitiveID   gl_SampleID      gl_SamplePosition gl_SampleMaskIn
 syntax keyword glslBuiltIn	gl_Layer         gl_ViewportIndex gl_FragDepth      gl_SampleMask
@@ -32,5 +32,5 @@ syntax keyword glslFunction	dFdx dFdy fwidth interpolateAtCentroid interpolateAt
 
 hi def link glslBuiltIn		Keyword
 
-let b:current_syntax = "glslVertex"
+let b:current_syntax = 'glslVertex'
 
