@@ -45,37 +45,86 @@ syntax case match
 " GLSL comments {{{
 " glslCommentGroup allows adding matches for special things in comments
 syntax cluster	glslCommentGroup	contains=glslTodo,cBadContinuation
-syntax keyword	glslTodo			TODO FIXME XXX HACK BUG			contained 
+syntax keyword	glslTodo			TODO FIXME XXX HACK BUG			contained
 syntax region	glslComment			start='//'  skip='\\$' end='$'	keepend contains=@glslCommentGroup
 syntax region	glslComment			start='/\*'            end='\*/'
 syntax match	glslCommentError	'\*/'
 "}}}
 
 " GLSL built in constants {{{
-syntax keyword glslBoolean		true false
-syntax keyword glslConstant		gl_MaxAtomicCounterBindings               gl_MaxAtomicCounterBufferSize           gl_MaxClipDistances
-syntax keyword glslConstant		gl_MaxCombinedAtomicCounterBuffers        gl_MaxCombinedAtomicCounters            gl_MaxCombinedImageUnitsAndFragmentOutputs
-syntax keyword glslConstant		gl_MaxCombinedImageUniforms               gl_MaxCombinedTextureImageUnits         gl_MaxComputeAtomicGounterBuffers
-syntax keyword glslConstant		gl_MaxComputeAtomicCounters               gl_MaxComputeImageUniforms              gl_MaxComputeTextureImageUnits
-syntax keyword glslConstant		gl_MaxComputeUniformComponents            gl_MaxComputeWorkGroupCount             gl_MaxComputeWorkGroupSize
-syntax keyword glslConstant		gl_MaxProgramTexelOffset                  gl_MinProgramTexelOffset                gl_MaxDrawBuffers
-syntax keyword glslConstant		gl_MaxFragmentAtomicCounterBuffers        gl_MaxFragmentAtomicCounters            gl_MaxFragmentImageUniforms
-syntax keyword glslConstant		gl_MaxFragmentInputComponents             gl_MaxFragmentUniformComponents         gl_MaxFragmentUniformVectors
-syntax keyword glslConstant		gl_MaxGeometryAtomicCounterBuffers        gl_MaxGeometryAtomicCounters            gl_MaxGeometryImageUniforms
-syntax keyword glslConstant		gl_MaxGeometryInputComponents             gl_MaxGeometryOutputComponents          gl_MaxGeometryOutputVertices
-syntax keyword glslConstant		gl_MaxGeometryTextureImageUnits           gl_MaxGeometryTotalOutputComponents     gl_MaxGeometryUniformComponents
-syntax keyword glslConstant		gl_MaxGeometryVaryingComponents           gl_MaxIMageSamples                      gl_MaxImageUnits
-syntax keyword glslConstant		gl_MaxPatchVertices                       gl_MaxTessControlAtomicCounterBuffers   gl_MaxTessControlAtomicCounters
-syntax keyword glslConstant		gl_MaxTessControlImageUniforms            gl_MaxTessControlInputComponents        gl_MaxTessControlOutputComponents
-syntax keyword glslConstant		gl_MaxTessControlTextureImageUnits        gl_MaxTessControlTotalOutputComponents  gl_MaxTessControlUniformComponents
-syntax keyword glslConstant		gl_MaxTessEvaluationAtomicCounterBuffers  gl_MaxTessEvaluationAtomicCounters      gl_MaxTessEvaluationImageUniforms
-syntax keyword glslConstant		gl_MaxTessEvaluationInputComponents       gl_MaxTessEvaluationOutputComponents    gl_MaxTessEvaluationTextureImageUnits
-syntax keyword glslConstant		gl_MaxTessEvaluationUniformComponents     gl_MaxTessGenLevel                      gl_MaxTessPatchComponents
-syntax keyword glslConstant		gl_MaxTextureImageUnits                   gl_MaxTransformFeedbackBuffers          gl_MaxTransformFeedbackInterleavedComponents
-syntax keyword glslConstant		gl_MaxVaryingComponents                   gl_MaxVaryingVectors                    gl_MaxVertexAtomicCounterBuffers
-syntax keyword glslConstant		gl_MaxVertexAtomicCounters                gl_MaxVertexAttribs                     gl_MaxVertexImageUniforms
-syntax keyword glslConstant		gl_MaxVertexOutputComponents              gl_MaxVertexTextureImageUnits           gl_MaxVertexUniformComponents
-syntax keyword glslConstant		gl_MaxVertexUniformVectors                gl_MaxViewports
+syntax keyword glslBoolean	true false
+syntax keyword glslConstant	gl_MaxAtomicCounterBindings
+						\	gl_MaxAtomicCounterBufferSize
+						\	gl_MaxClipDistances
+						\	gl_MaxCombinedAtomicCounterBuffers
+						\	gl_MaxCombinedAtomicCounters
+						\	gl_MaxCombinedClipAndCullDistances
+						\	gl_MaxCombinedImageUnitsAndFragmentOutputs
+						\	gl_MaxCombinedImageUniforms
+						\	gl_MaxCombinedShaderOutputResources
+						\	gl_MaxCombinedTextureImageUnits
+						\	gl_MaxComputeAtomicGounterBuffers
+						\	gl_MaxComputeAtomicCounters
+						\	gl_MaxComputeImageUniforms
+						\	gl_MaxComputeTextureImageUnits
+						\	gl_MaxComputeUniformComponents
+						\	gl_MaxComputeWorkGroupCount
+						\	gl_MaxComputeWorkGroupSize
+						\	gl_MaxCullDistances
+						\	gl_MaxProgramTexelOffset
+						\	gl_MaxDrawBuffers
+						\	gl_MaxFragmentAtomicCounterBuffers
+						\	gl_MaxFragmentAtomicCounters
+						\	gl_MaxFragmentImageUniforms
+						\	gl_MaxFragmentInputComponents
+						\	gl_MaxFragmentUniformComponents
+						\	gl_MaxFragmentUniformVectors
+						\	gl_MaxGeometryAtomicCounterBuffers
+						\	gl_MaxGeometryAtomicCounters
+						\	gl_MaxGeometryImageUniforms
+						\	gl_MaxGeometryInputComponents
+						\	gl_MaxGeometryOutputComponents
+						\	gl_MaxGeometryOutputVertices
+						\	gl_MaxGeometryTextureImageUnits
+						\	gl_MaxGeometryTotalOutputComponents
+						\	gl_MaxGeometryUniformComponents
+						\	gl_MaxGeometryVaryingComponents
+						\	gl_MaxImageSamples
+						\	gl_MaxImageUnits
+						\	gl_MaxPatchVertices
+						\	gl_MaxSamples
+						\	gl_MaxTessControlAtomicCounterBuffers
+						\	gl_MaxTessControlAtomicCounters
+						\	gl_MaxTessControlImageUniforms
+						\	gl_MaxTessControlInputComponents
+						\	gl_MaxTessControlOutputComponents
+						\	gl_MaxTessControlTextureImageUnits
+						\	gl_MaxTessControlTotalOutputComponents
+						\	gl_MaxTessControlUniformComponents
+						\	gl_MaxTessEvaluationAtomicCounterBuffers
+						\	gl_MaxTessEvaluationAtomicCounters
+						\	gl_MaxTessEvaluationImageUniforms
+						\	gl_MaxTessEvaluationInputComponents
+						\	gl_MaxTessEvaluationOutputComponents
+						\	gl_MaxTessEvaluationTextureImageUnits
+						\	gl_MaxTessEvaluationUniformComponents
+						\	gl_MaxTessGenLevel
+						\	gl_MaxTessPatchComponents
+						\	gl_MaxTextureImageUnits
+						\	gl_MaxTransformFeedbackBuffers
+						\	gl_MaxTransformFeedbackInterleavedComponents
+						\	gl_MaxVaryingComponents
+						\	gl_MaxVaryingVectors
+						\	gl_MaxVertexAtomicCounterBuffers
+						\	gl_MaxVertexAtomicCounters
+						\	gl_MaxVertexAttribs
+						\	gl_MaxVertexImageUniforms
+						\	gl_MaxVertexOutputComponents
+						\	gl_MaxVertexTextureImageUnits
+						\	gl_MaxVertexUniformComponents
+						\	gl_MaxVertexUniformVectors
+						\	gl_MaxViewports
+						\	gl_MinProgramTexelOffset
 "}}}
 
 " GLSL built in functions {{{
@@ -253,15 +302,45 @@ syntax keyword glslOpaqueType	atomic_uint
 
 syntax keyword glslStructure struct
 
-" GLSL shader stage specific {{{
-" these all default to show an error.  the correct shader
+" GLSL built in variables {{{
+syntax keyword glslVariable	gl_ClipDistance
+						\	gl_CullDistance
+						\	gl_FragCoord
+						\	gl_FragDepth
+						\	gl_FrontFacing
+						\	gl_GlobalInvocationID
+						\	gl_HelperInvocation
+						\	gl_in
+						\	gl_InstanceID
+						\	gl_InvocationID
+						\	gl_Layer
+						\	gl_LocalGroupSize
+						\	gl_LocalInvocationID
+						\	gl_LocalInvocationIndex
+						\	gl_NumWorkGroups
+						\	gl_out
+						\	gl_PatchVerticesIn
+						\	gl_PerVertex
+						\	gl_PointCoord
+						\	gl_PointSize
+						\	gl_Position
+						\	gl_PrimitiveID
+						\	gl_PrimitiveIDIn
+						\	gl_SampleID
+						\	gl_SampleMask
+						\	gl_SampleMaskIn
+						\	gl_SamplePosition
+						\	gl_TessCoord
+						\	gl_TessLevelInner
+						\	gl_TessLevelOuter
+						\	gl_VertexID
+						\	gl_ViewportIndex
+						\	gl_WorkGroupID
+						\	gl_WorkGroupSize
+"}}}
+
 " stage syntax file will reset it's items to render correctly.
-syntax keyword glslNotAllowed	gl_ClipDistance   gl_FragCoord     gl_FragDepth       gl_FrontFacing    gl_GlobalInvocationID gl_in
-syntax keyword glslNotAllowed	gl_InstanceID     gl_InvocationID  gl_Layer           gl_LocalGroupSize gl_LocalInvocationID  gl_LocalInvocationIndex
-syntax keyword glslNotAllowed	gl_NumWorkGroups  gl_out           gl_PatchVerticesIn gl_PerVertex      gl_PointCoord         gl_PointSize
-syntax keyword glslNotAllowed	gl_Position       gl_PrimitiveID   gl_PrimitiveIDIn   gl_SampleID       gl_SampleMask         gl_SampleMaskIn
-syntax keyword glslNotAllowed	gl_SamplePosition gl_TessCoord     gl_TessLevelInner  gl_TessLevelOuter gl_ViewportIndex      gl_VertexID
-syntax keyword glslNotAllowed	gl_WorkGroupID    gl_WorkGroupSize discard
+syntax keyword glslNotAllowed	discard
 
 " fragment, geometry, and vertex processing
 syntax keyword glslNotAllowed	noise1
@@ -379,14 +458,14 @@ syntax match	glslErrorInBracket	'[);{}]'			display contained
 
 " Define the default highlighting. {{{
 " Only used when an item doesn't have highlighting yet
-"highlight default link glslBoolean				Constant
+highlight default link glslBoolean				Constant
 "highlight default link glslComment				Comment
 "highlight default link glslCommentError		Error
 "highlight default link glslCommentStartError	Error
 "highlight default link glslCompError			Error
 "highlight default link glslComponent			Special
 "highlight default link glslConditional			Conditional
-"highlight default link glslConstant			Constant
+highlight default link glslConstant			Constant
 "highlight default link glslCurlyError			Error
 "highlight default link glslDefine				Macro
 "highlight default link glslErrorInBracket		Error
@@ -419,6 +498,7 @@ syntax match	glslErrorInBracket	'[);{}]'			display contained
 "highlight default link glslTodo				Todo
 highlight default link glslTransparentType				Type
 highlight default link glslOpaqueType				Type
+highlight default link glslVariable				Identifier
 "highlight default link glslVersion				PreProc
 "}}}
 
