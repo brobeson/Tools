@@ -39,14 +39,11 @@ syntax match	glslFloat		'\d\+e[-+]\?\d\+\(f\|lf\)\?\>'			contained
 syntax case match
 "}}}
 
-"" GLSL comments {{{
-"" glslCommentGroup allows adding matches for special things in comments
-"syntax cluster	glslCommentGroup	contains=glslTodo,cBadContinuation
-"syntax keyword	glslTodo			TODO FIXME XXX HACK BUG			contained
-"syntax region	glslComment			start='//'  skip='\\$' end='$'	keepend contains=@glslCommentGroup
-"syntax region	glslComment			start='/\*'            end='\*/'
-"syntax match	glslCommentError	'\*/'
-""}}}
+" GLSL comments {{{
+syntax keyword	glslTodo			TODO FIXME XXX HACK BUG			contained
+syntax region	glslComment			start='//'  skip='\\$' end='$'	keepend contains=glslTodo
+syntax region	glslComment			start='/\*'            end='\*/'
+"}}}
 
 " GLSL built in constants {{{
 syntax keyword glslBoolean	true false
@@ -525,7 +522,7 @@ syntax match	glslMixedComps	'\.[xyzwrgba]*[stpq]\+[xyzwrgba]\+'ms=s+1
 "syntax region	glslDefine			start='^\s*#\s*\(define\|undef\)\>'				skip='\\$' end='$'	keepend contains=ALL
 
 "" preprocessor conditionals
-"syntax region	glslPrecondition	start='^\s*#\s*\(if\|ifdef\|ifndef\|elif\)\>'	skip='\\$' end='$'	keepend contains=glslComment,glslParenError,glslNumbers,glslCommentError
+"syntax region	glslPrecondition	start='^\s*#\s*\(if\|ifdef\|ifndef\|elif\)\>'	skip='\\$' end='$'	keepend contains=glslComment,glslParenError,glslNumbers
 "syntax match	glslPrecondition	'^\s*#\s*\(else\|endif\)\>'
 
 "" compiler control
@@ -556,7 +553,7 @@ syntax match	glslMixedComps	'\.[xyzwrgba]*[stpq]\+[xyzwrgba]\+'ms=s+1
 ""    syntax region	glslBlock		start='{' end='}' transparent fold
 ""endif
 
-"syntax cluster	glslParenGroup		contains=glslParenError,@glslCommentGroup,glslOctalZero,glslNumber,glslFloat,glslOctal,glslOctalError
+"syntax cluster	glslParenGroup		contains=glslParenError,glslTodo,glslOctalZero,glslNumber,glslFloat,glslOctal,glslOctalError
 "syntax region	glslParenthesis		start='(' end=')'	transparent contains=ALLBUT,@glslParenGroup,glslErrorInBracket
 "syntax match	glslParenError		'[\])]'				display
 "syntax match	glslErrorInParen	'[\]{}]'			display contained
@@ -571,7 +568,6 @@ syntax match glslReserved 'gl_\i*'
 " Only used when an item doesn't have highlighting yet
 highlight default link glslBoolean				Constant
 "highlight default link glslComment				Comment
-"highlight default link glslCommentError		Error
 "highlight default link glslCommentStartError	Error
 highlight default link glslComponent			Special
 highlight default link glslConditional			Conditional
