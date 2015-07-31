@@ -13,34 +13,31 @@ if exists('b:current_syntax')
 endif
 
 
-"" GLSL numbers {{{
-"" TODO	the floats using scientific notation do not color the decimal point
+" GLSL numbers {{{
+" ignore case for the type suffixes: f and F are both ok.
+syntax case ignore
+syntax match	glslNumbers		'\<\d\|\.\d'	transparent contains=glslInteger,glslFloat,glslOctalError,glslOctal,glslHex
 
-"" ignore case for the type suffixes: f and F are both ok.
-"syntax case ignore
-"syntax match	glslNumbers		'\<\d\|\.\d'	transparent contains=glslInteger,glslFloat,glslOctalError,glslOctal,glslHex
+" decimal integers
+syntax match	glslInteger		'\d\+u\?'		contained
 
-"" decimal integers
-"syntax match	glslInteger		'\d\+u\='		contained
-
-"" hex number
-"syntax match	glslHexZero		'\<0x'			contained
-"syntax match	glslHex			'0x\x\+u\='		contained contains=glslHexZero
+" hex number
+syntax match	glslHexZero		'\<0x'			contained
+syntax match	glslHex			'0x\x\+u\?'		contained contains=glslHexZero
 
 "" flag the first zero of an octal number as something special
-"syntax match	glslOctalZero	'\<0'			contained
-"syntax match	glslOctal		'0\o\+u\=\>'	contained contains=glslOctalZero
-"syntax match	glslOctalError	'0\o*[89]\d*'	contained
+syntax match	glslOctalZero	'\<0'			contained
+syntax match	glslOctal		'0\o\+u\?\>'	contained contains=glslOctalZero
 
-"" floating point numbers
-"syntax match	glslFloat		'\d\+\(f\|lf\)'							contained
-"syntax match	glslFloat		'\d\+\.\d*\(e[-+]\=\d\+\)\=\(f\|lf\)'	contained
-"syntax match	glslFloat		'\.\d\+\(e[-+]\=\d\+\)\=\(f\|lf\)=\>'	contained
-"syntax match	glslFloat		'\d\+e[-+]\=\d\+\(f\|lf\)\=\>'			contained
+" floating point numbers
+syntax match	glslFloat		'\d\+\(f\|lf\)'							contained
+syntax match	glslFloat		'\d\+\.\d*\(e[-+]\?\d\+\)\?\(f\|lf\)'	contained
+syntax match	glslFloat		'\.\d\+\(e[-+]\?\d\+\)\?\(f\|lf\)=\>'	contained
+syntax match	glslFloat		'\d\+e[-+]\?\d\+\(f\|lf\)\?\>'			contained
 
-"" restore case sensitivity
-"syntax case match
-""}}}
+" restore case sensitivity
+syntax case match
+"}}}
 
 "" GLSL comments {{{
 "" glslCommentGroup allows adding matches for special things in comments
@@ -586,20 +583,19 @@ highlight default link glslConstant				Constant
 "highlight default link glslExtDir				Keyword
 "highlight default link glslExtension			PreProc
 "highlight default link glslExtName				Constant
-"highlight default link glslFloat				Number
+highlight default link glslFloat				Number
 highlight default link glslFunction				Identifier
-"highlight default link glslHex					Number
-"highlight default link glslHexZero				PreProc
-"highlight default link glslInteger				Number
+highlight default link glslHex					Number
+highlight default link glslHexZero				Number
+highlight default link glslInteger				Number
 "highlight default link glslInvariant			Keyword
 highlight default link glslLabel				Label
 "highlight default link glslLayout				Keyword
 "highlight default link glslMacro				Macro
 highlight default link glslMixedComps			Error
 "highlight default link glslNotAllowed			Error
-"highlight default link glslOctal				Number
-"highlight default link glslOctalError			Error
-"highlight default link glslOctalZero			PreProc
+highlight default link glslOctal				Number
+highlight default link glslOctalZero			Number
 highlight default link glslOpaqueType			Type
 "highlight default link glslParenError			Error
 "highlight default link glslPragma				PreProc
