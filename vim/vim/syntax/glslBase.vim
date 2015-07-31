@@ -291,12 +291,13 @@ syntax keyword glslFunction	abs
 						\	usubBorrow
 "}}}
 
-"" GLSL looping, logic control, etc. {{{
-"syntax keyword glslConditional	if else switch
-"syntax keyword glslLabel		case default
-"syntax keyword glslRepeat		while for do
-"syntax keyword glslControl		break return continue
-""}}}
+" GLSL keywords {{{
+syntax keyword glslConditional	if else switch
+syntax keyword glslStatement	break return continue discard
+syntax keyword glslLabel		case default
+syntax keyword glslRepeat		while for do
+syntax keyword glslStructure	struct
+" }}}
 
 "" GLSL interface blocks {{{
 "syntax keyword glslLayout	layout shared packed std140 std430 row_major column_major
@@ -431,7 +432,6 @@ syntax keyword glslOpaqueType	atomic_uint
 							\	usamplerCubeArray
 "}}}
 
-"syntax keyword glslStructure struct
 
 " GLSL built in variables {{{
 syntax keyword glslVariable	gl_ClipDistance
@@ -470,8 +470,6 @@ syntax keyword glslVariable	gl_ClipDistance
 						\	gl_WorkGroupSize
 "}}}
 
-"syntax keyword glslNotAllowed	discard
-
 "" GLSL qualifiers {{{
 ""buffer
 ""centroid
@@ -495,29 +493,30 @@ syntax keyword glslVariable	gl_ClipDistance
 ""writeonly
 ""}}}
 
-"" GLSL vector components {{{
-"" use ms=s+1 to not highlight the period
-"syntax match   glslComponent   '\.[xyzw]\+\>'ms=s+1
-"syntax match   glslComponent   '\.[rgba]\+\>'ms=s+1
-"syntax match   glslComponent   '\.[stpq]\+\>'ms=s+1
+" GLSL vector components {{{
+" use ms=s+1 to not highlight the period
+syntax match   glslComponent   '\.[xyzw]\+\>'ms=s+1
+syntax match   glslComponent   '\.[rgba]\+\>'ms=s+1
+syntax match   glslComponent   '\.[stpq]\+\>'ms=s+1
 
-"" it is erroneous to mix components from different conceptual
-"" types. now, it is feasible that some permutation of these
-"" letters could be used for a struct field. if such occurs in
-"" your shaders, you can comment these lines.
-""
-"" avoid mixing spacial components with color and texture
-"syntax match	glslCompError	'\.[rgbastpq]\+[xyzw]\+[rgbastpq]*'ms=s+1
-"syntax match	glslCompError	'\.[rgbastpq]*[xyzw]\+[rgbastpq]\+'ms=s+1
+" avoid mixing spacial components with color and texture
+"
+" it is erroneous to mix components from different conceptual
+" types. now, it is feasible that some permutation of these
+" letters could be used for a struct field. if such occurs in
+" your shaders, you should link glslMixedComps to something
+" other than Error.
+syntax match	glslMixedComps	'\.[rgbastpq]\+[xyzw]\+[rgbastpq]*'ms=s+1
+syntax match	glslMixedComps	'\.[rgbastpq]*[xyzw]\+[rgbastpq]\+'ms=s+1
 
-"" avoid mixing color with spacial and texture
-"syntax match	glslCompError	'\.[xyzwstpq]\+[rgba]\+[xyzwstpq]*'ms=s+1
-"syntax match	glslCompError	'\.[xyzwstpq]*[rgba]\+[xyzwstpq]\+'ms=s+1
+" avoid mixing color with spacial and texture
+syntax match	glslMixedComps	'\.[xyzwstpq]\+[rgba]\+[xyzwstpq]*'ms=s+1
+syntax match	glslMixedComps	'\.[xyzwstpq]*[rgba]\+[xyzwstpq]\+'ms=s+1
 
-"" avoid mixing texture with spacial and color
-"syntax match	glslCompError	'\.[xyzwrgba]\+[stpq]\+[xyzwrgba]*'ms=s+1
-"syntax match	glslCompError	'\.[xyzwrgba]*[stpq]\+[xyzwrgba]\+'ms=s+1
-""}}}
+" avoid mixing texture with spacial and color
+syntax match	glslMixedComps	'\.[xyzwrgba]\+[stpq]\+[xyzwrgba]*'ms=s+1
+syntax match	glslMixedComps	'\.[xyzwrgba]*[stpq]\+[xyzwrgba]\+'ms=s+1
+"}}}
 
 "" GLSL preprocessor {{{
 "" TODO	extension name can't currently be colored differently
@@ -577,9 +576,8 @@ highlight default link glslBoolean				Constant
 "highlight default link glslComment				Comment
 "highlight default link glslCommentError		Error
 "highlight default link glslCommentStartError	Error
-"highlight default link glslCompError			Error
-"highlight default link glslComponent			Special
-"highlight default link glslConditional			Conditional
+highlight default link glslComponent			Special
+highlight default link glslConditional			Conditional
 highlight default link glslConstant				Constant
 "highlight default link glslCurlyError			Error
 "highlight default link glslDefine				Macro
@@ -594,9 +592,10 @@ highlight default link glslFunction				Identifier
 "highlight default link glslHexZero				PreProc
 "highlight default link glslInteger				Number
 "highlight default link glslInvariant			Keyword
-"highlight default link glslLabel				Label
+highlight default link glslLabel				Label
 "highlight default link glslLayout				Keyword
 "highlight default link glslMacro				Macro
+highlight default link glslMixedComps			Error
 "highlight default link glslNotAllowed			Error
 "highlight default link glslOctal				Number
 "highlight default link glslOctalError			Error
@@ -610,8 +609,10 @@ highlight default link glslOpaqueType			Type
 "highlight default link glslPreprocessor		PreProc
 "highlight default link glslProfile				Keyword
 "highlight default link glslQualifier			StorageClass
-"highlight default link glslRepeat				Repeat
+highlight default link glslRepeat				Repeat
 highlight default link glslReserved				Error
+highlight default link glslStatement			Statement
+highlight default link glslStructure			Structure
 "highlight default link glslTodo				Todo
 highlight default link glslTransparentType		Type
 highlight default link glslVariable				Identifier
