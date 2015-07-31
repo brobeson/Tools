@@ -513,13 +513,19 @@ syntax match	glslMixedComps	'\.[xyzwrgba]*[stpq]\+[xyzwrgba]\+'ms=s+1
 "}}}
 
 "" GLSL preprocessor {{{
-"" TODO	extension name can't currently be colored differently
+" built in macros
+syntax keyword	glslMacro	__LINE__
+						\	__FILE__
+						\	__VERSION__
+						\	GL_compatibility_profile
+						\	GL_core_profile
+						\	GL_es_profile
 
-"" built in macros
-"syntax keyword	glslMacro			__LINE__ __FILE__ __VERSION__ GL_core_profile GL_es_profile GL_compatibility_profile
-
-"" macro definition
-"syntax region	glslDefine			start='^\s*#\s*\(define\|undef\)\>'				skip='\\$' end='$'	keepend contains=ALL
+" macro definition
+syntax region	glslPPDefine	start='^\s*#\s*\(define\|undef\)\>'
+							\	skip='\\$'
+							\	end='$'
+							\	keepend contains=ALL
 
 "" preprocessor conditionals
 "syntax region	glslPrecondition	start='^\s*#\s*\(if\|ifdef\|ifndef\|elif\)\>'	skip='\\$' end='$'	keepend contains=glslComment,glslParenError,glslNumbers
@@ -533,13 +539,23 @@ syntax match	glslMixedComps	'\.[xyzwrgba]*[stpq]\+[xyzwrgba]\+'ms=s+1
 ""syntax keyword	glslExtDir			require enable warn disable											contained
 ""syntax match	glslExtension		'^\s*#\s*extension\>.\+:\s\(require\|enable\|warn\|disable\)'		contains=glslExtName,glslExtDir
 
-"" versioning
-"syntax keyword	glslProfile			core compatibility es
-"syntax region	glslVersion			start='^\s*#\s*version\>\s*\d\d\d\>'			skip='\\$' end='$'	keepend contains=glslComment,glslProfile,glslNumbers
+" versioning
+syntax keyword	glslProfile		core compatibility es
+syntax region	glslPPVersion	start='^\s*#\s*version\>\s*\d\d\d\>'
+							\	skip='\\$'
+							\	end='$'
+							\	keepend contains=glslProfile,glslNumbers
 
-"" diagnostics
-""syntax region	glslPreprocessor	start='^\s*#\s*\(line\>\|error\>\)'				skip='\\$' end='$'	keepend contains=ALLBUT
-""}}}
+" diagnostics
+syntax region	glslPPLine	start='^\s*#\s*line\>'
+						\	skip='\\$'
+						\	end='$'
+						\	keepend contains=glslInteger
+syntax region	glslPPError	start='^\s*#\s*error\>'
+						\	skip='\\$'
+						\	end='$'
+						\	keepend
+"}}}
 
 "" GLSL parenthesis errors {{{
 "" catch errors caused by wrong parenthesis and brackets
@@ -567,13 +583,12 @@ syntax match glslReserved 'gl_\i*'
 " Define the default highlighting. {{{
 " Only used when an item doesn't have highlighting yet
 highlight default link glslBoolean				Constant
-"highlight default link glslComment				Comment
+highlight default link glslComment				Comment
 "highlight default link glslCommentStartError	Error
 highlight default link glslComponent			Special
 highlight default link glslConditional			Conditional
 highlight default link glslConstant				Constant
 "highlight default link glslCurlyError			Error
-"highlight default link glslDefine				Macro
 "highlight default link glslErrorInBracket		Error
 "highlight default link glslErrorInParen		Error
 "highlight default link glslExtDir				Keyword
@@ -587,7 +602,7 @@ highlight default link glslInteger				Number
 "highlight default link glslInvariant			Keyword
 highlight default link glslLabel				Label
 "highlight default link glslLayout				Keyword
-"highlight default link glslMacro				Macro
+highlight default link glslMacro				Macro
 highlight default link glslMixedComps			Error
 "highlight default link glslNotAllowed			Error
 highlight default link glslOctal				Number
@@ -599,16 +614,19 @@ highlight default link glslOpaqueType			Type
 "highlight default link glslPragmaValues		Constant
 "highlight default link glslPrecondition		PreCondit
 "highlight default link glslPreprocessor		PreProc
-"highlight default link glslProfile				Keyword
+highlight default link glslProfile				Keyword
+highlight default link glslPPDefine				PreProc
+highlight default link glslPPError				PreProc
+highlight default link glslPPLine				PreProc
+highlight default link glslPPVersion				PreProc
 "highlight default link glslQualifier			StorageClass
 highlight default link glslRepeat				Repeat
 highlight default link glslReserved				Error
 highlight default link glslStatement			Statement
 highlight default link glslStructure			Structure
-"highlight default link glslTodo				Todo
+highlight default link glslTodo				Todo
 highlight default link glslTransparentType		Type
 highlight default link glslVariable				Identifier
-"highlight default link glslVersion				PreProc
 "}}}
 
 let b:current_syntax = 'glsl'
