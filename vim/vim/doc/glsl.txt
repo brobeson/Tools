@@ -7,7 +7,7 @@ defined using the OpenGL Shading Language 4.50 Reference Card and doesn't
 attempt to be backward compatible. That is, anything removed from previous
 language versions won't be highlighted.
 
-GLSL Syntax Definitions							*glsl-syntax*
+GLSL Syntax Definitions                         *glsl-syntax*
 
 This section describes the syntax groups defined in the file, and lists the
 default linking. You can use this as a reference to override the highlighting
@@ -32,6 +32,17 @@ glslConstant        These are named constants built into the language, such as
                     gl_MaxDrawBuffers. The default highlight link is to
                     Constant.
 
+glslExtAll          The keyword 'all' to specify a behavior for all possible
+                    extensions. The default highlighting is Keyword.
+
+glslExtBehavior     The possible extension behaviors to use with the
+                    #extension preprocessor. The default highlighting is
+                    Keyword.
+
+glslExtName         A string used to identify an extension in the #extension
+                    preprocessor directive. The default highlighting is
+                    String.
+
 glslFloat           Floating point number literals. The default highlighting
                     is Number.
 
@@ -53,7 +64,7 @@ glslLabel           The case and default statements (within a swtich
 glslMacro           The predefined macros, such as __LINE__. The default
                     highlighting is Macro.
 
-glslMixedComps		Technically, GLSL does not allow vector components to be
+glslMixedComps      Technically, GLSL does not allow vector components to be
                     mixed across conceptual types. That is, a shader cannot
                     contain the statement
                         // mixing cartesian and color components~
@@ -80,8 +91,17 @@ glslPPDefine        #define and #undef preprocessor directives. The default
 glslPPError         The #error preprocessor directive. The default
                     highlighting is PreProc.
 
+glslPPExtension     The #extension preprocessor directive. The default
+                    highlighting is PreProc.
+
 glslPPLine          The #line preprocessor directive. The default highlighting
                     is PreProc.
+
+glslPragmaOptions   The options that can be used in a #pragma directive:
+                    optimize and debug. The default highlighting is Keyword.
+
+glslPragmaValues    The on and off constants passed to the pragma options. The
+                    default highlighting is Constant.
 
 glslProfile         The profile keywords (core, compatibility, and es) used in
                     the #version preprocessor directive. The default

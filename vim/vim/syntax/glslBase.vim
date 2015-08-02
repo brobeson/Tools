@@ -512,7 +512,7 @@ syntax match	glslMixedComps	'\.[xyzwrgba]\+[stpq]\+[xyzwrgba]*'ms=s+1
 syntax match	glslMixedComps	'\.[xyzwrgba]*[stpq]\+[xyzwrgba]\+'ms=s+1
 "}}}
 
-"" GLSL preprocessor {{{
+" GLSL preprocessor {{{
 " built in macros
 syntax keyword	glslMacro	__LINE__
 						\	__FILE__
@@ -527,17 +527,27 @@ syntax region	glslPPDefine	start='^\s*#\s*\(define\|undef\)\>'
 							\	end='$'
 							\	keepend contains=ALL
 
-"" preprocessor conditionals
-"syntax region	glslPrecondition	start='^\s*#\s*\(if\|ifdef\|ifndef\|elif\)\>'	skip='\\$' end='$'	keepend contains=glslComment,glslParenError,glslNumbers
-"syntax match	glslPrecondition	'^\s*#\s*\(else\|endif\)\>'
+" preprocessor conditionals
+syntax region	glslPrecondition	start='^\s*#\s*\(if\|ifdef\|ifndef\|elif\)\>'
+								\	skip='\\$'
+								\	end='$'
+								\	keepend contains=glslComment,glslParenError,glslNumbers
+syntax match	glslPrecondition	'^\s*#\s*\(else\|endif\)\>'
 
-"" compiler control
-""syntax keyword	glslPragmaDirs		optimize debug STDGL												contained
-""syntax keyword	glslPragmaValues	on off																contained
-""syntax region	glslPragma			start='^\s*#\s*pragma\>'						skip='\\$' end='$'	keepend contains=glslPragmaDirs,glslPragmaValues
-""syntax match	glslExtName			'.\+'																contained
-""syntax keyword	glslExtDir			require enable warn disable											contained
-""syntax match	glslExtension		'^\s*#\s*extension\>.\+:\s\(require\|enable\|warn\|disable\)'		contains=glslExtName,glslExtDir
+" pragmas
+syntax keyword	glslPragmaOptions	optimize debug STDGL	contained
+syntax keyword	glslPragmaValues	on off					contained
+syntax region	glslPragma			start='^\s*#\s*pragma\>'
+								\	skip='\\$'
+								\	end='$'
+								\	keepend contains=glslPragmaOptions,glslPragmaValues
+
+" extensions
+syntax match	glslExtName			'\i\+'						contained
+syntax keyword	glslExtBehavior		require enable warn disable	contained
+syntax keyword	glslExtAll			all							contained
+syntax match	glslPPExtension		'^\s*#\s*extension\s\+\i\+\s*:\s*\(require\|enable\|warn\|disable\)'
+								\	contains=glslExtName,glslExtBehavior,glslExtAll
 
 " versioning
 syntax keyword	glslProfile		core compatibility es
@@ -591,9 +601,9 @@ highlight default link glslConstant				Constant
 "highlight default link glslCurlyError			Error
 "highlight default link glslErrorInBracket		Error
 "highlight default link glslErrorInParen		Error
-"highlight default link glslExtDir				Keyword
-"highlight default link glslExtension			PreProc
-"highlight default link glslExtName				Constant
+highlight default link glslExtAll				Keyword
+highlight default link glslExtBehavior			Keyword
+highlight default link glslExtName				String
 highlight default link glslFloat				Number
 highlight default link glslFunction				Identifier
 highlight default link glslHex					Number
@@ -610,15 +620,16 @@ highlight default link glslOctalZero			Number
 highlight default link glslOpaqueType			Type
 "highlight default link glslParenError			Error
 "highlight default link glslPragma				PreProc
-"highlight default link glslPragmaDirs			Keyword
-"highlight default link glslPragmaValues		Constant
+highlight default link glslPragmaOptions		Keyword
+highlight default link glslPragmaValues			Constant
 "highlight default link glslPrecondition		PreCondit
 "highlight default link glslPreprocessor		PreProc
 highlight default link glslProfile				Keyword
 highlight default link glslPPDefine				PreProc
 highlight default link glslPPError				PreProc
+highlight default link glslPPExtension			PreProc
 highlight default link glslPPLine				PreProc
-highlight default link glslPPVersion				PreProc
+highlight default link glslPPVersion			PreProc
 "highlight default link glslQualifier			StorageClass
 highlight default link glslRepeat				Repeat
 highlight default link glslReserved				Error
