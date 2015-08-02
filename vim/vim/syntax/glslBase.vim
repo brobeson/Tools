@@ -1,11 +1,7 @@
 " Vim syntax file
-" Language:	OpenGL Shader Language (GLSL)
-" Maintainer:	Brendan Robeson (ogslanger@vt.edu)
-" Last Change:	2014 June 3
-"
-" This is the base file for GLSL shaders.  It contains syntax definitions
-" common to all the shader types.  Thanks to Bram Moolenaar for c.vim, on
-" which this is based.
+" Language:		OpenGL Shader Language (GLSL) 4.5
+" Maintainer:	Brendan Robeson (https://github.com/brobeson/Tools)
+" Last Change:	2015 August 2
 
 " Quit when a (custom) syntax file was already loaded
 if exists('b:current_syntax')
