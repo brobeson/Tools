@@ -293,15 +293,8 @@ syntax keyword glslStatement	break return continue discard
 syntax keyword glslLabel		case default
 syntax keyword glslRepeat		while for do
 syntax keyword glslStructure	struct
+syntax keyword glslLayout		layout precision
 " }}}
-
-"" GLSL interface blocks {{{
-"syntax keyword glslLayout	layout shared packed std140 std430 row_major column_major
-""}}}
-
-"" GLSL invariance {{{
-"syntax keyword glslInvariance	invariant precise
-""}}}
 
 " GLSL types {{{
 " transparent types
@@ -428,7 +421,6 @@ syntax keyword glslOpaqueType	atomic_uint
 							\	usamplerCubeArray
 "}}}
 
-
 " GLSL built in variables {{{
 syntax keyword glslVariable	gl_ClipDistance
 						\	gl_CullDistance
@@ -466,28 +458,115 @@ syntax keyword glslVariable	gl_ClipDistance
 						\	gl_WorkGroupSize
 "}}}
 
-"" GLSL qualifiers {{{
-""buffer
-""centroid
-""coherent
-""const
-""flat
-""in
-""inout
-""invariant
-""out
-""noperspective
-""patch
-""precise
-""readonly
-""restrict
-""sampler
-""shared
-""smooth
-""uniform
-""volatile
-""writeonly
-""}}}
+" GLSL qualifiers {{{
+syntax keyword	glslQualifier	align
+							\	binding
+							\	buffer
+							\	ccw
+							\	centroid
+							\	coherent
+							\	column_major
+							\	component
+							\	const
+							\	cw
+							\	depth_any
+							\	depth_greater
+							\	depth_less
+							\	depth_unchanged
+							\	early_fragment_tests
+							\	equal_spacing
+							\	flat
+							\	fractional_even_spacing
+							\	fractional_odd_spacing
+							\	highp
+							\	in
+							\	index
+							\	inout
+							\	invariant
+							\	invocations
+							\	isolines
+							\	line_strip
+							\	lines
+							\	lines_adjacency
+							\	local_size_x
+							\	local_size_y
+							\	local_size_z
+							\	location
+							\	lowp
+							\	max_vertices
+							\	mediump
+							\	offset
+							\	origin_upper_left
+							\	out
+							\	noperspective
+							\	offset
+							\	packed
+							\	patch
+							\	pixel_center_integer
+							\	point_mode
+							\	points
+							\	precise
+							\	quads
+							\	readonly
+							\	restrict
+							\	row_major
+							\	sampler
+							\	shared
+							\	smooth
+							\	std140
+							\	std430
+							\	stream
+							\	triangle_strip
+							\	triangles
+							\	triangles_adjacency
+							\	uniform
+							\	vertices
+							\	volatile
+							\	writeonly
+							\	xfb_buffer
+							\	xfb_offset
+							\	xfb_stride
+
+syntax keyword	glslQualFormat	r11f_g11f_b10f
+							\	r16
+							\	r16_snorm
+							\	r16f
+							\	r16i
+							\	r16ui
+							\	r32f
+							\	r32i
+							\	r32ui
+							\	r8
+							\	r8_snorm
+							\	r8i
+							\	r8ui
+							\	rg16
+							\	rg16_snorm
+							\	rg16f
+							\	rg16i
+							\	rg16ui
+							\	rg32f
+							\	rg32i
+							\	rg32ui
+							\	rg8
+							\	rg8_snorm
+							\	rg8i
+							\	rg8ui
+							\	rgb10_a2i
+							\	rgb10_a2u
+							\	rgba16
+							\	rgba16_snorm
+							\	rgba16f
+							\	rgba16i
+							\	rgba16ui
+							\	rgba32f
+							\	rgba32i
+							\	rgba32ui
+							\	rgba8
+							\	rgba8_snorm
+							\	rgba8i
+							\	rgba8ui
+"}}}
 
 " GLSL vector components {{{
 " use ms=s+1 to not highlight the period
@@ -542,7 +621,7 @@ syntax keyword	glslPragmaValues	on off					contained
 syntax region	glslPragma			start='^\s*#\s*pragma\>'
 								\	skip='\\$'
 								\	end='$'
-								\	keepend contains=glslPragmaOptions,glslPragmaValues
+								\	keepend contains=glslPragmaOptions,glslPragmaValues,glslQualifier
 
 " extensions
 syntax match	glslExtName			'\i\+'						contained
@@ -632,7 +711,8 @@ highlight default link glslPPError				PreProc
 highlight default link glslPPExtension			PreProc
 highlight default link glslPPLine				PreProc
 highlight default link glslPPVersion			PreProc
-"highlight default link glslQualifier			StorageClass
+highlight default link glslQualFormat			Constant
+highlight default link glslQualifier			StorageClass
 highlight default link glslRepeat				Repeat
 highlight default link glslReserved				Error
 highlight default link glslStatement			Statement

@@ -107,6 +107,12 @@ glslProfile         The profile keywords (core, compatibility, and es) used in
                     the #version preprocessor directive. The default
                     highlighting is Keyword.
 
+glslQualFormat      The possible image format qualifiers. The default
+                    highlighting is Constant.
+
+glslQualifier       The various qualifiers. The default highlighting is
+                    StorageClass.
+
 glslRepeat          The loop statements: do, for, and while. The default
                     highlighting is Repeat.
 
