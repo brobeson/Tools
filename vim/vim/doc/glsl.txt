@@ -103,6 +103,9 @@ glslPragmaOptions   The options that can be used in a #pragma directive:
 glslPragmaValues    The on and off constants passed to the pragma options. The
                     default highlighting is Constant.
 
+glslPrecisionError  Errors in a 'precision' statement. The default
+                    highlighting is Error.
+
 glslProfile         The profile keywords (core, compatibility, and es) used in
                     the #version preprocessor directive. The default
                     highlighting is Keyword.

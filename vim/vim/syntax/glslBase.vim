@@ -668,8 +668,10 @@ syntax region	glslPPError	start='^\s*#\s*error\>'
 "syntax match	glslErrorInBracket	'[);{}]'			display contained
 ""}}}
 
-" GLSL errors
+" GLSL errors {{{
 syntax match glslReserved 'gl_\i*'
+syntax match glslPrecisionError	'precision\s\+[^\(highp\|mediump\|lowp\)]\s\+[^\(int\|float\)]'
+" }}}
 
 " Define the default highlighting. {{{
 " Only used when an item doesn't have highlighting yet
@@ -705,6 +707,7 @@ highlight default link glslPragmaOptions		Keyword
 highlight default link glslPragmaValues			Constant
 "highlight default link glslPrecondition		PreCondit
 "highlight default link glslPreprocessor		PreProc
+highlight default link glslPrecisionError		Error
 highlight default link glslProfile				Keyword
 highlight default link glslPPDefine				PreProc
 highlight default link glslPPError				PreProc
