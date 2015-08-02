@@ -283,6 +283,8 @@ syntax keyword glslFunction	abs
 						\	unpackUnorm2x16
 						\	unpackUnorm4x8
 						\	usubBorrow
+						\	contained
+syntax match	glslFuncPattern	'\<\i\+\s*(' contains=glslFunction
 "}}}
 
 " GLSL keywords {{{
