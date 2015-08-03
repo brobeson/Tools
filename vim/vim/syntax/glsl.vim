@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:		OpenGL Shader Language (GLSL) 4.5
 " Maintainer:	Brendan Robeson (https://github.com/brobeson/Tools)
-" Last Change:	2015 August 2
+" Last Change:	2015 August 3
 
 " Quit when a (custom) syntax file was already loaded
 if exists('b:current_syntax')
@@ -614,16 +614,16 @@ syntax match	glslDefine	'^\s*#\s*\(define\|undef\)\>'
 syntax region	glslPrecondition	start='^\s*#\s*\(if\|ifdef\|ifndef\|elif\)\>'
 							\		skip='\\$'
 							\		end='$'
-							\		keepend contains=glslComment,glslParenError,glslNumbers
+							\		keepend contains=glslComment,glslNumbers
 syntax match	glslPrecondition	'^\s*#\s*\(else\|endif\)\>'
 
 " pragmas
 syntax keyword	glslPragmaOptions	optimize debug STDGL	contained
-syntax match	glslPragamValues	'(\s*\zs\(all\|off\|on\)\ze\s*)'
+syntax match	glslPragmaValues	'(\s*\zs\(all\|off\|on\)\ze\s*)'
 syntax region	glslPragma			start='^\s*#\s*pragma\>'
 						\			skip='\\$'
 						\			end='$'
-						\			keepend contains=glslPragamValues,glslPragmaOptions,glslQualifier
+						\			keepend contains=glslPragmaValues,glslPragmaOptions,glslQualifier
 
 " extensions
 syntax keyword	glslExtBehavior	disable enable require warn contained
@@ -642,7 +642,7 @@ syntax region	glslVersion	start='^\s*#\s*version\>\s*\d\d\d\>'
 syntax region	glslLine	start='^\s*#\s*line\>'
 					\		skip='\\$'
 					\		end='$'
-					\		keepend contains=glslInteger
+					\		keepend contains=glslNumber
 syntax match	glslErrorString	'".*"' contained
 syntax region	glslError		start='^\s*#\s*error\>'
 						\		skip='\\$'
@@ -650,81 +650,50 @@ syntax region	glslError		start='^\s*#\s*error\>'
 						\		keepend contains=glslErrorString
 "}}}
 
-"" GLSL parenthesis errors {{{
-"" catch errors caused by wrong parenthesis and brackets
-""
-"" This should be before glslErrInParen to avoid problems with #define ({ xxx })
-"" TODO	this is not working
-""if exists('glsl_curly_error')
-""    syntax match	glslCurlyError	'}'
-""    syntax region	glslBlock		start='{' end='}' contains=ALLBUT,glslCurlyError,@glslParenGroup,glslErrorInParen,glslErrorInBracket fold
-""else
-""    syntax region	glslBlock		start='{' end='}' transparent fold
-""endif
-
-"syntax cluster	glslParenGroup		contains=glslParenError,glslTodo,glslOctalZero,glslNumber,glslFloat,glslOctal,glslOctalError
-"syntax region	glslParenthesis		start='(' end=')'	transparent contains=ALLBUT,@glslParenGroup,glslErrorInBracket
-"syntax match	glslParenError		'[\])]'				display
-"syntax match	glslErrorInParen	'[\]{}]'			display contained
-"syntax region	glslBracket			start='\[' end=']'	transparent contains=ALLBUT,@glslParenGroup,glslErrorInParen
-"syntax match	glslErrorInBracket	'[);{}]'			display contained
-""}}}
-
 " GLSL errors {{{
 syntax match glslReserved 'gl_\i*'
 " }}}
 
 " Define the default highlighting. {{{
-" Only used when an item doesn't have highlighting yet
-highlight default link glslBoolean				Constant
-highlight default link glslComment				Comment
-"highlight default link glslCommentStartError	Error
-highlight default link glslComponent			Special
-highlight default link glslConditional			Conditional
-highlight default link glslConstant				Constant
-"highlight default link glslCurlyError			Error
-"highlight default link glslErrorInBracket		Error
-"highlight default link glslErrorInParen		Error
-highlight default link glslExtAll				Keyword
-highlight default link glslExtBehavior			Constant
-highlight default link glslFloat				Number
-highlight default link glslFunction				Identifier
-highlight default link glslHex					Number
-highlight default link glslHexZero				PreProc
-highlight default link glslNumber				Number
-highlight default link glslInteger				Keyword
-"highlight default link glslInvariant			Keyword
-highlight default link glslLabel				Label
-highlight default link glslLayout				Keyword
-highlight default link glslMacro				Macro
-highlight default link glslMixedComps			Error
-"highlight default link glslNotAllowed			Error
-highlight default link glslOctal				Number
-highlight default link glslOctalError			Error
-highlight default link glslOctalZero			PreProc
-highlight default link glslOpaqueType			Type
-"highlight default link glslParenError			Error
-highlight default link glslPragma				PreProc
-highlight default link glslPragamValues			Constant
-highlight default link glslPragmaOptions		Keyword
-highlight default link glslPrecondition			PreCondit
-"highlight default link glslPreprocessor		PreProc
-highlight default link glslProfile				Keyword
-highlight default link glslDefine				PreProc
-highlight default link glslErrorString			String
-highlight default link glslError				PreProc
-highlight default link glslExtension			PreProc
+highlight default link glslBoolean			Constant
+highlight default link glslComment			Comment
+highlight default link glslComponent		Special
+highlight default link glslConditional		Conditional
+highlight default link glslConstant			Constant
+highlight default link glslDefine			PreProc
+highlight default link glslError			PreProc
+highlight default link glslErrorString		String
+highlight default link glslExtAll			Keyword
+highlight default link glslExtBehavior		Constant
+highlight default link glslExtension		PreProc
+highlight default link glslFloat			Number
+highlight default link glslFunction			Identifier
+highlight default link glslHexZero			PreProc
+highlight default link glslLabel			Label
+highlight default link glslLayout			Keyword
 highlight default link glslLine				PreProc
-highlight default link glslVersion				PreProc
-highlight default link glslQualFormat			Constant
-highlight default link glslQualifier			StorageClass
-highlight default link glslRepeat				Repeat
-highlight default link glslReserved				Error
-highlight default link glslStatement			Statement
-highlight default link glslStructure			Structure
+highlight default link glslMacro			Macro
+highlight default link glslMixedComps		Error
+highlight default link glslNumber			Number
+highlight default link glslOctal			Number
+highlight default link glslOctalError		Error
+highlight default link glslOctalZero		PreProc
+highlight default link glslOpaqueType		Type
+highlight default link glslPragma			PreProc
+highlight default link glslPragmaOptions	Keyword
+highlight default link glslPragmaValues		Constant
+highlight default link glslPrecondition		PreCondit
+highlight default link glslProfile			Keyword
+highlight default link glslQualFormat		Constant
+highlight default link glslQualifier		StorageClass
+highlight default link glslRepeat			Repeat
+highlight default link glslReserved			Error
+highlight default link glslStatement		Statement
+highlight default link glslStructure		Structure
 highlight default link glslTodo				Todo
-highlight default link glslTransparentType		Type
-highlight default link glslVariable				Identifier
+highlight default link glslTransparentType	Type
+highlight default link glslVariable			Identifier
+highlight default link glslVersion			PreProc
 "}}}
 
 let b:current_syntax = 'glsl'

@@ -13,8 +13,8 @@ This section describes the syntax groups defined in the file, and lists the
 default linking. You can use this as a reference to override the highlighting
 if you so desire.
 
-glslBoolean         The constants 'true' and 'false'. By default, this links
-                    to Constant.
+glslBoolean         The constants 'true' and 'false'. The default highlighting
+                    is Constant.
 
 glslComment         Code comments. The default highlighting is Comment.
 
@@ -25,43 +25,54 @@ glslComponent       This encapsulates valid vector components:
                     The default highlighting is Special. See glslMixedComps
                     for a discussion of invalid vector components.
 
-glslConditional     If, else, and case statements. The default highlighting is
-                    Conditional.
+glslConditional     'if', 'else', and 'case' statements. The default
+                    highlighting is Conditional.
 
 glslConstant        These are named constants built into the language, such as
-                    gl_MaxDrawBuffers. The default highlight link is to
-                    Constant.
+                    'gl_MaxDrawBuffers'. The default highlighting is Constant.
+
+glslDefine          #define and #undef preprocessor directives. The default
+                    highlighting is PreProc.
+
+glslError           The #error preprocessor directive. The default
+                    highlighting is PreProc.
+
+glslErrorString     The error message following the #error preprocessor
+                    directive. To be highlighted differently from glslError,
+                    the string must be enclosed in double quotes ("some error
+                    message"). The default highlight is String.
 
 glslExtAll          The keyword 'all' to specify a behavior for all possible
                     extensions. The default highlighting is Keyword.
 
+glslExtension       The #extension preprocessor directive. The default
+                    highlighting is PreProc.
+
 glslExtBehavior     The possible extension behaviors to use with the
                     #extension preprocessor. The default highlighting is
-                    Keyword.
-
-glslExtName         A string used to identify an extension in the #extension
-                    preprocessor directive. The default highlighting is
-                    String.
+                    Constant.
 
 glslFloat           Floating point number literals. The default highlighting
                     is Number.
 
-glslFunction        These are the built in functions, such as clamp and dFdx.
-                    By default, they link to Identifier.
-
-glslHex             Hexadecimal numbers. The default highlighting is Number.
+glslFunction        These are the built in functions, such as 'clamp' and
+                    'dFdx'. The default highlighting is Identifier.
 
 glslHexZero         The leading '0x' necessary to specify a hexadecimal
                     number. This allows highlighting the '0x' different from
                     the hex digits if desired. The default highlighting is
-                    Number.
+                    PreProc.
 
-glslInteger         Decimal integers. The default highlighting is Number.
-
-glslLabel           The case and default statements (within a swtich
+glslLabel           The 'case' and 'default' statements (within a swtich
                     statement). The default highlighting is Label.
 
-glslMacro           The predefined macros, such as __LINE__. The default
+glslLayout          The 'layout' and 'precision' statements. The default
+                    highlighting is Keyword.
+
+glslLine            The #line preprocessor directive. The default highlighting
+                    is PreProc.
+
+glslMacro           The predefined macros, such as '__LINE__'. The default
                     highlighting is Macro.
 
 glslMixedComps      Technically, GLSL does not allow vector components to be
@@ -69,45 +80,43 @@ glslMixedComps      Technically, GLSL does not allow vector components to be
                     contain the statement
                         // mixing cartesian and color components~
                         vec2 foo = someVec.xg;~
-                    By default, such components are highlit as an error.
-                    However, it's concievable that a programmer might create a
-                    structure member named 'xg', which would highlight as an
-                    error. If you want to avoid that behavior, create a new
-                    link for glslMixedComps.
+                    The default highlighting is Error.  However, it's
+                    concievable that a programmer might create a structure
+                    member named 'xg', which would highlight as an error. If
+                    you want to avoid that behavior, create a new link for
+                    glslMixedComps.
+
+glslNumber          Decimal and hexadecimal integers. The default highlighting
+                    is Number.
 
 glslOctal           Octal integers. The default highlighting is Number.
 
+glslOctalError      Octal integers which include the digits '8' or '9'. The
+                    default highlighting is Error.
+
 glslOctalZero       The leading '0' necessary to specify an octal number. This
-                    allows highlighting the '0x' different from the octal
-                    digits if desired. The default highlighting is Number.
+                    allows highlighting the '0' different from the octal
+                    digits if desired. The default highlighting is Preproc.
 
 glslOpaqueType      These are the opaque types built into the language. It
                     includes keywords such as 'atomic_uint' and 'image3D'. The
-                    default highlighting link is to Type.
+                    default highlighting is Type.
 
-glslPPDefine        #define and #undef preprocessor directives. The default
+glslPragma          The '#pragma' preprocessor directive. The default
                     highlighting is PreProc.
-
-glslPPError         The #error preprocessor directive. The default
-                    highlighting is PreProc.
-
-glslPPExtension     The #extension preprocessor directive. The default
-                    highlighting is PreProc.
-
-glslPPLine          The #line preprocessor directive. The default highlighting
-                    is PreProc.
 
 glslPragmaOptions   The options that can be used in a #pragma directive:
-                    optimize and debug. The default highlighting is Keyword.
+                    'optimize', 'debug', and 'STDGL'. The default highlighting
+                    is Keyword.
 
-glslPragmaValues    The on and off constants passed to the pragma options. The
-                    default highlighting is Constant.
+glslPragmaValues    The 'all', 'off', and 'on' constants passed to the pragma
+                    options. The default highlighting is Constant.
 
-glslPrecisionError  Errors in a 'precision' statement. The default
-                    highlighting is Error.
+glslPrecondition    The varous preprocessor conditional keywords: '#if' and
+                    such. The default highlighting is PreProc.
 
-glslProfile         The profile keywords (core, compatibility, and es) used in
-                    the #version preprocessor directive. The default
+glslProfile         The profile keywords: 'core', 'compatibility', and 'es')
+                    used in the #version preprocessor directive. The default
                     highlighting is Keyword.
 
 glslQualFormat      The possible image format qualifiers. The default
@@ -116,29 +125,29 @@ glslQualFormat      The possible image format qualifiers. The default
 glslQualifier       The various qualifiers. The default highlighting is
                     StorageClass.
 
-glslRepeat          The loop statements: do, for, and while. The default
+glslRepeat          The loop statements: 'do', 'for', and 'while'. The default
                     highlighting is Repeat.
 
 glslReserved        This is anything reserved by the language for future use.
                     For example, anything begining with 'gl_' is reserved and
-                    cannot be used as an identifier. The default highlight
-                    link is to Error.
+                    cannot be used as an identifier. The default highlighting
+                    is Error.
 
-glslStatement       The break, return, continue, and discard statements. The
-                    default highlighting is Statement.
+glslStatement       The 'break', 'return', 'continue', and 'discard'
+                    statements. The default highlighting is Statement.
 
 glslStructure       The 'struct' keyword. The default highlighting link is to
                     Structure.
 
-glslTodo            The typical comment tags: TODO, FIXME, XXX, HACK, and BUG.
-                    The default highlighting is Todo.
+glslTodo            The typical comment tags: 'TODO', 'FIXME', 'XXX', 'HACK',
+                    and 'BUG'. The default highlighting is Todo.
 
 glslTransparentType These are the transparent data types in the language:
                     basic scalars, vectors, and matrices. The default
                     highlighting is Type.
 
 glslVariable        This encompasses all the built in variables, like
-                    gl_ClipDistance and gl_FragCoord. The default highlighting
+                    'gl_ClipDistance' and 'gl_FragCoord'. The default highlighting
                     is Identifier.
 
 glslVersion         The #version preprocessor directive. The default
