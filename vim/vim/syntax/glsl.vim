@@ -12,24 +12,33 @@ endif
 " GLSL numbers {{{
 " ignore case for the type suffixes: f and F are both ok.
 syntax case ignore
-syntax match	glslNumbers		'\<\d\|\.\d'	transparent contains=glslInteger,glslFloat,glslOctalError,glslOctal,glslHex
 
-" decimal integers
-syntax match	glslInteger		'\d\+u\?'		contained
+"integer number, or floating point number without a dot and with 'f'.
+syntax match	glslNumbers		display transparent '\<\d\|\.\d' contains=glslNumber,glslFloat,glslOctalError,glslOctal
 
-" hex number
-syntax match	glslHexZero		'\<0x'			contained
-syntax match	glslHex			'0x\x\+u\?'		contained contains=glslHexZero
+" Same, but without octal error (for comments)
+syntax match	glslNumber		display contained '\d\+u\?\>'
 
-"" flag the first zero of an octal number as something special
-syntax match	glslOctalZero	'\<0'			contained
-syntax match	glslOctal		'0\o\+u\?\>'	contained contains=glslOctalZero
+"hex number
+syntax match	glslHexZero		display contained '0x'
+syntax match	glslNumber		display contained '0x\x\+u\?\>' contains=glslHexZero
 
-" floating point numbers
-syntax match	glslFloat		'\d\+\(f\|lf\)'							contained
-syntax match	glslFloat		'\d\+\.\d*\(e[-+]\?\d\+\)\?\(f\|lf\)'	contained
-syntax match	glslFloat		'\.\d\+\(e[-+]\?\d\+\)\?\(f\|lf\)=\>'	contained
-syntax match	glslFloat		'\d\+e[-+]\?\d\+\(f\|lf\)\?\>'			contained
+" Flag the first zero of an octal number as something special
+syntax match	glslOctal		display contained '0\o\+u\?\>' contains=glslOctalZero
+syntax match	glslOctalZero	display contained '\<0'
+syntax match	glslFloat		display contained '\d\+l\?f'
+
+"floating point number, with dot, optional exponent
+syntax match	glslFloat		display contained '\d\+\.\d*\(e[-+]\?\d\+\)\?\(f\|lf\)\?'
+
+"floating point number, starting with a dot, optional exponent
+syntax match	glslFloat		display contained '\.\d\+\(e[-+]\?\d\+\)\?\(f\|lf\)\?\>'
+
+"floating point number, without dot, with exponent
+syntax match	glslFloat		display contained '\d\+e[-+]\?\d\+\(f\|lf\)\?\>'
+
+" flag an octal number with wrong digits
+syntax match	glslOctalError	display contained '0\o*[89]\d*'
 
 " restore case sensitivity
 syntax case match
@@ -121,7 +130,6 @@ syntax keyword glslConstant	gl_MaxAtomicCounterBindings
 syntax keyword glslFunction	abs
 						\	acos
 						\	acosh
-						\	all
 						\	any
 						\	asin
 						\	asinh
@@ -280,7 +288,8 @@ syntax keyword glslFunction	abs
 						\	unpackUnorm4x8
 						\	usubBorrow
 						\	contained
-syntax match	glslFuncPattern	'\<\i\+\s*(' contains=glslFunction
+syntax match	glslFunction	'\<all\ze\s*('	contained
+syntax match	glslFuncPattern	'\<\i\+\s*('	contains=glslFunction
 "}}}
 
 " GLSL keywords {{{
@@ -599,49 +608,46 @@ syntax keyword	glslMacro	__LINE__
 						\	GL_es_profile
 
 " macro definition
-syntax region	glslPPDefine	start='^\s*#\s*\(define\|undef\)\>'
-							\	skip='\\$'
-							\	end='$'
-							\	keepend contains=ALL
+syntax match	glslDefine	'^\s*#\s*\(define\|undef\)\>'
 
 " preprocessor conditionals
 syntax region	glslPrecondition	start='^\s*#\s*\(if\|ifdef\|ifndef\|elif\)\>'
-								\	skip='\\$'
-								\	end='$'
-								\	keepend contains=glslComment,glslParenError,glslNumbers
+							\		skip='\\$'
+							\		end='$'
+							\		keepend contains=glslComment,glslParenError,glslNumbers
 syntax match	glslPrecondition	'^\s*#\s*\(else\|endif\)\>'
 
 " pragmas
 syntax keyword	glslPragmaOptions	optimize debug STDGL	contained
-syntax keyword	glslPragmaValues	on off					contained
+syntax match	glslPragamValues	'(\s*\zs\(all\|off\|on\)\ze\s*)'
 syntax region	glslPragma			start='^\s*#\s*pragma\>'
-								\	skip='\\$'
-								\	end='$'
-								\	keepend contains=glslPragmaOptions,glslPragmaValues,glslQualifier
+						\			skip='\\$'
+						\			end='$'
+						\			keepend contains=glslPragamValues,glslPragmaOptions,glslQualifier
 
 " extensions
-syntax match	glslExtName			'\i\+'						contained
-syntax keyword	glslExtBehavior		require enable warn disable	contained
-syntax keyword	glslExtAll			all							contained
-syntax match	glslPPExtension		'^\s*#\s*extension\s\+\i\+\s*:\s*\(require\|enable\|warn\|disable\)'
-								\	contains=glslExtName,glslExtBehavior,glslExtAll
+syntax keyword	glslExtBehavior	disable enable require warn contained
+syntax match	glslExtAll		'\s\+\zsall\ze\s*:'			contained
+syntax match	glslExtension	'^\s*#\s*extension\s\+\i\+\s*:\s*\(disable\|enable\|require\|warn\)'
+							\	contains=glslExtAll,glslExtBehavior
 
 " versioning
-syntax keyword	glslProfile		core compatibility es
-syntax region	glslPPVersion	start='^\s*#\s*version\>\s*\d\d\d\>'
-							\	skip='\\$'
-							\	end='$'
-							\	keepend contains=glslProfile,glslNumbers
+syntax keyword	glslProfile	core compatibility es
+syntax region	glslVersion	start='^\s*#\s*version\>\s*\d\d\d\>'
+						\	skip='\\$'
+						\	end='$'
+						\	keepend contains=glslProfile,glslNumbers
 
 " diagnostics
-syntax region	glslPPLine	start='^\s*#\s*line\>'
-						\	skip='\\$'
-						\	end='$'
-						\	keepend contains=glslInteger
-syntax region	glslPPError	start='^\s*#\s*error\>'
-						\	skip='\\$'
-						\	end='$'
-						\	keepend
+syntax region	glslLine	start='^\s*#\s*line\>'
+					\		skip='\\$'
+					\		end='$'
+					\		keepend contains=glslInteger
+syntax match	glslErrorString	'".*"' contained
+syntax region	glslError		start='^\s*#\s*error\>'
+						\		skip='\\$'
+						\		end='$'
+						\		keepend contains=glslErrorString
 "}}}
 
 "" GLSL parenthesis errors {{{
@@ -666,7 +672,6 @@ syntax region	glslPPError	start='^\s*#\s*error\>'
 
 " GLSL errors {{{
 syntax match glslReserved 'gl_\i*'
-syntax match glslPrecisionError	'precision\s\+[^\(highp\|mediump\|lowp\)]\s\+[^\(int\|float\)]'
 " }}}
 
 " Define the default highlighting. {{{
@@ -681,35 +686,36 @@ highlight default link glslConstant				Constant
 "highlight default link glslErrorInBracket		Error
 "highlight default link glslErrorInParen		Error
 highlight default link glslExtAll				Keyword
-highlight default link glslExtBehavior			Keyword
-highlight default link glslExtName				String
+highlight default link glslExtBehavior			Constant
 highlight default link glslFloat				Number
 highlight default link glslFunction				Identifier
 highlight default link glslHex					Number
-highlight default link glslHexZero				Number
-highlight default link glslInteger				Number
+highlight default link glslHexZero				PreProc
+highlight default link glslNumber				Number
+highlight default link glslInteger				Keyword
 "highlight default link glslInvariant			Keyword
 highlight default link glslLabel				Label
-"highlight default link glslLayout				Keyword
+highlight default link glslLayout				Keyword
 highlight default link glslMacro				Macro
 highlight default link glslMixedComps			Error
 "highlight default link glslNotAllowed			Error
 highlight default link glslOctal				Number
-highlight default link glslOctalZero			Number
+highlight default link glslOctalError			Error
+highlight default link glslOctalZero			PreProc
 highlight default link glslOpaqueType			Type
 "highlight default link glslParenError			Error
-"highlight default link glslPragma				PreProc
+highlight default link glslPragma				PreProc
+highlight default link glslPragamValues			Constant
 highlight default link glslPragmaOptions		Keyword
-highlight default link glslPragmaValues			Constant
-"highlight default link glslPrecondition		PreCondit
+highlight default link glslPrecondition			PreCondit
 "highlight default link glslPreprocessor		PreProc
-highlight default link glslPrecisionError		Error
 highlight default link glslProfile				Keyword
-highlight default link glslPPDefine				PreProc
-highlight default link glslPPError				PreProc
-highlight default link glslPPExtension			PreProc
-highlight default link glslPPLine				PreProc
-highlight default link glslPPVersion			PreProc
+highlight default link glslDefine				PreProc
+highlight default link glslErrorString			String
+highlight default link glslError				PreProc
+highlight default link glslExtension			PreProc
+highlight default link glslLine				PreProc
+highlight default link glslVersion				PreProc
 highlight default link glslQualFormat			Constant
 highlight default link glslQualifier			StorageClass
 highlight default link glslRepeat				Repeat
