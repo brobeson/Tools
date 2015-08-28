@@ -11,7 +11,7 @@
 " to create command mappings in an ftplugin to call these. See my cpp.vim for
 " an example.
 "
-" For both functions, the argument 'commentString' is the string of characters
+" For both functions, the argument 'comment_token' is the string of characters
 " which create a single line comment. For example, for C++, you'd want to pass
 " in '//', for Vim you'd pass in '"'.
 
@@ -56,56 +56,41 @@ nmap <unique> z5 :set foldlevel=5<CR>
 " define the functions to comment and uncomment a range of lines {{{
 "==============================================================================
 if !exists('*Comment')
-	function Comment(commentString) range
+	function Comment(comment_token) range
 		" determine the smallest column at which text begins the lines in the
-		" range. use the first non-blank line to get the initial column.
-		let commentColumn = 0
-		let lineNumber = nextnonblank(a:firstline)
-		if lineNumber <= a:lastline
-			call cursor(lineNumber, 0)
+		" range.
+		let comment_column = 65536
+		let line_range = range(a:firstline, a:lastline)
+		for line in line_range
+			call cursor(line, 0)
 			normal ^
-			let commentColumn = col('.')
-		endif
-
-		" now loop through the remaining lines. any non-blank line with text
-		" further left than has already been found, sets a new column for the
-		" comment marker.
-		while lineNumber <= a:lastline
-			let lineNumber = nextnonblank(lineNumber + 1)
-			if (lineNumber <= a:lastline)
-				call cursor(lineNumber, 0)
-				normal ^
-				if col('.') < commentColumn
-					let commentColumn = col('.')
-				endif
+			if col('.') < comment_column
+				let comment_column = col('.')
 			endif
-		endwhile
+		endfor
 
 		" now go back through the lines, inserting the comment characters at
 		" that minimum column.
-		let lineNumber = nextnonblank(a:firstline)
-		let totalCommentedLines = 0
-		while lineNumber <= a:lastline
-			call cursor(lineNumber, commentColumn)
-			execute 'normal i' . a:commentString
-			let totalCommentedLines += 1
-			let lineNumber = nextnonblank(lineNumber + 1)
-		endwhile
+		let total_commented_lines = 0
+		for line in line_range
+			call cursor(line, comment_column)
+			execute 'normal i' . a:comment_token
+			let total_commented_lines += 1
+		endfor
 
 		" tell the user how many lines were commented
-		call cursor(a:firstline, commentColumn)
-		echo totalCommentedLines . ' lines commented'
+		call cursor(a:firstline, comment_column)
+		echo total_commented_lines . ' lines commented'
 	endfunction
 endif
 
 " define the function to uncomment a range of lines
 if !exists('*Uncomment')
-	function Uncomment(commentString) range
+	function Uncomment(comment_token) range
 		" this is the cleanest way i found to uncomment the
 		" lines without incurring problems if folding is enabled.
 		for line in range(a:firstline, a:lastline)
-			"call setline(line, substitute(getline(line), '\/\/', '', ''))
-			call setline(line, substitute(getline(line), a:commentString, '', ''))
+			call setline(line, substitute(getline(line), a:comment_token, '', ''))
 		endfor
 		normal ^
 		echo a:lastline - a:firstline + 1 'lines uncommented'
