@@ -113,56 +113,53 @@ endif
 if !exists('no_plugin_maps') && !exists('no_cpp_maps')
 	" map the new class command
 	if !hasmapto('<Plug>CppNewClass')
-		map <buffer> <unique> <Leader>pc <Plug>CppNewClass
+		map <buffer> <unique> <Leader>p <Plug>CppNewClass
 	endif
-	noremap  <buffer> <unique> <script> <Plug>CppNewClass:call <SID>NewClass()<CR>
+	noremap  <buffer> <unique> <script> <Plug>CppNewClass :call <SID>NewClass()<CR>
 endif
 
 " define the function to create a new class
 if !exists('*s:NewClass')
 	function s:NewClass()
-		" ask the user for a class name. the default is the file name.
-		let className = substitute(@%, '\..*', '', '')
-		let className = input('enter a name for the class: ', className)
-		echo className
+		let start_line = line('.')
+
+		" ask the user for a class name. the default is the file name, sans
+		" path and extension.
+		let class_name = substitute(expand('%:t'), '\.' . expand('%:e') . '$', '', '')
+		let class_name = input('enter a name for the class: ', class_name)
+		echo class_name
 
 		" build up the class declaration
-		let classDeclaration = []
-		call add(classDeclaration, 'class ' . className)
-		call add(classDeclaration, '{')
-		call add(classDeclaration, 'public:')
-		call add(classDeclaration, '/** @cond */')
-		call add(classDeclaration, 'FooBar() = delete;')
-		call add(classDeclaration, className . '(const ' . className . '& source) = delete;')
-		call add(classDeclaration, className . '& operator=(const ' . className . '& source) = delete;')
-		call add(classDeclaration, '/** @endcond */')
-		call add(classDeclaration, '')
-		call add(classDeclaration, '/**')
-		call add(classDeclaration, ' * @brief		Destroy a ' . className . ' object.')
-		call add(classDeclaration, ' * @exception	None.')
-		call add(classDeclaration, ' */')
-		call add(classDeclaration, '~' . className . '() = default;')
-		call add(classDeclaration, '')
-		call add(classDeclaration, 'private:')
-		call add(classDeclaration, '};')
+		let class_declaration = []
+		call add(class_declaration, 'class ' . class_name)
+		call add(class_declaration, '{')
+		call add(class_declaration, 'public:')
+		call add(class_declaration, '~' . class_name . '() noexcept = default;')
+		call add(class_declaration, '')
+		call add(class_declaration, class_name . '() = delete;')
+		call add(class_declaration, class_name . '(' . class_name . '&) = delete;')
+		call add(class_declaration, class_name . '(' . class_name . '&&) = delete;')
+		call add(class_declaration, class_name . '& operator=(' . class_name . '&) = delete;')
+		call add(class_declaration, class_name . '& operator=(' . class_name . '&&) = delete;')
+		call add(class_declaration, '')
+		call add(class_declaration, 'private:')
+		call add(class_declaration, '};')
 
-		" add it to the buffer
-		call append(line('.'), classDeclaration)
-		let lineCount = len(classDeclaration)
-
-		" reformat the code
-		normal j
-		execute 'normal' lineCount . '=='
-
-		" add two lines after the class
-		execute 'normal' lineCount - 1 . 'jo'
-		normal o
-
-		" return to the top of the class
-		execute 'normal' lineCount  + 1. 'k'
+		" add it to the buffer and reformat it
+		call append(line('.'), class_declaration)
+		execute 'normal' len(class_declaration) + 1 . '=='
 
 		" and add doxygen comments
-		call <SID>InsertDoxygen()
+		"call <SID>InsertDoxygen()
+		if exists(':Doxygenate')
+			call cursor(start_line + 6, 1)
+			Doxygenate
+			call cursor(start_line + 4, 1)
+			Doxygenate
+			execute 'normal A      Destroy a ' . class_name . ' object.'
+			call cursor(start_line + 1, 1)
+			Doxygenate
+		endif
 	endfunction
 endif
 "}}}

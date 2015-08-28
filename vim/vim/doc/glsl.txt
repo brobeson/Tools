@@ -1,157 +1,220 @@
 *glsl.txt*          For Vim version 7.4.        Last change: 2015 July 30
 
-            Syntax Highlighting for OpenGL Shading Language (GLSL)
+            OpenGL Shading Language (GLSL) for Vim
+
+This set of plugins provides functionality for editing OpenGL Shading Language
+source code in Vim.
+
+1. Syntax Highlighting                          |glsl-syntax|
+2. Automatic Indentation                        |glsl-indent|
+3. Filetype Plugin                              |glsl-ftplugin|
+
+=============================================================================
+1. Syntax Highlighting                          *glsl-syntax*
 
 This plugin provides syntax highlighting for GLSL files. The syntax items were
 defined using the OpenGL Shading Language 4.50 Reference Card and doesn't
 attempt to be backward compatible. That is, anything removed from previous
 language versions won't be highlighted.
 
-GLSL Syntax Definitions                         *glsl-syntax*
+There are a few configuration variables the user can define to control some of
+the highlighting options.
 
-This section describes the syntax groups defined in the file, and lists the
-default linking. You can use this as a reference to override the highlighting
-if you so desire.
+glsl_enable_the_world                           *glsl_enable_the_world*
+If you want to enable all the optional highlighting, you can just define this
+variable. This saves you from cluttering your |.vimrc| with a bunch of glsl_
+variables.
 
-glslBoolean         The constants 'true' and 'false'. The default highlighting
-                    is Constant.
+glsl_mixed_comps_error                          *glsl_mixed_comps_error*
+Define this variable to highlight mixed vector components. Mixed components are
+those that are of different fundamental types. For example, it's illegal to
+refer to a color component in the same swizzle as a spatial or texture
+component.
 
-glslComment         Code comments. The default highlighting is Comment.
+glsl_tab_space_error                            *glsl_tab_space_error*
+Define this variable if you want to highlight spaces which are immediately
+followed by a tab.
 
-glslComponent       This encapsulates valid vector components:
-                        someVector.xyzw;~
-                        someColor.rgba;~
-                        texCoords.stpq;~
-                    The default highlighting is Special. See glslMixedComps
-                    for a discussion of invalid vector components.
+glsl_trail_space_error                          *glsl_trail_space_error*
+Define this variable if you want trailing white space to be highlighted.
 
-glslConditional     'if', 'else', and 'case' statements. The default
-                    highlighting is Conditional.
+The GLSL syntax file creates several syntax groups, which are linked by default
+to standard syntax highlighting groups. Ergo, everything should work, out of
+the box, with your preferred color scheme. However, if you so desire, you can
+tweak things a bit by creating your own links. Described below are the GLSL
+syntax groups and what the default highlighting is.
 
-glslConstant        These are named constants built into the language, such as
-                    'gl_MaxDrawBuffers'. The default highlighting is Constant.
+glslBoolean         Defaults to Constant.
+    The constants 'true' and 'false'.
 
-glslDefine          #define and #undef preprocessor directives. The default
-                    highlighting is PreProc.
+glslComment         Defaults to Comment.
+    Code comments.
 
-glslError           The #error preprocessor directive. The default
-                    highlighting is PreProc.
+glslComponent       Defaults to Special.
+    This encapsulates valid vector components, in their legal combinations: >
+        position.xyzw;
+        color.rgba;
+        color.rrra;
+        texCoords.stpq;
+<    See glslMixedComps for a discussion of invalid vector components.
 
-glslErrorString     The error message following the #error preprocessor
-                    directive. To be highlighted differently from glslError,
-                    the string must be enclosed in double quotes ("some error
-                    message"). The default highlight is String.
+glslConditional     Defaults to Conditional.
+    The 'if', 'else', and 'case' statements.
 
-glslExtAll          The keyword 'all' to specify a behavior for all possible
-                    extensions. The default highlighting is Keyword.
+glslConstant        Defaults to Constant.
+    These are named constants built into the language, such as
+    'gl_MaxDrawBuffers'.
 
-glslExtension       The #extension preprocessor directive. The default
-                    highlighting is PreProc.
+glslDecimal         Defaults to Number.
+    Decimal integers.
 
-glslExtBehavior     The possible extension behaviors to use with the
-                    #extension preprocessor. The default highlighting is
-                    Constant.
+glslDefine          Defaults to PreProc.
+    The '#define' and '#undef' preprocessor directives. This does not highlight
+    text following the '#define'.
 
-glslFloat           Floating point number literals. The default highlighting
-                    is Number.
+glslError           Defaults to PreProc.
+    The '#error' preprocessor directive. This includes the text following the
+    '#error', unless that text is enclosed in quote marks. See glslErrorString
+    for details.
 
-glslFunction        These are the built in functions, such as 'clamp' and
-                    'dFdx'. The default highlighting is Identifier.
+glslErrorString     Defaults to String.
+    The error message following the '#error' preprocessor directive. To be
+    highlighted differently from glslError, the string must be enclosed in
+    double quotes ("some error message").
 
-glslHexZero         The leading '0x' necessary to specify a hexadecimal
-                    number. This allows highlighting the '0x' different from
-                    the hex digits if desired. The default highlighting is
-                    PreProc.
+glslExtAll          Defaults to Keyword.
+    The keyword 'all' to specify a behavior for all possible extensions. This
+    is used with '#extension' preprocessor directive.
 
-glslLabel           The 'case' and 'default' statements (within a swtich
-                    statement). The default highlighting is Label.
+glslExtension       Defaults to PreProc.
+    The '#extension' preprocessor directive.
 
-glslLayout          The 'layout' and 'precision' statements. The default
-                    highlighting is Keyword.
+glslExtBehavior     Defaults to Constant.
+    The possible extension behaviors to use with the '#extension' preprocessor.
 
-glslLine            The #line preprocessor directive. The default highlighting
-                    is PreProc.
+glslFloat           Defaults to Number.
+    Floating point number literals.
 
-glslMacro           The predefined macros, such as '__LINE__'. The default
-                    highlighting is Macro.
+glslFunction        Defaults to Identifier.
+    These are the built in functions, such as 'clamp' and 'dFdx'.
 
-glslMixedComps      Technically, GLSL does not allow vector components to be
-                    mixed across conceptual types. That is, a shader cannot
-                    contain the statement
-                        // mixing cartesian and color components~
-                        vec2 foo = someVec.xg;~
-                    The default highlighting is Error.  However, it's
-                    concievable that a programmer might create a structure
-                    member named 'xg', which would highlight as an error. If
-                    you want to avoid that behavior, create a new link for
-                    glslMixedComps.
+glslHex             Defaults to Number.
+    Hexadecimal integers.
 
-glslNumber          Decimal and hexadecimal integers. The default highlighting
-                    is Number.
+glslHexZero         Defaults to PreProc.
+    The leading '0x' necessary to specify a hexadecimal number. This allows
+    highlighting the '0x' different from the hex digits if desired.
 
-glslOctal           Octal integers. The default highlighting is Number.
+glslLabel           Defaults to Label.
+    The 'case' and 'default' statements (within a swtich statement).
 
-glslOctalError      Octal integers which include the digits '8' or '9'. The
-                    default highlighting is Error.
+glslLayout          Defaults to Keyword.
+    The 'layout' and 'precision' statements.
 
-glslOctalZero       The leading '0' necessary to specify an octal number. This
-                    allows highlighting the '0' different from the octal
-                    digits if desired. The default highlighting is Preproc.
+glslLine            Defaults to PreProc.
+    The '#line' preprocessor directive.
 
-glslOpaqueType      These are the opaque types built into the language. It
-                    includes keywords such as 'atomic_uint' and 'image3D'. The
-                    default highlighting is Type.
+glslMacro           Defaults to Macro.
+    The predefined macros, such as '__LINE__'.
 
-glslPragma          The '#pragma' preprocessor directive. The default
-                    highlighting is PreProc.
+glslMixedComps      Defaults to Error.
+    Technically, GLSL does not allow vector components to be mixed across
+    conceptual types. That is, a shader cannot contain the statement >
+        vec2 foo = someVec.xg; // mixing cartesian and color components
+<    However, it's concievable that a programmer might create a structure
+    member named 'xg', which would highlight as an error. To enable
+    highlighting mixed components, define the variable |glsl_mixed_comps_error|.
 
-glslPragmaOptions   The options that can be used in a #pragma directive:
-                    'optimize', 'debug', and 'STDGL'. The default highlighting
-                    is Keyword.
+glslOctal           Defaults to Number.
+    Octal integers.
 
-glslPragmaValues    The 'all', 'off', and 'on' constants passed to the pragma
-                    options. The default highlighting is Constant.
+glslOctalError      Defaults to Error.
+    Octal integers which include the digits '8' or '9'.
 
-glslPrecondition    The varous preprocessor conditional keywords: '#if' and
-                    such. The default highlighting is PreProc.
+glslOctalZero       Defaults to PreProc.
+    The leading '0' necessary to specify an octal number. This allows
+    highlighting the '0' different from the octal digits if desired.
 
-glslProfile         The profile keywords: 'core', 'compatibility', and 'es')
-                    used in the #version preprocessor directive. The default
-                    highlighting is Keyword.
+glslOpaqueType      Defaults to Type.
+    These are the opaque types built into the language. It includes keywords
+    such as 'atomic_uint' and 'image3D'.
 
-glslQualFormat      The possible image format qualifiers. The default
-                    highlighting is Constant.
+glslPragma          Defaults to PreProc.
+    The '#pragma' preprocessor directive.
 
-glslQualifier       The various qualifiers. The default highlighting is
-                    StorageClass.
+glslPragmaOptions   Defaults to Keyword.
+    The options that can be used in a #pragma directive: 'optimize', 'debug',
+    and 'STDGL'.
 
-glslRepeat          The loop statements: 'do', 'for', and 'while'. The default
-                    highlighting is Repeat.
+glslPragmaValues    Defaults to Constant.
+    The 'all', 'off', and 'on' constants passed to the '#pragma' options.
 
-glslReserved        This is anything reserved by the language for future use.
-                    For example, anything begining with 'gl_' is reserved and
-                    cannot be used as an identifier. The default highlighting
-                    is Error.
+glslPrecondition    Defaults to PreProc.
+    The varous preprocessor conditional keywords: '#if' and such.
 
-glslStatement       The 'break', 'return', 'continue', and 'discard'
-                    statements. The default highlighting is Statement.
+glslProfile         Defaults to Keyword.
+    The profile keywords: 'core', 'compatibility', and 'es'. These are used in
+    the '#version' preprocessor directive.
 
-glslStructure       The 'struct' keyword. The default highlighting link is to
-                    Structure.
+glslQualFormat      Defaults to Constant.
+    The possible image format qualifiers, such as 'rgba32f' and 'r8_snorm'.
 
-glslTodo            The typical comment tags: 'TODO', 'FIXME', 'XXX', 'HACK',
-                    and 'BUG'. The default highlighting is Todo.
+glslQualifier       Defaults to StorageClass.
+    The various qualifiers, like 'uniform', 'in', etc.
 
-glslTransparentType These are the transparent data types in the language:
-                    basic scalars, vectors, and matrices. The default
-                    highlighting is Type.
+glslRepeat          Defaults to Repeat.
+    The loop statements: 'do', 'for', and 'while'.
 
-glslVariable        This encompasses all the built in variables, like
-                    'gl_ClipDistance' and 'gl_FragCoord'. The default highlighting
-                    is Identifier.
+glslReserved        Defaults to Error.
+    This is anything reserved by the language for future use. For example,
+    anything begining with 'gl_' is reserved and cannot be used as an
+    identifier.
 
-glslVersion         The #version preprocessor directive. The default
-                    highlighting is PreProc.
+glslStatement       Defaults to Statement.
+    The 'break', 'return', 'continue', and 'discard' statements.
+
+glslStructure       Defaults to Structure.
+    The 'struct' keyword.
+
+glslTodo            Defaults to Todo.
+    The typical comment tags: 'TODO', 'FIXME', 'XXX', 'HACK', and 'BUG'.
+
+glslTransparentType Defaults to Type.
+    These are the transparent data types in the language: basic scalars,
+    vectors, and matrices.
+
+glslVariable        Defaults to Identifier.
+    This encompasses all the built in variables, like 'gl_ClipDistance' and
+    'gl_FragCoord'.
+
+glslVersion         Defaults to PreProc.
+    The '#version' preprocessor directive.
+
+=============================================================================
+2. Automatic Indentation                        *glsl-indent*
+
+GLSL source code is automatically indented just like C code in Vim. In fact,
+it just uses the |'cindent'| option. Therefore, you can use other Vim
+configuration options for C indentation. See |C-indenting| for details on
+those options.
+
+=============================================================================
+3. Filetype Plugin                              *glsl-ftplugin*
+
+The filetype plugin for GLSL sets format options identical to C. That is, it
+- removes text wrapping in general,
+- adds text wrapping for comments,
+- adds autoinsertion of the comment leader after hitting <Enter> in insert
+  mode, or 'o' or 'O' in normal mode,
+- adds formatting of comments with the 'gq' command,
+- adds not breaking long lines in insert mode.
+
+The plugin also sets up formatting of dashed lists in comments.
+
+The code fold method is set to syntax. All other code folding options are left
+as their default values.
+
+Finally, the plugin sets the file browse dialog to filter on .glsl files.
 
 vim:tw=78:ts=8:ft=help:norl:
 

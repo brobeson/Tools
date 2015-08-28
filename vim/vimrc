@@ -33,8 +33,13 @@ set guioptions-=l	" disable the left hand scroll bar
 set guifont=DejaVu\ Sans\ Mono\ 9
 
 let g:netrw_sort_sequence='[\/]$,*'
+set diffopt+=vertical
 
 " set up variables for specific programming & markup languages
 let html_use_w3_style = 1
 let html_version = 5
+let glsl_enable_the_world = 1
+
+" when done using autocompletion, close the preview window
+autocmd CompleteDone * pclose
 

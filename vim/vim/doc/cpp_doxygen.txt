@@ -51,7 +51,7 @@ instructions about customizing these, see |cpp_doxygen-config|.
 <Leader>d               Insert a Doxygen comment before the current line.
 
 =============================================================================
-3. Configuring cpp_doxygen                      *cpp_doxygen-ref*
+3. Configuring cpp_doxygen                      *cpp_doxygen-config*
 
 Cpp_doxygen has quite a few configuration options. Generally, speaking, you
 just need to add the appropriate Vim commands to your vimrc.

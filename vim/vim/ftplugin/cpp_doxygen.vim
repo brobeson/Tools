@@ -90,6 +90,12 @@ if !exists('no_plugin_maps') && !exists('no_cpp_maps')
 endif
 
 
+" create a command
+if !exists(':Doxygenate')
+	command -buffer Doxygenate :call s:InsertDoxygen()
+endif
+
+
 " \brief	This function adds the file level Doxygen block.
 if !exists('*s:InsertFileDoxygen')
 	function s:InsertFileDoxygen()
