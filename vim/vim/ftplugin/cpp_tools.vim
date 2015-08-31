@@ -245,32 +245,6 @@ endif
 "}}}
 
 
-"==============================================================================
-"command -buffer Define :call s:DefineMethod()
-"if !exists('*s:DefineMethod')
-"	function s:DefineMethod()
-"		" extract the whole header
-"		let functionDeclaration = []
-"		let lastLine = search(';', 'cnW')
-"		let currentLine = line('.')
-"		while currentLine <= lastLine
-"			call insert(functionDeclaration, getline(currentLine))
-"			let currentLine = currentLine + 1
-"		endwhile
-
-"		" open the source file and append the declaration
-"		let sourceFile = substitute(expand('%:p'), 'hpp$', 'cpp', '')
-"		execute 'tabnew' sourceFile
-"		normal G
-"		let pasteLine = line('.')
-"		call add(functionDeclaration, '{')
-"		call add(functionDeclaration, '}')
-"		call append(pasteLine, functionDeclaration)
-"		"call cursor(pasteLine, 1)
-"		"execute 'normal ' . line('G') - pasteLine . '=='
-"	endfunction
-"endif
-
 " restore the original cpoptions
 let &cpo = s:save_cpo
 
