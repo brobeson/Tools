@@ -1,45 +1,130 @@
-" TODO	verify that on linux, the system and custom vimrc files are run
+" Vim profile
+" Author:       Brendan Robeson
+" Last Change: December 9, 2015
+" URL:          https://github.com/brobeson/Tools
+"
+" [1]           Some functions are from http://peterodding.com/code/vim/profile/vimrc
+"               There's some good stuff in there!
+"
+" todo          1) research setting the title ('titlestring')
+"               2) remap vs2013dark.vim console colors to 256
+"                  include a check for 256 color terminal
+"               3) moving tabs doesn't move them, just switches which tab you're
+"                  looking at.
+"               4) {count}gt doesn't move by $count. make it so!
+"               7) what is my preferred font on windows?
+"               8) highlight the wild menu
+"               9) loading CMake files in diff mode doesn't set the file type
+"                  correctly
 
-set nobackup	" disable automatic backups
-set number		" enable line numbers
-set nowrap		" disable line wrap
-set cursorline	" highlight the line with the cursor
+" to research for per project plugins: {{{1
+" set path=
+" set suffixesadd=
+" set tags=
 
-" set all tabbing to 4 characters wide and keep the tabs
+" basic options {{{1
+set nobackup            " disable automatic backups
+set number              " enable line numbers
+set nowrap              " disable line wrap
+set cursorline          " highlight the line with the cursor
+set autoread            " automatically reload if a file is edited outside of Vim
+set incsearch           " highlight search matches as the pattern is typed
+set nojoinspaces        " only add 1 space after punctuation when joining lines
+set hlsearch            " highlight the matches of the last search pattern
+set textwidth=80        " set the text width to 80 characters
+set formatoptions-=l    " automatically format lines initially longer than the text width
+set formatoptions+=j    " delete comment leaders when joining comment lines
+set formatoptions+=n    " automatically format numbered lists
+set modeline            " allow modelines from files
+set wildmenu            " command line completion menu
+set wildignore+=*.sw?   " ignore Vim swap files when completing file names
+set diffopt+=vertical   " split a diff window vertically
+set spell               " enable spell checking
+
+" disable capital letter checking after sentences. I'm lazy and don't often use
+" capital letters to start sentences.
+set spellcapcheck=
+
+" set all tabbing to 4 characters wide and convert tabs to spaces
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
-set noexpandtab
+set expandtab
 
-" set up some searching options
-set incsearch
-set hlsearch
+" ensure file type functionality is on
+syntax on
+filetype plugin indent on
 
-" filetype functionality
-filetype plugin on
-filetype indent on
-
+" set my preferred color scheme
 colorscheme vs2013dark
 
-" set up the GUI
-set guioptions-=g	" disable grayed out inactive menu items
-set guioptions-=m	" disable the menu bar
-set guioptions-=T	" disable the tool bar
-set guioptions-=t	" disable tear off menus
-set guioptions-=R	" disable the right hand scroll bar
-set guioptions-=r	" disable the right hand scroll bar
-set guioptions-=L	" disable the left hand scroll bar
-set guioptions-=l	" disable the left hand scroll bar
-set guifont=DejaVu\ Sans\ Mono\ 9
+" set up the GUI {{{1
+if has('gui_running')
+    set guioptions-=g   " disable grayed out inactive menu items
+    set guioptions-=m   " disable the menu bar
+    set guioptions-=T   " disable the tool bar
+    set guioptions-=t   " disable tear off menus
+    set guioptions-=R   " disable the right hand scroll bar
+    set guioptions-=r   " disable the right hand scroll bar
+    set guioptions-=L   " disable the left hand scroll bar
+    set guioptions-=l   " disable the left hand scroll bar
+    if has('gui_gtk2')
+        set guifont=DejaVu\ Sans\ Mono\ 6
+    "elseif has('gui_win32')
+    "    set guifont=Consolas:h13
+    endif
+elseif $TERM =~ 'xterm\|screen'
+    set t_Co=256        " enable 256 colors in a terminal Vim
+endif
 
+" set some global variables {{{1
+" sort directories first, then files. other than that, just alphabetical
 let g:netrw_sort_sequence='[\/]$,*'
-set diffopt+=vertical
 
-" set up variables for specific programming & markup languages
-let html_use_w3_style = 1
-let html_version = 5
-let glsl_enable_the_world = 1
-
-" when done using autocompletion, close the preview window
+" additional auto commands {{{1
+" close the preview window when auto completion is done
 autocmd CompleteDone * pclose
+
+" enable reading of PDF files [1]
+" I waffled on this a bit. in the end, I chose to add it for the ability to yank
+" text from a PDF file. on my Kubuntu machine, I just had to install xpdf.
+autocmd BufReadPost *.pdf setlocal readonly | silent %!pdftotext -nopgbrk "%" -
+
+" disable highlighting the current line in diff mode. it hides the diff
+" highlighting.
+autocmd WinEnter * if &diff | set nocursorline | endif
+
+" set the proper file type for CMake files loaded in a diff or merge view
+autocmd BufNewFile,BufRead *CMakeLists.txt* setf cmake
+
+" Control-Shift-Page Up/Down: Drag active tab page left or right. [1] {{{1
+imap <C-S-PageUp> <C-O>:TabMoveLeft<CR>
+nmap <C-S-PageUp> :TabMoveLeft<CR>
+
+command TabMoveLeft call s:TabMoveLeft()
+
+function s:TabMoveLeft()
+    let n = tabpagenr()
+    execute 'tabmove' (n == 1 ? '' : n - 2)
+    " Redraw tab page labels.
+    let &showtabline = &showtabline
+endfunction
+
+imap <C-S-PageDown> <C-O>:TabMoveRight<CR>
+nmap <C-S-PageDown> :TabMoveRight<CR>
+
+command TabMoveRight call s:TabMoveRight()
+
+function s:TabMoveRight()
+    let n = tabpagenr()
+    execute 'tabmove' (n == tabpagenr('$') ? 0 : n)
+    " Redraw tab page labels.
+    let &showtabline = &showtabline
+endfunction
+" }}}
+
+" At work, I'm required to use some different settings than I normally prefer.
+" I set them up in work_env.vim. This is quietly ignored when the file isn't
+" found at home.
+runtime work_env.vim
 
