@@ -1,96 +1,92 @@
-" Vim plugin to add a bunch of functionality related to C++ development.
-" Last Change:	2015 March 8
+" Vim plug-in to add a bunch of functionality related to C++ development.
+" Last Change:	2015 December 15
 " Maintainer:	Brendan Robeson (github.com/brobeson/Tools.git)
-" License:		Public Domain
-"
-"  - add functionality to insert Doxygen comments
-"  - add my code folding text and fold settings
-"  - add functionality to comment and uncomment a range of lines
-"  - add functionality to create a new class declaration
-"  - add functionality to yank lines of code, and paste them as a new function
 
-" check if this plugin (or one with the same name) has already been loaded
-if exists('b:loaded_cpp')
+" check if this plug-in (or one with the same name) has already been loaded
+if exists('b:loaded_cpp_tools')
 	finish
 endif
-let b:loaded_cpp = 1
+let b:loaded_cpp_tools = 1
 
 " save cpoptions and reset to avoid problems in the script
 let s:save_cpo = &cpo
 setlocal cpo&vim
 
+let c_space_errors = 1      " :help ft-c-syntax
+let glsl_enable_the_world = 1
 
-"==============================================================================
 " code folding {{{
-"==============================================================================
 " adapted from http://dhruvasagar.com/2013/03/28/vim-better-foldtext
-" and another that I accidentally erased. i'm not sure why, but i can't make
-" this a script local function. if i do, then use 'set foldtext=<SID>CppFoldText',
-" then the folding doesn't display correctly.
+" and another that I accidentally erased. I'm not sure why, but I can't make
+" this a script local function. if I do, then use
+" 'set foldtext=<SID>CppFoldText', then the folding doesn't display correctly.
 if !exists('*CppFoldText')
 	function CppFoldText()
 		" start by folding a doxygen comment
-		let foldText = ''
+		let fold_text = ''
 		if exists('*FoldDoxygen')
-			let foldText = FoldDoxygen()
+			let fold_text = FoldDoxygen()
 		endif
 
 		" if the folded block isn't a doxygen comment, the function will
 		" return '' and we can try other blocks.
-		if foldText == ''
+		if fold_text == ''
 			" get the first line. we need it to determine what type of fold text
 			" to create. also initialize the fold text in a way to indicate a
 			" folding case I haven't handled.
-			let firstLine = getline(v:foldstart)
-			let foldText = 'NO FOLD TEXT DEFINED'
+			let first_line = getline(v:foldstart)
+			let fold_text = 'NO FOLD TEXT DEFINED'
 
 			" 'commented' code via #if 0, or #ifdef 0
-			if match(firstLine, '^\s*#if\(def\)\?\s*0') == 0
-				let codeLine = getline(v:foldstart + 1)
-				let spaceCount = match(codeLine, '\S')
-				let foldText = repeat(' ', spaceCount) . '[ commented code ]  '
-				let foldText .= substitute(codeLine, '^\s*', '', '')
+			if match(first_line, '^\s*#if\(def\)\?\s*0') == 0
+				let first_code_line = getline(v:foldstart + 1)
+				let space_count = match(first_code_line, '\S')
+				let fold_text = repeat(' ', space_count) . '[ commented code ] '
+				let fold_text .= substitute(first_code_line, '^\s*', '', '')
+
+			" C style comment
+            elseif match(first_line, '\/\*') != -1
+				let first_code_line = getline(v:foldstart + 1)
+                if match(first_code_line, '^\s*\*') != -1
+                    let first_code_line = substitute(first_code_line, '\*', ' ', '')
+                endif
+                let fold_text = '/* '
+				let fold_text .= substitute(first_code_line, '^\s*', '', '')
+                let fold_text .= ' ... */'
 
 			" code blocks
-			elseif match(firstLine, '{') != -1
+			elseif match(first_line, '{') != -1
 				" remove text following the block's opening '{'. it's not just set
 				" to a brace, because we want to keep the leading white space so
 				" the fold text remains aligned with the block identifier
 				" (function name, class name, etc).
-				let foldText = substitute(firstLine, '{.*', '{', '')
+				let fold_text = substitute(first_line, '{.*', '{', '')
 
 				" the fill text is the number of folded lines, right justified
-				let foldText .= printf(' %5d lines }', v:foldend - v:foldstart + 1)
+				let fold_text .= printf(' %5d lines }', v:foldend - v:foldstart + 1)
 			endif
 		endif
 
-		" vim sets the tab character to 1 space in the fold text.  I want
+		" Vim sets the tab character to 1 space in the fold text.  I want
 		" the braces to remain aligned as in the code, so swap out the
-		" tabs for enough spaces to match the tabstop
+		" tabs for enough spaces to match the tab stop
 		let spaces = repeat(' ', &tabstop)
-		let foldText = substitute(foldText, '\t', spaces, 'g')
-		return foldText
+		let fold_text = substitute(fold_text, '\t', spaces, 'g')
+		return fold_text
 	endfunction
 endif
 
-" turn on folding, remove the fold column, use the syntax method, use my
-" function to generate the fold text, and make the fill character a space
-setlocal foldenable
-setlocal foldcolumn=0
-setlocal foldmethod=syntax
-setlocal foldtext=CppFoldText()
-setlocal fillchars=fold:\ 
+setlocal foldenable             " enable code folding
+setlocal foldmethod=syntax      " let the syntax determine the folds
+setlocal foldtext=CppFoldText() " use my text folding function
 "}}}
 
-
-"==============================================================================
-" the comment/uncomment plugin {{{
-"==============================================================================
+" the comment/uncomment plug-in {{{
 if !exists('*Comment') || !exists('*Uncomment')
-	echoerr 'Command() or Uncomment() is undefined. Do you have plugin/codeTools.vim loaded?'
+	echoerr 'Command() or Uncomment() is undefined. Do you have plug-in/codeTools.vim loaded?'
 else
 	" create the command mappings to call the functions
-	if !exists('no_plugin_maps') && !exists('no_cpp_maps')
+	if !exists('no_plug-in_maps') && !exists('no_cpp_maps')
 		" map the comment command
 		if !hasmapto('<Plug>CppComment')
 			map <buffer> <unique> <Leader>c <Plug>CppComment
@@ -106,16 +102,29 @@ else
 endif
 "}}}
 
-
-"==============================================================================
-" the new class plugin {{{
-"==============================================================================
-if !exists('no_plugin_maps') && !exists('no_cpp_maps')
+" the new class plug-in {{{
+if !exists('no_plug-in_maps') && !exists('no_cpp_maps')
 	" map the new class command
 	if !hasmapto('<Plug>CppNewClass')
 		map <buffer> <unique> <Leader>p <Plug>CppNewClass
 	endif
 	noremap  <buffer> <unique> <script> <Plug>CppNewClass :call <SID>NewClass()<CR>
+endif
+
+if !exists('s:cpp_new_class_declaration')
+    let s:cpp_new_class_declaration = [
+                \ 'class class_name',
+                \ '{',
+                \ 'public:',
+                \ 'class_name() = delete;',
+                \ '~class_name() = default;',
+                \ 'class_name(const class_name&) = default;',
+                \ 'class_name& operator=(const class_name&) = default;',
+                \ 'class_name(class_name&&) = default;',
+                \ 'class_name& operator=(class_name&&) = default;',
+                \ 'private:',
+                \ '};' ]
+    let s:cpp_new_class_declaration_length = len(s:cpp_new_class_declaration) + 1
 endif
 
 " define the function to create a new class
@@ -131,119 +140,28 @@ if !exists('*s:NewClass')
 
 		" build up the class declaration
 		let class_declaration = []
-		call add(class_declaration, 'class ' . class_name)
-		call add(class_declaration, '{')
-		call add(class_declaration, 'public:')
-		call add(class_declaration, '~' . class_name . '() noexcept = default;')
-		call add(class_declaration, '')
-		call add(class_declaration, class_name . '() = delete;')
-		call add(class_declaration, class_name . '(' . class_name . '&) = delete;')
-		call add(class_declaration, class_name . '(' . class_name . '&&) = delete;')
-		call add(class_declaration, class_name . '& operator=(' . class_name . '&) = delete;')
-		call add(class_declaration, class_name . '& operator=(' . class_name . '&&) = delete;')
-		call add(class_declaration, '')
-		call add(class_declaration, 'private:')
-		call add(class_declaration, '};')
+        for line in s:cpp_new_class_declaration
+            call add(class_declaration, substitute(line, 'class_name', class_name, 'g'))
+        endfor
 
 		" add it to the buffer and reformat it
 		call append(line('.'), class_declaration)
-		execute 'normal' len(class_declaration) + 1 . '=='
+        execute 'silent normal' s:cpp_new_class_declaration_length . "=="
 
 		" and add doxygen comments
 		"call <SID>InsertDoxygen()
-		if exists(':Doxygenate')
-			call cursor(start_line + 6, 1)
-			Doxygenate
-			call cursor(start_line + 4, 1)
-			Doxygenate
-			execute 'normal A      Destroy a ' . class_name . ' object.'
-			call cursor(start_line + 1, 1)
-			Doxygenate
-		endif
+		"if exists(':Doxygenate')
+		"	call cursor(start_line + 6, 1)
+		"	Doxygenate
+		"	call cursor(start_line + 4, 1)
+		"	Doxygenate
+		"	execute 'normal A      Destroy a ' . class_name . ' object.'
+		"	call cursor(start_line + 1, 1)
+		"	Doxygenate
+		"endif
 	endfunction
 endif
 "}}}
-
-
-"==============================================================================
-" the extract-to-function plugin {{{
-"==============================================================================
-if !exists('no_plugin_maps') && !exists('no_cpp_maps')
-	" map the delete command
-	if !hasmapto('<Plug>CppDeleteFunction')
-		map <buffer> <unique> <Leader>fd <Plug>CppDeleteFunction
-	endif
-	noremap  <buffer> <unique> <script> <Plug>CppDeleteFunction :call <SID>DeleteFunction()<CR>
-
-	" map the paste below command
-	if !hasmapto('<Plug>CppPasteFunction')
-		map <buffer> <unique> <Leader>fp <Plug>CppPasteFunction
-	endif
-	noremap  <buffer> <unique> <script> <Plug>CppPasteFunction :call <SID>PasteFunction()<CR>
-endif
-
-" this is script scope so the lines can be deleted from one file, and pasted
-" to a new function in another file.
-let s:functionBody = []
-
-" define the function to paste a buffer as a function
-if !exists('*s:PasteFunction')
-	function s:PasteFunction()
-		call append(line('.'), s:functionBody)
-		let lineCount = len(s:functionBody)
-
-		" reformat the code
-		normal j
-		execute 'normal' lineCount . '=='
-
-		" add two lines after the function
-		execute 'normal' lineCount - 1 . 'jo'
-		normal o
-
-		" return to the top of the function
-		execute 'normal' lineCount  + 1. 'k'
-
-		" and add doxygen comments
-		call <SID>InsertDoxygen()
-	endfunction
-endif
-
-" define the function to uncomment a range of lines
-if !exists('*s:DeleteFunction')
-	function s:DeleteFunction() range
-		" prompt the user for the function declaration
-		call inputsave()
-		let declaration = input('enter the function declaration: ')
-
-		" if the user add a semicolon, a compiler error will result, so chuck
-		" it.
-		let declaration = substitute(declaration, ';$', '', '')
-
-		" get the lines to be cut
-		let lineRange = a:lastline - a:firstline + 1
-		let s:functionBody = getline(a:firstline, a:lastline)
-		execute 'normal ' . lineRange . 'dd'
-
-		" prepend the function declaration and opening brace, then append the
-		" closing brace
-		call insert(s:functionBody, '{')
-		call insert(s:functionBody, declaration)
-		call add(s:functionBody, '}')
-
-		" get the replacement function call, then append it
-		let functionCall = substitute(declaration, '\S*\s', '', '')
-		let functionCall = substitute(functionCall, '(.*$', '(', '')
-		let functionCall = input('enter the call to the new function: ', functionCall)
-		normal k
-		call append(line('.'), functionCall)
-		normal j==
-
-		"echo lineRange 'lines deleted, ready to be put as a function'
-		call inputrestore()
-	endfunction
-endif
-"}}}
-
 
 " restore the original cpoptions
 let &cpo = s:save_cpo
