@@ -1,20 +1,19 @@
 " Vim profile
 " Author:       Brendan Robeson
-" Last Change:  2015 December 14
+" Last Change:  2015 December 15
 " URL:          https://github.com/brobeson/Tools
 "
 " [1]           Some functions are from http://peterodding.com/code/vim/profile/vimrc
 "               There's some good stuff in there!
 "
-" todo          1) research setting the title ('titlestring')
-"               2) remap vs2013dark.vim console colors to 256
-"                  include a check for 256 color terminal
-"               3) moving tabs doesn't move them, just switches which tab you're
-"                  looking at.
-"               4) {count}gt doesn't move by $count. make it so!
-"               8) highlight the wild menu
-"               9) loading CMake files in diff mode doesn't set the file type
-"                  correctly
+" todo          2)  remap vs2013dark.vim console colors to 256
+"                   include a check for 256 color terminal
+"               3)  moving tabs doesn't move them, just switches which tab you're
+"                   looking at.
+"               4)  {count}gt doesn't move by $count. make it so!
+"               7)  what is my preferred font on windows?
+"               9)  loading CMake files in diff mode doesn't set the file type
+"                   correctly
 
 " to research for per project plugins: {{{1
 " set path=
@@ -39,6 +38,13 @@ set wildmenu            " command line completion menu
 set wildignore+=*.sw?   " ignore Vim swap files when completing file names
 set diffopt+=vertical   " split a diff window vertically
 set spell               " enable spell checking
+set foldcolumn=0        " remove the fold column. I never use it
+
+" set the fold fill character to a space
+set fillchars=fold:\ 
+
+" set the title string to the full file path
+set titlestring=%F
 
 " disable capital letter checking after sentences. I'm lazy and don't often use
 " capital letters to start sentences.
@@ -69,11 +75,16 @@ if has('gui_running')
     set guioptions-=l   " disable the left hand scroll bar
     if has('gui_gtk2')
         set guifont=DejaVu\ Sans\ Mono\ 6
-    "elseif has('gui_win32')
-    "    set guifont=Source_Code_Pro:h9:cANSI
+    elseif has('gui_win32')
+        set guifont=Source_Code_Pro:h9:cANSI
+
+    " set the tab line to display modified and the file name
+    set guitablabel=%m\ %t
     endif
 elseif $TERM =~ 'xterm\|screen'
     set t_Co=256        " enable 256 colors in a terminal Vim
+    " set the tab line to display modified and the file name
+    set tabline=%m\ %t
 endif
 
 " set some global variables {{{1
