@@ -1,7 +1,6 @@
 " Vim plug-in to run Cppcheck on the current buffer.
 " Last Change:  2015 December 15
 " Maintainer:   Brendan Robeson (https://github.com/brobeson/Tools)
-" License:      Public Domain
 
 " check if this plug-in (or one with the same name) has already been loaded
 if exists('b:loaded_cpp_cppcheck')
