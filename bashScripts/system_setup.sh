@@ -32,19 +32,25 @@ apt-get install -y yakuake
 # configure git {{{
 # use gvim as the editor, diff tool, and merge tool. make the merge tool not
 # prompt me, and don't back up the originals when merging
-git config --global user.name "brobeson"
-git config --global user.email "ogslanger@vt.edu"
 git config --global core.editor "gvim -f"
 git config --global diff.tool gvimdiff
 git config --global merge.tool gvimdiff
-git config --global mergetool.prompt false
 git config --global mergetool.keepbackup false
+git config --global mergetool.prompt false
+git config --global push.default simple
+git config --global user.name "brobeson"
+git config --global user.email "ogslanger@vt.edu"
 
 # git graph: create a branch graph using dot
 #git config --global alias.graph !f() { echo 'digraph git {'; git log --pretty='format: %h -> { %p }' | sed 's/[0-9a-f][0-9a-f]*/"&"/g'; echo '}'; }; f
 
 # git stash-it-all: stash everything, including untracked files
 git config --global --add "alias.stash-it-all" "stash save --include-untracked"
+
+# create a system wide git ignore file
+# *.sw*   ignore vim swap files
+echo '*.sw*' > ~/.gitignore
+git config --global core.excludesfile "~/.gitignore"
 # }}}
 
 # checkout my tools repository {{{
