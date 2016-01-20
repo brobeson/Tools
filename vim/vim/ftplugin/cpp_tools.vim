@@ -13,8 +13,8 @@ if exists('b:loaded_cpp_tools')
 endif
 let b:loaded_cpp_tools = 1
 
-let c_space_errors = 1      " :help ft-c-syntax
-let glsl_enable_the_world = 1
+" :help ft-c-syntax
+let c_space_errors = 1
 
 " the comment/uncomment plug-in
 if !exists('*Comment') || !exists('*Uncomment')
