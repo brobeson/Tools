@@ -1,6 +1,6 @@
 " Vim color file
 " Maintainer:	Brendan Robeson <github.com/brobeson/Tools>
-" Last Change:	2014 December 31
+" Last Change:	December 9, 2015
 " License:		Public Domain
 "
 " This color file is based on Visual Studio 2013's C++ highlighting for
@@ -53,7 +53,7 @@ highlight SpecialKey    cterm=none  ctermfg=white                               
 highlight StatusLine    cterm=none  ctermfg=fg         ctermbg=darkgray  gui=underline  guifg=fg        guibg=bg
 highlight StatusLineNC  cterm=none  ctermfg=darkgray   ctermbg=bg        gui=underline  guifg=darkgray  guibg=bg
 highlight VertSplit     cterm=none  ctermfg=darkgray   ctermbg=darkgray                 guifg=#808080   guibg=#808080
-highlight WildMenu      cterm=none  ctermfg=black      ctermbg=darkgray  gui=underline  guifg=fg        guibg=bg
+highlight WildMenu      cterm=none  ctermfg=black      ctermbg=darkgray  gui=underline  guifg=bg        guibg=fg
 
 " tabline groups have no effect in the GUI
 highlight TabLine      cterm=none  ctermfg=darkgray  ctermbg=bg
