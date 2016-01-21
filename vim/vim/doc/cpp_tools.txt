@@ -9,69 +9,7 @@ This is a plugin with some helpful commands for editing C++ code. This plugin
 relies on |codeTools|, which adds more functionality than is listed here.
 Codetools can be found at http://github.com/brobeson/Tools.
 
-This plugin adds the following functionality:
-1. Insert a Doxygen Comment             |cpp_tools_doxygen|
-2. Code Folding Text                    |cpp_tools_code_folding|
-3. Comment/Uncomment Lines              |cpp_tools_comment|
-                                        |cpp_tools_uncomment|
-4. Insert a New Class                   |cpp_tools_new_class|
-5. Extract a New Function               |cpp_tools_function_extract|
-
-=============================================================================
-Mappings Reference                              *cpp_tools_mappings*
-
-Here is a quick, alphabetical, reference for the mappings introduced by this
-plugin.
-
-Command            Use~
-[count]<Leader>c    Comment a range of lines.
-       <Leader>d    Insert a Doxygen comment before the current line.
-[count]<Leader>fd   Extract a range of lines, to be pasted later as a new
-                    function.
-       <Leader>fp   Put the lines previously extracted as a function below
-                    the current line.
-       <Leader>pc   Put a new class below the current the line.
-[count]<Leader>u    Uncomment a range of lines.
-
-=============================================================================
-1. Insert a Doxygen Comment                     *cpp_tools_doxygen*
-
-To insert a comment template suitable for Doxygen, place the cursor on the
-line of a struct, class, namespace, or function declaration and press
-<Leader>d. Above the declaration will be inserted the comment. It contains
-the brief and details tags. Functions will also have the param, return, and
-exception tags. Parameters are deduced to be in; out; or in,out from context.
-If the function returns a boolean, two retval tags are added instead of the
-return tag. If the structure being documented is a template, tparam tags are
-also included.
-
-Note    This plugin will not update a Doxygen comment (yet). If you try that,
-a new comment will be added between the existing comment and the code
-structure.
-
-=============================================================================
-2. Code Folding Text                            *cpp_tools_code_folding*
-
-The code folding text varies depending on what is folded.
-
-Actual code, between braces, folds up to the following:
-    {     N lines }~
-
-A comment block folds to either of:
-    /** Text from the brief tag. */~
-    /** no brief description */~
-If a Doxygen brief tag is found, the former is used. Otherwise, the latter is
-used.
-
-Code surrounded by #if 0 ... #endif, folds to:
-    [ commented code ]~
-
-All the fold text options indent the fold text to match the original
-indentation of the first line of the fold. The leading white space in the
-examples above are simply to offset the examples from the normal help text.
-
-=============================================================================
-3. Comment/Uncomment Lines                      *cpp_tools_comment*
+Comment/Uncomment Lines                         *cpp_tools_comment*
                                                 *cpp_tools_uncomment*
 
 A range of lines can be commented with C++ style comment text: //. If no
@@ -86,68 +24,6 @@ uncomment a legitimate comment at the end of a line:
     class Foo;    // this is a foo class~
 Using <Leader>u on the above line will produce this result:
     class Foo;   this is a foo class~
-
-Note that these commands do not work as expected with folded code. With the
-cursor on this fold:
-    {    5 lines }~
-and pressing <Leader>c, will result in
-    //{~
-        code line 1;~
-        code line 2;~
-        code line 3;~
-    }~
-To comment the entire fold, use 5<Leader>c; you don't need to open the fold
-before-hand.
-
-=============================================================================
-4. Insert a New Class                           *cpp_tools_new_class*
-
-Skeleton code for a new class can be inserted by typing <Leader>pc. Vim will
-prompt your for a class name, using the current file name, without the
-extension, as the default. After inserting the code, the function will
-autoindent it. The skeleton code takes the form:
-/**~
- * @brief~
- * @details~
- */~
-class YourClassName~
-{~
-    public:~
-        /** @cond */~
-        YourClassName() = delete;~
-        YourClassName(const YourClassName& source) = delete;~
-        YourClassName& operator=(const YourClassName& source) = delete;~
-        /** @endcond */~
-
-        /**~
-         * @brief       Destroy a YourClassName object.~
-         * @exception   None.~
-         */~
-        ~YourClassName() = default;~
-
-    private:~
-};~
-
-Note a few things from that code:
-1. Doxygen comments are included.
-2. C++11 is assumed by '= delete' and '= default'.
-3. Compiler generated construction & assignment are removed.
-4. Compiler generated construction & assignment are excluded from Doxygen
-   processing.
-
-=============================================================================
-5. Extract a New Function                       *cpp_tools_function_extract*
-
-A range of lines can be deleted and prepped for putting as a new function.
-Typing [count]<Leader>fd will do this.  The default count is 1 (one). Vim
-will first prompt you for the declaration of the new function. It will then
-prompt your for the line of code to replace the deleted lines. The default
-for this new line is just the new function name and an opening parenthesis.
-The new line is added for you.
-
-The new function is put on the next line by typing <Leader>fp. After
-inserting the new function, the code is autoindented and a Doxygen comment
-block is added.
 
 vim:tw=78:ts=8:ft=help:norl:
 

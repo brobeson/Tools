@@ -16,7 +16,7 @@ noremap  <buffer> <unique> <script> <Plug>CppNewClass :call <SID>NewClass()<CR>
 
 if !exists('s:cpp_new_class_declaration')
     let s:cpp_new_class_declaration = [
-                \ 'class class_name',
+                \ 'class class_name final',
                 \ '{',
                 \ 'public:',
                 \ 'class_name() = delete;',
