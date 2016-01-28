@@ -1,0 +1,38 @@
+*cpp_folding.txt*  For Vim version 7.4.  Last Change: 2015 May 29
+
+
+                    Cpp Folding Reference Manual
+
+                       by Brendan Robeson
+
+This plugin provides custom code folding text for C++ source code. It also
+sets up the code folding options to use the fold text.
+
+Code Folding Options                            *cpp_folding_options*
+This plugin will set the following options for a C++ buffer: 'foldenable',
+'foldmethod'=syntax, and 'foldtext'=CppFoldText(). The first turns on code
+folding. The second tells Vim to determine folds based on syntax. The last
+tells Vim to use this plugin's fold text function.
+
+=============================================================================
+Code Folding Text                               *cpp_folding*
+
+The code folding text varies depending on what is folded.
+
+Actual code, between braces, folds up to the following:
+{     N lines }~
+
+A C style comment block folds to:
+/* The first line of the comment ... */~
+
+If the cpp_doxygen plugin is loaded, a Javadoc or Qt style Doxygen comment
+will display the brief text. See |cpp_doxygen-folding| for details.
+
+Code surrounded by #if 0 ... #endif, folds to:
+[ commented code ]~
+
+All the fold text options indent the fold text to match the original
+indentation of the first line of the fold.
+
+vim:tw=78:ts=8:ft=help:norl:
+

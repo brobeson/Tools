@@ -11,11 +11,11 @@ create an issue at https://github.com/brobeson/Tools. This plugin was written
 against Cppcheck 1.67. I have not tested it with other versions.
 
 1. Prerequisites                        |cpp_cppcheck-prerequisites|
-2. Running Cppcheck						|cpp_cppcheck|
-3. Configuring cpp_cppcheck				|cpp_cppcheck-config|
+2. Running Cppcheck                     |cpp_cppcheck|
+3. Configuring cpp_cppcheck             |cpp_cppcheck-config|
 
 =============================================================================
-1. Prerequisites								*cpp_cppcheck-prerequisites*
+1. Prerequisites                                *cpp_cppcheck-prerequisites*
 
 Cpp_cppcheck requires that you have Cppcheck installed and that it can be
 found through your PATH environment variable. See
@@ -34,7 +34,7 @@ testing on that platform. Also, at this time, I haven't had an opportunity to
 test it on Windows. Feedback for those platforms is appreciated.
 
 =============================================================================
-2. Running Cppcheck								*cpp_cppcheck* *:Cppcheck*
+2. Running Cppcheck                             *cpp_cppcheck* *:Cppcheck*
 
 To check the current buffer, just use the command :Cppcheck. Errors will be
 presented in the |quickfix-window|. Then you can use the |quickfix| commands

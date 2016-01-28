@@ -1,7 +1,7 @@
 " Vim plugin with various tools for editing code
-" Last Change:	2015 January 02
-" Maintainer:	Brendan Robeson (github.com/brobeson/Tools/)
-" License:		Public Domain
+" Last Change:  2015 January 02
+" Maintainer:   Brendan Robeson (github.com/brobeson/Tools/)
+" License:      Public Domain
 "
 " I know other scripts to do this exist, particularly the NERDcommenter.
 " That's just much more than I need. Also, I used this an exercise in learning
@@ -17,7 +17,7 @@
 
 " check if this plugin (or one with the same name) has already been loaded
 if exists('g:loaded_codeTools')
-	finish
+    finish
 endif
 let g:loaded_codeTools = 1
 
@@ -56,45 +56,45 @@ nmap <unique> z5 :set foldlevel=5<CR>
 " define the functions to comment and uncomment a range of lines {{{
 "==============================================================================
 if !exists('*Comment')
-	function Comment(comment_token) range
-		" determine the smallest column at which text begins the lines in the
-		" range.
-		let comment_column = 65536
-		let line_range = range(a:firstline, a:lastline)
-		for line in line_range
-			call cursor(line, 0)
-			normal ^
-			if col('.') < comment_column
-				let comment_column = col('.')
-			endif
-		endfor
+    function Comment(comment_token) range
+        " determine the smallest column at which text begins the lines in the
+        " range.
+        let comment_column = 65536
+        let line_range = range(a:firstline, a:lastline)
+        for line in line_range
+            call cursor(line, 0)
+            normal ^
+            if col('.') < comment_column
+                let comment_column = col('.')
+            endif
+        endfor
 
-		" now go back through the lines, inserting the comment characters at
-		" that minimum column.
-		let total_commented_lines = 0
-		for line in line_range
-			call cursor(line, comment_column)
-			execute 'normal i' . a:comment_token
-			let total_commented_lines += 1
-		endfor
+        " now go back through the lines, inserting the comment characters at
+        " that minimum column.
+        let total_commented_lines = 0
+        for line in line_range
+            call cursor(line, comment_column)
+            execute 'normal i' . a:comment_token
+            let total_commented_lines += 1
+        endfor
 
-		" tell the user how many lines were commented
-		call cursor(a:firstline, comment_column)
-		echo total_commented_lines . ' lines commented'
-	endfunction
+        " tell the user how many lines were commented
+        call cursor(a:firstline, comment_column)
+        echo total_commented_lines . ' lines commented'
+    endfunction
 endif
 
 " define the function to uncomment a range of lines
 if !exists('*Uncomment')
-	function Uncomment(comment_token) range
-		" this is the cleanest way i found to uncomment the
-		" lines without incurring problems if folding is enabled.
-		for line in range(a:firstline, a:lastline)
-			call setline(line, substitute(getline(line), a:comment_token, '', ''))
-		endfor
-		normal ^
-		echo a:lastline - a:firstline + 1 'lines uncommented'
-	endfunction
+    function Uncomment(comment_token) range
+        " this is the cleanest way i found to uncomment the
+        " lines without incurring problems if folding is enabled.
+        for line in range(a:firstline, a:lastline)
+            call setline(line, substitute(getline(line), a:comment_token, '', ''))
+        endfor
+        normal ^
+        echo a:lastline - a:firstline + 1 'lines uncommented'
+    endfunction
 endif
 "}}}
 

@@ -50,6 +50,11 @@ instructions about customizing these, see |cpp_doxygen-config|.
 
 <Leader>d               Insert a Doxygen comment before the current line.
 
+:Doxygenate             Insert a Doxygen comment before the current line. This
+                        command is provided for use in Vim plug-ins. Of
+                        course, you can use the command instead of the mapping
+                        if you wish.
+
 =============================================================================
 3. Configuring cpp_doxygen                      *cpp_doxygen-config*
 
@@ -179,10 +184,9 @@ Deleted Functions       Deleted functions are removed from the Doxygen
 
 Cpp_doxygen provides a global function you can use for folding Doxygen comment
 blocks. Note that, with the C++ syntax included with Vim, only C style
-comments can fold. This function was written with that in mind. If you've
-gotten multiline C++ style comments to fold, this function won't work for
-them. Ergo, this function only works with "javadoc" and "qt" style Doxygen
-comments.
+comments can fold. This function was written with that in mind. If you have
+multiline C++ style comments to fold, this function won't work for them. Ergo,
+this function only works with "javadoc" and "qt" style Doxygen comments.
 
 The folding function looks for the brief description and presents that, with
 comment tokens around it. If no brief description is found, the phrase "no

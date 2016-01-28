@@ -1,9 +1,15 @@
 " Vim plug-in to add a bunch of functionality related to Vim scripting.
-" Last Change:  2015 December 16
+" Last Change:  2016 January 19
 " Maintainer:   Brendan Robeson (https://github.com/brobeson/Tools)
 "
 " [1]           Some functions are from http://peterodding.com/code/vim/profile/vimrc
 "               There's some good stuff in there!
+
+" I don't know why, but these need to be set prior to finishing. otherwise
+" they may not set correctly if the file is closed, then reopened.
+setlocal foldenable                 " turn on code folding
+setlocal foldmethod=marker          " use the marker method for folding
+setlocal foldtext=MarkerFoldText()  " use my function to build the fold text
 
 " check if this plug-in (or one with the same name) has already been loaded
 if exists('b:loaded_vim_tools')
@@ -44,10 +50,6 @@ if !exists('*s:update_last_change_date') && exists('*strftime')
 endif
 autocmd BufWritePre * call s:update_last_change_date()
 " }}}
-
-setlocal foldenable                 " turn on code folding
-setlocal foldmethod=marker          " use the marker method for folding
-setlocal foldtext=MarkerFoldText()  " use my function to build the fold text
 
 " the comment/uncomment plug-in {{{
 if !exists('*Comment') || !exists('*Uncomment')
