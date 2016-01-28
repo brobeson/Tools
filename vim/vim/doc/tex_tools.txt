@@ -1,62 +1,23 @@
-*tex_tools.txt*	    For Vim version 7.4.    Last Change: 2015 Mar 11
+*tex_tools.txt*     For Vim version 7.4.    Last Change: 2015 Mar 11
 
 Plugin with some helpful commands for editing LaTeX code.
 
 This plugin loads |codeTools|, which adds more functionality than is listed
 here.
 
-This plugin adds the following functionality:
-2. Code Folding Text			    |tex_tools-code-folding|
-3. Comment/Uncomment Lines		    |tex_tools-comment|
-					    |tex_tools-uncomment|
-
-=================================================================================
-2. Code Folding Text			    *tex_tools-code-folding*
-
-The code folding text varies depending on what is folded.
-
-If the first line is a comment, the comment text is used, appended with an
-ellipsis. For example, if this line begins a fold in a LaTeX document:
-    % description of this section {{{~
-When folded, the fold text is simpley:
-    description of this section ...~
-
-If the first line is not a comment, the plugin looks for the first LaTeX
-command (\begin, \section, etc) and uses that:
-    \begin{document} %{{{~
-folds up to
-    \begin{document}...~
-In this case, if a command is not found, the fold text is
-    no LaTeX command found~
-
-All the fold text options indent the fold text to match the original
-indentation of the first line of the fold. The leading white space in the
-examples above are simply to offset the examples from the normal help text.
-
-=================================================================================
-3. Comment/Uncomment Lines		    *tex_tools-comment*
-					    *tex_tools-uncomment*
-
+Comment/Uncomment Lines             *tex_tools-comment*
+                                    *tex_tools-uncomment*
 A range of lines can be commented with %. If no count is given, 1 (one) is
-used. To comment the lines, use the normal map [count]<Leader>c. Blank lines are
-not commented.
+used. To comment the lines, use the normal map [count]<Leader>c. Blank lines
+are not commented.
 
 Similarly, a range of lines can be uncommented by typing [count]<Leader>u.
 Note that this function just removes the first '%' that it encounters on each
 line. It's possible, if the count is incorrect, to uncomment a legitimate
 comment at the end of a line:
-    \section	% this is a comment~
+    \section    % this is a comment~
 Using <Leader>u on the above line will produce this result:
-    \section	 this is a comment~
-
-Note that these commands do not work as expected with folded code. With the
-cursor on this fold:
-    \begin{document}...~
-and pressing <Leader>c, will result in
-    %\begin{document} %{{{~
-    % the rest of the LaTeX, unfolded~
-To comment the entire fold, use n<Leader>c, where n is the number of lines
-folded; you don't need to open the fold before-hand.
+    \section     this is a comment~
 
 vim:tw=78:ts=8:ft=help:norl:
 

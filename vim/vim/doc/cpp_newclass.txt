@@ -1,0 +1,36 @@
+*cpp_newclass.txt*  For Vim version 7.4.  Last Change: 2015 May 29
+
+
+                    Cpp New Class Reference Manual
+
+                       by Brendan Robeson
+
+This is a plugin for C++ code which stubs in a new class.
+
+Insert a New Class                              *cpp_new_class*
+Skeleton code for a new class can be inserted by typing <Leader>p. Vim will
+prompt you for a class name, using the current file name, without the
+extension, as the default. After inserting the code, the function will
+autoindent it. The skeleton code takes the form:
+
+class YourClassName final~
+{~
+    public:~
+        YourClassName() = delete;~
+        YourClassName(const YourClassName&) = default;~
+        YourClassName& operator=(const YourClassName&) = default;~
+        YourClassName(YourClassName&&) = default;~
+        YourClassName& operator=(YourClassName&&) = default;~
+        ~YourClassName() = default;~
+    private:~
+};~
+
+Note a few things from that code:
+1. C++11 is assumed by 'final' and '= default'.
+2. The class is marked final. If the new class is intended to be a base class,
+   just delete the final identifier.
+3. The class is CopyConstructible, CopyAssignable, MoveConstructible, and
+   MoveAssignable. This is intended to facilitate use in STL containers.
+
+vim:tw=78:ts=8:ft=help:norl:
+
