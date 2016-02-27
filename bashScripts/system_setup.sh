@@ -24,22 +24,24 @@ apt-get install -y cifs-utils
 apt-get install -y cmake
 apt-get install -y cmake-curses-gui
 apt-get install -y doxygen
-apt-get install -y gcc-4.9
-apt-get install -y g++-4.9
+#apt-get install -y gcc-4.9
+#apt-get install -y g++-4.9
 apt-get install -y git
 apt-get install -y graphviz
 apt-get install -y kdiff3
 apt-get install -y lcov
+apt-get install -y plantuml
+apt-get install -y qtcreator
 apt-get install -y vim-gtk
 apt-get install -y vlc
 apt-get install -y yakuake
 # }}}
 
 # set up gcc alternatives {{{
-update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 10
-update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5   20
-update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10
-update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5   20
+#update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 10
+#update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5   20
+#update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10
+#update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5   20
 # }}}
 
 # configure git {{{
