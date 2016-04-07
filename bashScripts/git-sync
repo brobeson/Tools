@@ -1,0 +1,104 @@
+#!/bin/bash
+
+# TODO
+# 4. allow list of branches to update
+# 5. tab completion of local branches?
+
+if [[ $1 == "help" ]]
+then
+    echo "NAME"
+    echo "    git sync"
+    echo
+    echo "SYNOPSIS"
+    echo "    git sync [help] <remote> [<branch>]"
+    echo
+    echo "DESCRIPTION"
+    echo "    Fetch from the specified remote repository, merge to every local branch, and"
+    echo "    push each local branch to your origin remote. If merging to a local branch"
+    echo "    would result in merge conflicts, the merge and push does not occur. <branch>"
+    echo "    is the remote branch you want to merge into your local branches; if omitted,"
+    echo "    it defaults to master."
+    echo
+    echo "OPTIONS"
+    echo "    help"
+    echo "        Display this help, then exit."
+    echo
+    exit 0
+fi
+
+# ensure this is a git repository
+git rev-parse &> /dev/null
+if [[ $? != 0 ]]
+then
+    >&2 echo "error: $(pwd) does not appear to be a git repository"
+    exit 1
+fi
+
+# ensure there are no changes or new files
+if [[ $(git status --porcelain) != "" ]]
+then
+    >&2 echo "error: please stash your changes and new files"
+    exit 1
+fi
+
+# fetch from the remote repository. redirect output to /dev/null. this is a bit
+# messed up; normal output from git fetch is written to stderr instead of
+# stdout.
+if [[ $1 == "" ]]
+then
+    >&2 echo "error: a remote repository from which to sync must be specified"
+    exit 1
+fi
+remote=$1
+remote_branch=${2:-master}
+remote_ref=${remote}/${remote_branch}
+git fetch ${remote} ${remote_branch} 2> /dev/null
+if [[ $? != 0 ]]
+then
+    >&2 echo "error: failed to fetch from ${remote}"
+    exit 1
+fi
+
+# record the current branch, so we can switch back to it later
+current_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+# for each local branch...
+# 1. check if merging remote/remote_branch has conflicts
+# 2. if no conflicts, merge and push
+# 3. append the branch to the appropriate result list
+branches=($(git for-each-ref --format="%(refname:short)" refs/heads/*))
+conflicting_branchs=()
+pushed_branches=()
+failed_branches=()
+for branch in ${branches[@]}
+do
+    git checkout ${branch}
+    if [[ $(git merge-tree $(git merge-base ${remote_ref} ${branch}) ${remote_ref} ${branch}) == "" ]]
+    then
+        git merge --no-edit ${remote_ref} && git push
+        if [[ $? == 0 ]]
+        then
+            pushed_branches+=(${branch})
+        else
+            failed_branches+=(${branch})
+        fi
+    else
+        conflicting_branches+=(${branch})
+    fi
+done
+
+# now go back to the original branch the user was on
+git checkout ${current_branch}
+
+# output results summary
+echo
+echo "these branches were merged & pushed:"
+echo "${pushed_branches[@]}"
+echo
+echo "these branches failed to merge or push:"
+echo "${failed_branches[@]}"
+echo
+echo "these branches have merge conflicts:"
+echo "${conflicting_branches[@]}"
+echo
+exit 0
