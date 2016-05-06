@@ -11,9 +11,9 @@ printf "\n# here be my additions...\n" >> ~/.bashrc
 # [date & time in green font] [current working directory]  (git branch)
 # $
 #                                         /       date & time in green font        \ /-current working directory
-#PS1='${debian_chroot:+($debian_chroot)}\n[\[\e[32m\]\D{%Y %B %d %I:%M %p}\[\e[0m\]] [\w] $(__git_ps1) \n$ '
-#                                       ^- new line                                       ^- current branch in git repo
-printf "PS1='\${debian_chroot:+(\$debian_chroot)}\\\n[\\\[\\\e[32m\\\]\\\D{%%Y %%B %%d %%I:%%M %%p}\\\[\\\e[0m\\\]] [\\\w] \$(__git_ps1) \\\n$ '\n" >> ~/.bashrc
+#PS1='${debian_chroot:+($debian_chroot)}\n[\[\e[32m\]\D{%Y %B %d %I:%M %p} on \h\[\e[0m\]] [\w] $(__git_ps1) \n$ '
+#                                       ^- new line                           ^-hostname        ^- current branch in git repo
+printf "PS1='\${debian_chroot:+(\$debian_chroot)}\\\n[\\\[\\\e[32m\\\]\\\D{%%Y %%B %%d %%I:%%M %%p} on \\\h\\\[\\\e[0m\\\]] [\\\w] \$(__git_ps1) \\\n$ '\n" >> ~/.bashrc
 
 # enable color for gcc output
 printf "export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'" >> ~/.bashrc
@@ -22,8 +22,13 @@ printf "export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locu
 # install packages {{{
 apt-get install -y cifs-utils
 apt-get install -y cmake
+apt-get install -y cmake-curses-gui
+apt-get install -y doxygen
 apt-get install -y git
-apt-get install -y kdiff3
+apt-get install -y graphviz
+apt-get install -y lcov
+apt-get install -y plantuml
+apt-get install -y qtcreator
 apt-get install -y vim-gtk
 apt-get install -y vlc
 apt-get install -y yakuake
