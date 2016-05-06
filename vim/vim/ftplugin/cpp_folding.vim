@@ -1,5 +1,5 @@
 " Vim plug-in to set the fold text of C++ code
-" Last Change:  2016 January 16
+" Last Change:  2016 May 5
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " I don't check if this file is already loaded. I found that if I do, then the
@@ -35,12 +35,19 @@ if !exists('*CppFoldText')
 
             " C style comment
             elseif match(first_line, '\/\*') != -1
-                let first_code_line = getline(v:foldstart + 1)
-                if match(first_code_line, '^\s*\*') != -1
-                    let first_code_line = substitute(first_code_line, '\*', ' ', '')
+                " if the comment marker is only followed by white space, use
+                " the next line as the fold text.
+                if (first_line =~ '\/\*\s*$')
+                    let first_code_line = getline(v:foldstart + 1)
+                    let first_code_line = substitute(first_code_line, '^\s*\*\s*', '', '')
+                    let fold_text = substitute(first_line, '\*.*', '\* ', '')
+                    let fold_text .= first_code_line
+
+                " if the comment text starts on the line with the /* use that
+                " line as the fold text
+                else
+                    let fold_text = first_line
                 endif
-                let fold_text = '/* '
-                let fold_text .= substitute(first_code_line, '^\s*', '', '')
                 let fold_text .= ' ... */'
 
             " code blocks
