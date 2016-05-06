@@ -1,5 +1,5 @@
 " Vim plug-in to manipulate Doxygen comments for C++ source code.
-" Last Change:  2015 December 15
+" Last Change:  2016 May 5
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " check if this plug-in (or one with the same name) has already been loaded
@@ -303,7 +303,7 @@ if !exists('*FoldDoxygen')
             " '@brief' (or '\brief') until the next '@' (or '\').  get all
             " the lines in the block comment, then find the line which
             " contains the 'brief' tag.
-            let brief_start = match(comments, '[@|\\]brief')
+            let brief_start = match(comments, '[@|\\]\(\(copy\)\?brief\|copydoc\)')
 
             " if the brief tag was found...
             if 0 <= brief_start
