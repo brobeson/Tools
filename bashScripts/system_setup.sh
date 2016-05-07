@@ -23,15 +23,21 @@ printf "export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locu
 apt-get install -y cifs-utils
 apt-get install -y cmake
 apt-get install -y cmake-curses-gui
+apt-get install -y cppcheck
 apt-get install -y doxygen
 apt-get install -y git
 apt-get install -y graphviz
+apt-get install -y inkscape
 apt-get install -y lcov
 apt-get install -y plantuml
 apt-get install -y qtcreator
 apt-get install -y vim-gtk
 apt-get install -y vlc
 apt-get install -y yakuake
+
+# lizard needs python-pip, then pip can be run to install lizard
+sudo apt-get install -y python-pip
+sudo pip install lizard
 # }}}
 
 # configure git {{{
