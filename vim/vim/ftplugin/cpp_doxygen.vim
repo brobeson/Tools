@@ -1,5 +1,5 @@
 " Vim plug-in to manipulate Doxygen comments for C++ source code.
-" Last Change:  2016 May 5
+" Last Change:  2016 May 7
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " check if this plug-in (or one with the same name) has already been loaded
@@ -317,23 +317,21 @@ if !exists('*FoldDoxygen')
                 " actual text: ' * @brief blah' becomes 'blah'
                 let comments[0] = substitute(comments[0], '^.*[@\\]brief\s*', '', '')
 
+                let fold_text .= join(comments) . ' */'
+
             " if a brief command wasn't found, it's possible for a Javadoc
             " style comment to use the first sentence as the brief comment.
             elseif match(first_line, '^\s*\/\*\*') == 0
                 let brief_start = match(comments, '\w.*')
                 if 0 <= brief_start
                     " this match is a bit tricky. the Javadoc autobrief ends
-                    " with the first period followed by a space or newline.
-                    " Since we're searching an array, there are no newline
-                    " characters.
-                    let comments = comments[brief_start : match(comments, '\.\s\?', brief_start)]
+                    " with the first period. then, in case there are two
+                    " periods on the end line, remove the extra words.
+                    let comments = comments[brief_start : match(comments, '.', brief_start)]
+                    let fold_text .= substitute(join(comments), '\..*$', '\. \*\/', '')
                 endif
-            endif
 
-            " if we found a brief, use that as the fold text, otherwise state
-            " that no fold text was found.
-            if 0 <= brief_start
-                let fold_text .= join(comments) . ' */'
+            " if no brief text was found, set the fold text to that fact
             else
                 let fold_text .= 'no brief description */'
             endif
