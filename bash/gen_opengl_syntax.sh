@@ -44,7 +44,7 @@ function print_help
     echo "    Brendan Robeson (https://github.com/brobeson/Tools)"
     echo
     echo "REPORTING BUGS"
-    echo "    Create an issue at the author's Isrhub repository."
+    echo "    Create an issue at the author's Github repository."
     echo
 }
 # }}}
@@ -146,16 +146,19 @@ types_file="/tmp/types.tmp"
 
 # find all the OpenGL constants. they start with GL_
 ${grep_for} "GL_[A-Z0-9_]\+" ${documentation} | ${sort_and_make_unique} > ${constants_file}
+sed --in-place 's/^/\\ /' ${constants_file}
 
 # find all the OpenGL types they start with GL[a-z]
 ${grep_for} "GL[a-z]\+" ${documentation} | ${sort_and_make_unique} > ${types_file}
+sed --in-place 's/^/\\ /' ${types_file}
 
 # find all the OpenGL functions. they start with gl[A-Z]. we need to find the lines
-# with the <refname> xml tag. for some functions, similar functions are grouped in
+# with the <function> xml tag. for some functions, similar functions are grouped in
 # one xml document, which also contains the function root. for example:
 #	glUniform is a function root, but not an actual function
 #	glUniform2i is a function in glUniform.xml
-${grep_for} "<refname>gl[A-Z][a-zA-Z0-9]\+" ${documentation} | sed 's/<refname>//' | ${sort_and_make_unique} > ${functions_file}
+${grep_for} "<funcdef>.*<function>gl[A-Z][a-zA-Z0-9]\+" ${documentation} | sed 's/<funcdef>.*<function>//' | ${sort_and_make_unique} > ${functions_file}
+sed --in-place 's/^/\\ /' ${functions_file}
 # }}}
 
 # write the syntax file {{{
