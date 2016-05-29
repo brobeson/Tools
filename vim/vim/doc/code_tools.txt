@@ -1,4 +1,4 @@
-*code_tools.txt*        For Vim version 7.4.    Last Change: 2015 Mar 10
+*code_tools.txt*        For Vim version 7.4.    Last Change: 2016 May 29
 
 Plugin with some helpful commands for editing code. As a general plugin, this
 functionality is available for all types of code.
@@ -43,10 +43,10 @@ Example:
 Given the C++ code:
     void foo(int& a)~
     {~
-    if (a < 0)  // cursor on this line~
-        --a;~
-    else if (0 < a)~
-        ++a;~
+        if (a < 0)  // cursor on this line~
+            --a;~
+        else if (0 < a)~
+            ++a;~
     }~
 
 The call
@@ -55,27 +55,27 @@ The call
 results in
     void foo(int& a)~
     {~
-    //if (a < 0)    // cursor on this line~
-    //  --a;~
-    //else if (0 < a)~
-    //  ++a;~
+        //if (a < 0)    // cursor on this line~
+        //  --a;~
+        //else if (0 < a)~
+        //  ++a;~
     }~
-            
+
 Uncomment({commentString})                      *code_tools-Uncomment()*
 This function will uncomment a range of lines. The default range is 1 line.
 {commentString} should be the character(s) which begin a single line comment,
 for example, '"' for Vim script comments. The function removes the first
-occurance of {commentString} from each line in the range.  Note that if the
+occurance of {commentString} from each line in the range. Note that if the
 range includes lines which have comments after code, those comments will be
 uncommented, likely resulting in build errors.
 Example:
 Given the C++ code:
     void foo(int& a)~
     {~
-    //if (a < 0)    // cursor on this line~
-    //  --a;~
-    //else if (0 < a)~
-    //  ++a;~
+        //if (a < 0)    // cursor on this line~
+        //  --a;~
+        //else if (0 < a)~
+        //  ++a;~
     }~
 
 The call
@@ -84,11 +84,11 @@ The call
 results in
     void foo(int& a)~
     {~
-    if (a < 0)  // cursor on this line~
-        --a;~
-    else if (0 < a)~
-        ++a;~
+        if (a < 0)  // cursor on this line~
+            --a;~
+        else if (0 < a)~
+            ++a;~
     }~
-            
+
 vim:tw=78:ts=8:ft=help:norl:
 

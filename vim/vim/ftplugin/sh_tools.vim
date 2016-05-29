@@ -1,10 +1,10 @@
 " Vim plug-in to add a bunch of functionality related to bash development.
-" Last Change:	2016 May 6
-" Maintainer:	Brendan Robeson (github.com/brobeson/Tools.git)
+" Last Change:  2016 May 29
+" Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " check if this plug-in (or one with the same name) has already been loaded
 if exists('b:loaded_sh_tools')
-	finish
+    finish
 endif
 let b:loaded_sh_tools = 1
 
@@ -52,7 +52,7 @@ setlocal foldtext=BashFoldText()  " use my function to build the fold text
 
 " the comment/uncomment plug-in {{{
 if !exists('*Comment') || !exists('*Uncomment')
-	echoerr 'Command() or Uncomment() is undefined. Do you have plug-in/codeTools.vim loaded?'
+    echoerr 'Command() or Uncomment() is undefined. Do you have plug-in/codeTools.vim loaded?'
 else
     " map the comment command
     if !hasmapto('<Plug>ShComment')
