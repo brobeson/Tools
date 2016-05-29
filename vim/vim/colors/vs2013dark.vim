@@ -1,7 +1,7 @@
 " Vim color file
-" Maintainer:	Brendan Robeson <github.com/brobeson/Tools>
-" Last Change:	December 9, 2015
-" License:		Public Domain
+" Maintainer:   Brendan Robeson <github.com/brobeson/Tools>
+" Last Change:  2016 May 29
+" License:      Public Domain
 "
 " This color file is based on Visual Studio 2013's C++ highlighting for
 " the dark UI color scheme. An exact match for Vim launched in MS-DOS and
@@ -68,7 +68,7 @@ highlight TabLineSel   cterm=none  ctermfg=fg        ctermbg=bg
 " syntax highlighting
 highlight Comment      cterm=none  ctermfg=darkgreen                    gui=none       guifg=#57a64a
 highlight Constant     cterm=none  ctermfg=darkyellow                   gui=none       guifg=#d69d85
-highlight Boolean      cterm=none  ctermfg=cyan                         gui=none       guifg=#569cd6
+highlight Boolean      cterm=none  ctermfg=cyan                         gui=none       guifg=#d69d85
 highlight Character    cterm=none  ctermfg=darkyellow                   gui=none       guifg=#d69d85
 highlight Float        cterm=none  ctermfg=lightgreen                   gui=none       guifg=#b5cea8
 highlight Number       cterm=none  ctermfg=lightgreen                   gui=none       guifg=#b5cea8
@@ -82,7 +82,7 @@ highlight! default link Define Macro
 highlight Macro        cterm=none  ctermfg=magenta                      gui=none       guifg=#bd63c5
 "PreCondit /
 highlight Special      cterm=none  ctermfg=darkyellow                   gui=none       guifg=#d69d85
-highlight SpecialChar  cterm=none  ctermfg=darkyellow                   gui=none       guifg=#d69d85
+highlight SpecialChar  cterm=none  ctermfg=darkyellow                   gui=none       guifg=#b5cea8
 "Debug         \
 "Delimiter      \ vim's c/c++ syntax doesn't use these
 "SpecialComment /
