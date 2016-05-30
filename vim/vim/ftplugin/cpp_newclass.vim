@@ -1,5 +1,5 @@
 " Vim plug-in to stub in a new C++ class.
-" Last Change:  2016 January 15
+" Last Change:  2016 May 29
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " check if this plug-in (or one with the same name) has already been loaded
@@ -19,17 +19,17 @@ if !exists('s:cpp_new_class_declaration')
                 \ 'class class_name final',
                 \ '{',
                 \ 'public:',
-                \ 'class_name() = delete;',
+                \ 'class_name() = default;',
                 \ '',
                 \ 'class_name(const class_name&) = default;',
                 \ '',
-                \ 'class_name& operator=(const class_name&) = default;',
-                \ '',
                 \ 'class_name(class_name&&) = default;',
                 \ '',
-                \ 'class_name& operator=(class_name&&) = default;',
+                \ '~class_name() noexcept = default;',
                 \ '',
-                \ '~class_name() = default;',
+                \ 'class_name& operator=(const class_name&) = default;',
+                \ '',
+                \ 'class_name& operator=(class_name&&) = default;',
                 \ '',
                 \ 'private:',
                 \ '};' ]
