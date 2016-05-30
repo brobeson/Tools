@@ -31,6 +31,7 @@ sudo apt-get install -y inkscape
 sudo apt-get install -y lcov
 sudo apt-get install -y plantuml
 sudo apt-get install -y qtcreator
+sudo apt-get install -y texlive-full
 sudo apt-get install -y vim-gtk
 sudo apt-get install -y vlc
 sudo apt-get install -y yakuake
