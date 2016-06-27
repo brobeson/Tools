@@ -25,6 +25,7 @@ sudo apt-get install -y cmake
 sudo apt-get install -y cmake-curses-gui
 sudo apt-get install -y cppcheck
 sudo apt-get install -y doxygen
+sudo apt-get install -y exuberant-ctags
 sudo apt-get install -y git
 sudo apt-get install -y graphviz
 sudo apt-get install -y inkscape
