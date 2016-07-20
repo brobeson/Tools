@@ -1,5 +1,18 @@
 #!/bin/bash
 
+if [[ $# != 1 ]]
+then
+    &>2 echo "are you setting up a server or a workstation?"
+    exit 1
+fi
+
+system_type=$1
+if [[ ${system_type} != "server" && ${system_type} != "workstation" ]]
+then
+    &>2 echo "${system_type} is not a server or a workstation?"
+    exit 1
+fi
+    
 # append to my bashrc {{{
 # add a comment to the bashrc
 printf "\n# here be my additions...\n" >> ~/.bashrc
@@ -21,21 +34,25 @@ printf "export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locu
 
 # install packages {{{
 sudo apt-get install -y cifs-utils
-sudo apt-get install -y cmake
-sudo apt-get install -y cmake-curses-gui
-sudo apt-get install -y cppcheck
-sudo apt-get install -y doxygen
-sudo apt-get install -y exuberant-ctags
 sudo apt-get install -y git
 sudo apt-get install -y graphviz
-sudo apt-get install -y inkscape
-sudo apt-get install -y lcov
-sudo apt-get install -y plantuml
-sudo apt-get install -y qtcreator
-sudo apt-get install -y texlive-full
 sudo apt-get install -y vim-gtk
 sudo apt-get install -y vlc
 sudo apt-get install -y yakuake
+if [[ ${system_type} == "workstation" ]]
+then
+    sudo apt-get install -y cmake
+    sudo apt-get install -y cmake-curses-gui
+    sudo apt-get install -y cppcheck
+    sudo apt-get install -y darktable
+    sudo apt-get install -y doxygen
+    sudo apt-get install -y exuberant-ctags
+    sudo apt-get install -y inkscape
+    sudo apt-get install -y lcov
+    sudo apt-get install -y plantuml
+    sudo apt-get install -y qtcreator
+    sudo apt-get install -y texlive-full
+fi
 
 # lizard needs python-pip, then pip can be run to install lizard
 sudo apt-get install -y python-pip
@@ -52,7 +69,7 @@ git config --global mergetool.keepbackup false
 git config --global mergetool.prompt false
 git config --global push.default simple
 git config --global user.name "brobeson"
-git config --global user.email "ogslanger@vt.edu"
+git config --global user.email "brobeson@users.noreply.github.com"
 
 # git graph: create a branch graph using dot
 #git config --global alias.graph !f() { echo 'digraph git {'; git log --pretty='format: %h -> { %p }' | sed 's/[0-9a-f][0-9a-f]*/"&"/g'; echo '}'; }; f
