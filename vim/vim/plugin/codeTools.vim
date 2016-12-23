@@ -1,5 +1,5 @@
 " Vim plugin with various tools for editing code
-" Last Change:  2015 January 02
+" Last Change:  2016 December 23
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools/)
 " License:      Public Domain
 "
@@ -26,9 +26,7 @@ let s:save_cpo = &cpo
 setlocal cpo&vim
 
 
-"==============================================================================
 " map some normal mode keystrokes to common editing operations {{{
-"==============================================================================
 " move to the end and erase a character
 nmap <unique> <Leader>x $x
 
@@ -51,10 +49,7 @@ nmap <unique> z4 :set foldlevel=4<CR>
 nmap <unique> z5 :set foldlevel=5<CR>
 "}}}
 
-
-"==============================================================================
 " define the functions to comment and uncomment a range of lines {{{
-"==============================================================================
 if !exists('*Comment')
     function Comment(comment_token) range
         " determine the smallest column at which text begins the lines in the

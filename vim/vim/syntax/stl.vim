@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:     C++ STL
 " Maintainer:   brobeson (http://github.com/brobeson/Tools)
-" Last Change:  2016 May 29
+" Last Change:  2016 December 23
 
 " use this variable to control whether object methods should be
 " highlighted.
@@ -195,16 +195,19 @@ syntax keyword stlNamespaceId contained std
         syntax keyword stlClassId   contained uniform_int_distribution
         syntax keyword stlClassId   contained uniform_real_distribution
         syntax keyword stlClassId   contained unique_lock
+        syntax keyword stlClassId   contained unique_ptr
         syntax keyword stlClassId   contained unordered_map
         syntax keyword stlClassId   contained unordered_multimap
         syntax keyword stlClassId   contained unordered_multiset
         syntax keyword stlClassId   contained unordered_set
+        syntax keyword stlClassId   contained weak_ptr
         syntax keyword stlClassId   contained weibull_distribution
-        syntax match   stlClass     /std::\(add_\(const\|cv\|[lr]value_reference\|pointer\|volatile\)\|aligned_\(storage\|union\)\|alignment_of\|array\|adopt_lock_t\|common_type\|condition\(_variable\(_any\)\?\|al\)\|decay\|defer_lock_t\|enable_if\|extent\|forward_list\|future\|future_error\|has_virtual_destructor\|integral_constant\|lock_guard\|make_signed\|make_unsigned\|mutex\|once_flag\|packaged_task\|promise\|ratio\(_add\|_divide\|_equal\|_greater\(_equal\)\?\|_less\(_equal\)\?\|_multiply\|_not_equal\|_subtract\)\?\|rank\|recursive_mutex\|recursive_timed_mutex\|result_of\|seed_seq\|shared_future\|shared_ptr\|thread\(::id\)\?\|timed_mutex\|try_to_lock_t\|type_index\|underlying_type\|unique_lock\|unordered_map\|unordered_multimap\|unordered_multiset\|unordered_set\)\>/ contains=stlNamespaceId,stlClassId
+        syntax match   stlClass     /std::\(add_\(const\|cv\|[lr]value_reference\|pointer\|volatile\)\|aligned_\(storage\|union\)\|alignment_of\|array\|adopt_lock_t\|common_type\|condition\(_variable\(_any\)\?\|al\)\|decay\|defer_lock_t\|enable_if\|extent\|forward_list\|future\|future_error\|has_virtual_destructor\|integral_constant\|lock_guard\|make_signed\|make_unsigned\|mutex\|once_flag\|packaged_task\|promise\|ratio\(_add\|_divide\|_equal\|_greater\(_equal\)\?\|_less\(_equal\)\?\|_multiply\|_not_equal\|_subtract\)\?\|rank\|recursive_mutex\|recursive_timed_mutex\|result_of\|seed_seq\|shared_future\|thread\(::id\)\?\|timed_mutex\|try_to_lock_t\|type_index\|underlying_type\|unique_lock\|unordered_map\|unordered_multimap\|unordered_multiset\|unordered_set\)\>/ contains=stlNamespaceId,stlClassId
         syntax match   stlClass     /std::\(bernoulli\|\(negative_\)\?binomial\|cauchy\|chi_squared\|discrete\|exponential\|extreme_value\|fisher_f\|gamma\|geometric\|\(log\)\?normal\|normal\|piecewise_\(constant\|linear\)\|poisson\|student_t\|uniform_\(int\|real\)\|weibull\)_distribution/ contains=stlNamespaceId,stlClassId
         syntax match   stlClass     /std::\(discard_block\|independent_bits\|linear_congruential\|mersenne_twister\|shuffle_order\|subtract_with_carry\)_engine/ contains=stlNamespaceId,stlClassId
+        syntax match   stlClass     /std::\(shared_ptr\|unique_ptr\|weak_ptr\)/ contains=stlNamespaceId,stlClassId
         syntax match   stlClass     /std::is_\(abstract\|arithmetic\|array\|assignable\|base_of\|class\|compound\|const\|constructible\|convertible\|copy_assignable\|copy_constructible\|default_constructible\|destructible\|empty\|enum\|floating_point\|function\|fundamental\|integral\|literal_type\|lvalue_reference\|member_function_pointer\|member_object_pointer\|member_pointer\|move_assignable\|move_constructible\|nothrow_assignable\|nothrow_constructible\|nothrow_copy_assignable\|nothrow_copy_constructible\|nothrow_default_constructible\|nothrow_destructible\|nothrow_move_assignable\|nothrow_move_constructible\|object\|pod\|pointer\|polymorphic\|reference\|rvalue_reference\|same\|scalar\|signed\|standard_layout\|trivial\|union\|unsigned\|void\|volatile\)/ contains=stlNamespaceId,stlClassId
-            syntax match   stlClass     /\<std::remove_\(all_extents\|const\|cv\|extent\|pointer\|reference\|volatile\)\>/ contains=stlNamespaceId,stlClassId
+        syntax match   stlClass     /\<std::remove_\(all_extents\|const\|cv\|extent\|pointer\|reference\|volatile\)\>/ contains=stlNamespaceId,stlClassId
         endif
         "}}}
 
@@ -622,10 +625,22 @@ endif
     if !exists('cpp_no_cpp11')
         syntax keyword stlFunctionId    contained acosh
         syntax keyword stlFunctionId    contained all_of
+        syntax keyword stlFunctionId    contained allocate_shared
         syntax keyword stlFunctionId    contained any_of
         syntax keyword stlFunctionId    contained asinh
         syntax keyword stlFunctionId    contained async
         syntax keyword stlFunctionId    contained atanh
+        syntax keyword stlFunctionid    contained atomic_is_lock_free
+        syntax keyword stlFunctionid    contained atomic_load
+        syntax keyword stlFunctionid    contained atomic_load_explicit
+        syntax keyword stlFunctionid    contained atomic_store
+        syntax keyword stlFunctionid    contained atomic_store_explicit
+        syntax keyword stlFunctionid    contained atomic_exchange
+        syntax keyword stlFunctionid    contained atomic_exchange_explicit
+        syntax keyword stlFunctionid    contained atomic_compare_exchange_weak
+        syntax keyword stlFunctionid    contained atomic_compare_exchange_strong
+        syntax keyword stlFunctionid    contained atomic_compare_exchange_weak_explicit
+        syntax keyword stlFunctionid    contained atomic_compare_exchange_strong_explicit
         syntax keyword stlFunctionId    contained c16rtomb
         syntax keyword stlFunctionId    contained c32rtomb
         syntax keyword stlFunctionId    contained call_once
@@ -697,6 +712,11 @@ endif
         syntax keyword stlFunctionId    contained lround
         syntax keyword stlFunctionId    contained make_error_code
         syntax keyword stlFunctionId    contained make_error_condition
+        syntax keyword stlFunctionId    contained get_deleter
+        syntax keyword stlFunctionId    contained make_shared
+        syntax keyword stlFunctionId    contained static_pointer_cast
+        syntax keyword stlFunctionId    contained dynamic_pointer_cast
+        syntax keyword stlFunctionId    contained const_pointer_cast
         syntax keyword stlFunctionId    contained mbrtoc16
         syntax keyword stlFunctionId    contained mbrtoc32
         syntax keyword stlFunctionId    contained minmax
@@ -738,16 +758,21 @@ endif
         syntax match   stlFunction      /\<std::thread::hardware_concurrency/ contains=stlNamespaceId,stlClassId,stlFunctionId
         syntax match   stlFunction      /\<std::\(\(discard_block\|independent_bits\|linear_congruential\|mersenne_twister\|shuffle_order\|subtract_with_carry\)_engine\|random_device\)::m\(ax\|in\)\>/ contains=stlNamespaceId,stlClassId,stlFunctionId
         syntax match   stlFunction      /\<std::fe\(\(clear\|hold\|raise\|test\)except\|[gs]et\(env\|exceptflag\|round\)\|updateenv\)/ contains=stlNamespaceId,stlFunctionId
+        syntax match   stlFunction      /\<std::atomic_\(is_lock_free\|load\|load_explicit\|store\|store_explicit\|exchange\|exchange_explicit\|compare_exchange_weak\|compare_exchange_strong\|compare_exchange_weak_explicit\|compare_exchange_strong_explicit\)\>/ contains=stlNamespaceId,stlFunctionId
+        syntax match   stlFunction      /\<std::\(allocate_shared\|get_deleter\|make_shared\|\(static\|dynamic\|const\)_pointer_cast\)\>/ contains=stlNamespaceId,stlFunctionId
         syntax match   stlFunction      /::lowest\>/ contains=stlFunctionId
     endif
     " }}}
 
     " deprecated in C++14 {{{
     if exists('cpp_no_cpp14') && exists('cpp_no_cpp17')
-        syntax keyword stlFunctionId    contained random_shuffle
-        syntax match   stlFunction      /\<std::random_shuffle\>/ contains=stlNamespaceId,stlFunctionId
+        syntax keyword stlFunctionId    contained make_unique random_shuffle
+        syntax match   stlFunction      /\<std::\(make_unique\|random_shuffle\)\>/ contains=stlNamespaceId,stlFunctionId
     endif
     " }}}
+
+    " C++17
+    "syntax keyword stlFunctionId    contained reinterpret_pointer_cast
 " }}}
 
 " macros {{{
@@ -755,17 +780,65 @@ endif
 
     if !exists('cpp_no_cpp11') " {{{
         syntax keyword stlMacroConstId  __align_is_defined
-        syntax keyword stlMacroConstId  __bool_true_false_are_defined
+                                    \   __bool_true_false_are_defined
+                                    \   PRId8 PRId16 PRId32 PRId64
+                                    \   PRIi8 PRIi16 PRIi32 PRIi64
+                                    \   PRIu8 PRIu16 PRIu32 PRIu64
+                                    \   PRIo8 PRIo16 PRIo32 PRIo64
+                                    \   PRIx8 PRIx16 PRIx32 PRIx64
+                                    \   PRIX8 PRIX16 PRIX32 PRIX64
+                                    \   PRIdLEAST8 PRIdLEAST16 PRIdLEAST32 PRIdLEAST64
+                                    \   PRIiLEAST8 PRIiLEAST16 PRIiLEAST32 PRIiLEAST64
+                                    \   PRIuLEAST8 PRIuLEAST16 PRIuLEAST32 PRIuLEAST64
+                                    \   PRIoLEAST8 PRIoLEAST16 PRIoLEAST32 PRIoLEAST64
+                                    \   PRIxLEAST8 PRIxLEAST16 PRIxLEAST32 PRIxLEAST64
+                                    \   PRIXLEAST8 PRIXLEAST16 PRIXLEAST32 PRIXLEAST64
+                                    \   PRIdFAST8 PRIdFAST16 PRIdFAST32 PRIdFAST64
+                                    \   PRIiFAST8 PRIiFAST16 PRIiFAST32 PRIiFAST64
+                                    \   PRIuFAST8 PRIuFAST16 PRIuFAST32 PRIuFAST64
+                                    \   PRIoFAST8 PRIoFAST16 PRIoFAST32 PRIoFAST64
+                                    \   PRIxFAST8 PRIxFAST16 PRIxFAST32 PRIxFAST64
+                                    \   PRIXFAST8 PRIXFAST16 PRIXFAST32 PRIXFAST64
+                                    \   PRIdMAX PRIdPTR
+                                    \   PRIiMAX PRIiPTR
+                                    \   PRIuMAX PRIuPTR
+                                    \   PRIoMAX PRIoPTR
+                                    \   PRIxMAX PRIxPTR
+                                    \   PRIXMAX PRIXPTR
+                                    \   SCNd8 SCNd16 SCNd32 SCNd64
+                                    \   SCNi8 SCNi16 SCNi32 SCNi64
+                                    \   SCNu8 SCNu16 SCNu32 SCNu64
+                                    \   SCNo8 SCNo16 SCNo32 SCNo64
+                                    \   SCNx8 SCNx16 SCNx32 SCNx64
+                                    \   SCNX8 SCNX16 SCNX32 SCNX64
+                                    \   SCNdLEAST8 SCNdLEAST16 SCNdLEAST32 SCNdLEAST64
+                                    \   SCNiLEAST8 SCNiLEAST16 SCNiLEAST32 SCNiLEAST64
+                                    \   SCNuLEAST8 SCNuLEAST16 SCNuLEAST32 SCNuLEAST64
+                                    \   SCNoLEAST8 SCNoLEAST16 SCNoLEAST32 SCNoLEAST64
+                                    \   SCNxLEAST8 SCNxLEAST16 SCNxLEAST32 SCNxLEAST64
+                                    \   SCNXLEAST8 SCNXLEAST16 SCNXLEAST32 SCNXLEAST64
+                                    \   SCNdFAST8 SCNdFAST16 SCNdFAST32 SCNdFAST64
+                                    \   SCNiFAST8 SCNiFAST16 SCNiFAST32 SCNiFAST64
+                                    \   SCNuFAST8 SCNuFAST16 SCNuFAST32 SCNuFAST64
+                                    \   SCNoFAST8 SCNoFAST16 SCNoFAST32 SCNoFAST64
+                                    \   SCNxFAST8 SCNxFAST16 SCNxFAST32 SCNxFAST64
+                                    \   SCNXFAST8 SCNXFAST16 SCNXFAST32 SCNXFAST64
+                                    \   SCNdMAX SCNdPTR
+                                    \   SCNiMAX SCNiPTR
+                                    \   SCNuMAX SCNuPTR
+                                    \   SCNoMAX SCNoPTR
+                                    \   SCNxMAX SCNxPTR
+                                    \   SCNXMAX SCNXPTR
         syntax keyword stlMacroFuncId   INT8_C
-        syntax keyword stlMacroFuncId   INT16_C
-        syntax keyword stlMacroFuncId   INT32_C
-        syntax keyword stlMacroFuncId   INT64_C
-        syntax keyword stlMacroFuncId   INTMAX_C
-        syntax keyword stlMacroFuncId   UINT8_C
-        syntax keyword stlMacroFuncId   UINT16_C
-        syntax keyword stlMacroFuncId   UINT32_C
-        syntax keyword stlMacroFuncId   UINT64_C
-        syntax keyword stlMacroFuncId   UINTMAX_C
+                                    \   INT16_C
+                                    \   INT32_C
+                                    \   INT64_C
+                                    \   INTMAX_C
+                                    \   UINT8_C
+                                    \   UINT16_C
+                                    \   UINT32_C
+                                    \   UINT64_C
+                                    \   UINTMAX_C
     endif
     " }}}
 " }}}
@@ -870,8 +943,10 @@ if exists('stl_highlight_members')
         syntax keyword stlMethodId  contained emplace_hint
         syntax keyword stlMethodId  contained entropy
         syntax keyword stlMethodId  contained erase_after
+        syntax keyword stlMethodId  contained expired
         syntax keyword stlMethodId  contained fill
         syntax keyword stlMethodId  contained get
+        syntax keyword stlMethodId  contained get_deleter
         syntax keyword stlMethodId  contained get_future
         syntax keyword stlMethodId  contained get_id
         syntax keyword stlMethodId  contained hash_code
@@ -895,6 +970,7 @@ if exists('stl_highlight_members')
         syntax keyword stlMethodId  contained native_handle
         syntax keyword stlMethodId  contained notify_all
         syntax keyword stlMethodId  contained notify_one
+        syntax keyword stlMethodId  contained owner_before
         syntax keyword stlMethodId  contained owns_lock
         syntax keyword stlMethodId  contained p
         syntax keyword stlMethodId  contained param
@@ -916,13 +992,15 @@ if exists('stl_highlight_members')
         syntax keyword stlMethodId  contained try_lock
         syntax keyword stlMethodId  contained try_lock_for
         syntax keyword stlMethodId  contained try_lock_until
+        syntax keyword stlMethodId  contained unique
         syntax keyword stlMethodId  contained unlock
+        syntax keyword stlMethodId  contained use_count
         syntax keyword stlMethodId  contained valid
         syntax keyword stlMethodId  contained wait
         syntax keyword stlMethodId  contained wait_for
         syntax keyword stlMethodId  contained wait_until
         syntax keyword stlMethodId  contained what
-        syntax match   stlMethod    /\(->\|\.\)\(a\|alpha\|b\|base\|before_begin\|beta\|bucket\|bucket_count\|bucket_size\|cbefore_begin\|code\|densities\|detach\|discard\|emplace\(_after\|_back\|_front\|_hint\)\?\|entropy\|erase_after\|fill\|get\|get_future\|get_id\|hash_code\|hash_function\|insert_after\|intervals\|join\|joinable\|k\|key_eq\|lambda\|load_factor\|lock\|m\|make_ready_at_thread_exit\|max_bucket_count\|max_load_factor\|mean\|mutex\|n\|native_handle\|notify_all\|notify_one\|owns_lock\|p\|param\|probabilities\|rehash\|release\|reset\|s\|seed\|set_exception\|set_exception_at_thread_exit\|set_value\|set_value_at_thread_exit\|share\|shrink_to_fit\|splice_after\|stddev\|t\|try_lock\|try_lock_for\|try_lock_until\|unlock\|valid\|wait\|wait_for\|wait_until\|what\)\>/ contains=stlMethodId
+        syntax match   stlMethod    /\(->\|\.\)\(a\|alpha\|b\|base\|before_begin\|beta\|bucket\|bucket_count\|bucket_size\|cbefore_begin\|code\|densities\|detach\|discard\|emplace\(_after\|_back\|_front\|_hint\)\?\|entropy\|erase_after\|expired\|fill\|get\|get_deleter\|get_future\|get_id\|hash_code\|hash_function\|insert_after\|intervals\|join\|joinable\|k\|key_eq\|lambda\|load_factor\|lock\|m\|make_ready_at_thread_exit\|max_bucket_count\|max_load_factor\|mean\|mutex\|n\|native_handle\|notify_all\|notify_one\|owner_before\|owns_lock\|p\|param\|probabilities\|rehash\|release\|reset\|s\|seed\|set_exception\|set_exception_at_thread_exit\|set_value\|set_value_at_thread_exit\|share\|shrink_to_fit\|splice_after\|stddev\|t\|try_lock\|try_lock_for\|try_lock_until\|unique\|unlock\|use_count\|valid\|wait\|wait_for\|wait_until\|what\)\>/ contains=stlMethodId
     endif
     " }}}
 

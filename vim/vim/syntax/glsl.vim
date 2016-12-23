@@ -8,9 +8,8 @@ if exists('b:current_syntax')
     finish
 endif
 
-
 " GLSL numbers {{{
-" ignore case for the type suffixes: f and F are both ok.
+" ignore case for the type suffixes: f and F are both OK.
 syntax case ignore
 
 "integer number, or floating point number without a dot and with 'f'.
