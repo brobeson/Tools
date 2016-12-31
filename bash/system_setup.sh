@@ -27,6 +27,7 @@ printf "\n# here be my additions...\n" >> ~/.bashrc
 #PS1='${debian_chroot:+($debian_chroot)}\n[\[\e[32m\]\D{%Y %B %d %I:%M %p} on \h\[\e[0m\]] [\w] $(__git_ps1) \n$ '
 #                                       ^- new line                           ^-hostname        ^- current branch in git repo
 printf "PS1='\${debian_chroot:+(\$debian_chroot)}\\\n[\\\[\\\e[32m\\\]\\\D{%%Y %%B %%d %%I:%%M %%p} on \\\h\\\[\\\e[0m\\\]] [\\\w] \$(__git_ps1) \\\n$ '\n" >> ~/.bashrc
+# PS1='${debian_chroot:+($debian_chroot)}\n\[\e[31m\]\h \[\e[32m\]\D{%Y %B %d %I:%M %p} \[\e[36m\]\w \[\e[0m\]$(__git_ps1)\n'
 
 # enable color for gcc output
 printf "export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'" >> ~/.bashrc
