@@ -90,8 +90,8 @@ git clone git@github.com:brobeson/Tools.git ~/repositories/tools
 # }}}
 
 # restore my vim configuration {{{
-mkdir -p ~/.vim
-cp ~/repositories/tools/vim/vimrc ~/.vimrc
-cp -r ~/repositories/tools/vim/vim/* ~/.vim/
+#mkdir -p ~/.vim
+#cp ~/repositories/tools/vim/vimrc ~/.vimrc
+#cp -r ~/repositories/tools/vim/vim/* ~/.vim/
 # }}}
 
