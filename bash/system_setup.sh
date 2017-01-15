@@ -53,11 +53,11 @@ then
     sudo apt-get install -y plantuml
     sudo apt-get install -y qtcreator
     sudo apt-get install -y texlive-full
-fi
 
-# lizard needs python-pip, then pip can be run to install lizard
-sudo apt-get install -y python-pip
-sudo pip install lizard
+    # lizard needs python-pip, then pip can be run to install lizard
+    sudo apt-get install -y python-pip
+    sudo pip install lizard
+fi
 # }}}
 
 # configure git {{{
@@ -85,8 +85,8 @@ git config --global core.excludesfile "~/.gitignore"
 # }}}
 
 # checkout my tools repository {{{
-mkdir -p ~/repositories
-git clone git@github.com:brobeson/Tools.git ~/repositories/tools
+#mkdir -p ~/repositories
+#git clone git@github.com:brobeson/Tools.git ~/repositories/tools
 # }}}
 
 # restore my vim configuration {{{
