@@ -1,6 +1,6 @@
 " Vim profile
 " Author:       Brendan Robeson
-" Last Change:  2015 December 15
+" Last Change:  2016 December 23
 " URL:          https://github.com/brobeson/Tools
 "
 " [1]           Some functions are from http://peterodding.com/code/vim/profile/vimrc
@@ -74,7 +74,7 @@ if has('gui_running')
     set guioptions-=L   " disable the left hand scroll bar
     set guioptions-=l   " disable the left hand scroll bar
     if has('gui_gtk2')
-        set guifont=DejaVu\ Sans\ Mono\ 6
+        set guifont=DejaVu\ Sans\ Mono\ 8
     elseif has('gui_win32')
         set guifont=Source_Code_Pro:h9:cANSI
 

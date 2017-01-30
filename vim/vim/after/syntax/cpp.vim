@@ -22,4 +22,5 @@ highlight default link cppCmakeVariable identifier
 " load syntax highlighting for APIs and libraries
 runtime! syntax/stl.vim
 runtime! syntax/opengl.vim
-
+runtime syntax/doxygen.vim " only grab my doxygen.vim... not the system version
+syntax cluster cCommentGroup add=doxCommand

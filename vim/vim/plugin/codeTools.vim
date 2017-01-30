@@ -1,5 +1,5 @@
 " Vim plugin with various tools for editing code
-" Last Change:  2016 May 29
+" Last Change:  2017 January 30
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools/)
 " License:      Public Domain
 "
