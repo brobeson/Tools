@@ -1,5 +1,5 @@
 " Vim plug-in to manipulate Doxygen comments for C++ source code.
-" Last Change:  2016 May 7
+" Last Change:  2016 August 25
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " check if this plug-in (or one with the same name) has already been loaded
@@ -90,7 +90,7 @@ endif
 " \brief    This function adds the file level Doxygen block.
 if !exists('*s:InsertFileDoxygen')
     function s:InsertFileDoxygen()
-        let file_header = [ s:line_start . 'file     ' . expand('%:t'),
+        let file_header = [ s:line_start . 'file',
                           \ s:line_start . 'brief',
                           \ s:line_start . 'details',
                           \ s:line_start . 'author' ]
