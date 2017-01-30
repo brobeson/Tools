@@ -1,16 +1,11 @@
 #!/bin/bash
 
-# TODO
-# 4. allow list of branches to update
-# 5. tab completion of local branches?
-
-if [[ $1 == "help" ]]
-then
+function PrintHelp {
     echo "NAME"
     echo "    git sync"
     echo
     echo "SYNOPSIS"
-    echo "    git sync [help] <remote> [<branch>]"
+    echo "    git sync [options] <remote> [<branch>]"
     echo
     echo "DESCRIPTION"
     echo "    Fetch from the specified remote repository, merge to every local branch, and"
@@ -20,44 +15,93 @@ then
     echo "    it defaults to master."
     echo
     echo "OPTIONS"
-    echo "    help"
+    echo "    -h"
     echo "        Display this help, then exit."
     echo
-    exit 0
-fi
+    echo "    --no-color"
+    echo "        Do not use color for the script output. Note that this does not have any"
+    echo "        affect on coloring of output from git commands invoked by this script."
+    echo "        Edit your git configuration for that."
+    echo
+    echo "AUTHOR"
+    echo "    Brendan Robeson (brendan.robeson@sdl.usu.edu)"
+    echo
+    echo "REPORTING BUGS"
+    echo "    Create an issue at https://isrhub.usurf.usu.edu/brobeson/sdl_tools/issues."
+    echo
+}
 
-# ensure this is a git repository
-git rev-parse &> /dev/null
-if [[ $? != 0 ]]
-then
-    >&2 echo "error: $(pwd) does not appear to be a git repository"
-    exit 1
-fi
+# defaults
+error_color='\033[1;31m'
+success_color='\033[0;32m'
+no_color='\033[0m'
 
-# ensure there are no changes or new files
-if [[ $(git status --porcelain) != "" ]]
-then
-    >&2 echo "error: please stash your changes and new files"
-    exit 1
-fi
+# parse the options
+options=$(getopt --options "h" --longoptions "no-color" --name $(basename $0) -- "$@")
+eval set -- "${options}"
+while true
+do
+    case "$1" in
+        -h)         PrintHelp
+                    exit 0
+                    ;;
+        --no-color) error_color=""
+                    success_color=""
+                    no_color=""
+                    shift
+                    ;;
+        --)         shift
+                    break
+                    ;;
+        *)          >&2 echo "${error_color}error: unrecognized option: $1${no_color}"
+                    exit 1
+                    ;;
+    esac
+done
 
-# fetch from the remote repository. redirect output to /dev/null. this is a bit
-# messed up; normal output from git fetch is written to stderr instead of
-# stdout.
-if [[ $1 == "" ]]
+# ensure a remote is specified
+if [[ $# < 1 ]]
 then
-    >&2 echo "error: a remote repository from which to sync must be specified"
+    >&2 echo -e "${error_color}error: a remote repository from which to sync must be specified${no_color}"
     exit 1
 fi
 remote=$1
 remote_branch=${2:-master}
 remote_ref=${remote}/${remote_branch}
-git fetch ${remote} ${remote_branch} 2> /dev/null
+
+# ensure this is a git repository
+git rev-parse &> /dev/null
 if [[ $? != 0 ]]
 then
-    >&2 echo "error: failed to fetch from ${remote}"
+    >&2 echo -e "${error_color}error: $(pwd) does not appear to be a git repository${no_color}"
     exit 1
 fi
+
+# ensure there are no changes or new files
+git diff-index --quiet HEAD
+if [[ $? != 0 ]]
+then
+    >&2 echo -e "${error_color}error: changes exist in your branch. please stash or commit them${no_color}"
+    exit 1
+fi
+untracked_files=($(git ls-files --others --exclude-standard))
+if [[ ${#untracked_files[@]} != 0 ]]
+then
+    >&2 echo -e "${error_color}error: untracked files exist in your branch. please stash, delete, or commit them${no_color}"
+    exit 1
+fi
+
+# fetch the latest from the remote branch
+git fetch ${remote} ${remote_branch}
+if [[ $? != 0 ]]
+then
+    >&2 echo -e "${error_color}error: failed to fetch from ${remote}${no_color}"
+    exit 1
+fi
+
+# ensure the local repository is current with the origin remote
+git fetch origin
+git remote prune origin
 
 # record the current branch, so we can switch back to it later
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
@@ -67,23 +111,39 @@ current_branch="$(git rev-parse --abbrev-ref HEAD)"
 # 2. if no conflicts, merge and push
 # 3. append the branch to the appropriate result list
 branches=($(git for-each-ref --format="%(refname:short)" refs/heads/*))
-conflicting_branchs=()
+conflicted_branches=()
 pushed_branches=()
 failed_branches=()
 for branch in ${branches[@]}
 do
     git checkout ${branch}
-    if [[ $(git merge-tree $(git merge-base ${remote_ref} ${branch}) ${remote_ref} ${branch}) == "" ]]
+
+    # merge the origin upstream. if this causes conflicts, there's nothing else
+    # to be done
+    git merge --no-edit origin/${branch}
+    conflicts=($(git diff --name-only --diff-filter=U))
+    if [[ ${#conflicts[@]} != 0 ]]
     then
-        git merge --no-edit ${remote_ref} && git push
-        if [[ $? == 0 ]]
-        then
-            pushed_branches+=(${branch})
-        else
-            failed_branches+=(${branch})
-        fi
+        conflicted_branches+=(${branch})
+        git merge --abort
     else
-        conflicting_branches+=(${branch})
+        # merge from the specified remote ref. again, if conflicts result,
+        # abandon the update for this branch.
+        git merge --no-edit ${remote_ref}
+        conflicts=($(git diff --name-only --diff-filter=U))
+        if [[ ${#conflicts[@]} != 0 ]]
+        then
+            conflicted_branches+=(${branch})
+            git merge --abort
+        else
+            git push origin ${branch}
+            if [[ $? == 0 ]]
+            then
+                pushed_branches+=(${branch})
+            else
+                failed_branches+=(${branch})
+            fi
+        fi
     fi
 done
 
@@ -93,12 +153,20 @@ git checkout ${current_branch}
 # output results summary
 echo
 echo "these branches were merged & pushed:"
-echo "${pushed_branches[@]}"
+for branch in ${pushed_branches[@]}
+do
+    echo -e "    ${success_color}${branch}${no_color}"
+done
 echo
-echo "these branches failed to merge or push:"
-echo "${failed_branches[@]}"
+echo "these branches merged, but failed to be pushed"
+for branch in ${failed_branches[@]}
+do
+    echo -e "    ${error_color}${branch}${no_color}"
+done
 echo
 echo "these branches have merge conflicts:"
-echo "${conflicting_branches[@]}"
-echo
+for branch in ${conflicted_branches[@]}
+do
+    echo -e "    ${error_color}${branch}${no_color}"
+done
 exit 0
