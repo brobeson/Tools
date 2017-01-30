@@ -27,6 +27,7 @@ printf "\n# here be my additions...\n" >> ~/.bashrc
 #PS1='${debian_chroot:+($debian_chroot)}\n[\[\e[32m\]\D{%Y %B %d %I:%M %p} on \h\[\e[0m\]] [\w] $(__git_ps1) \n$ '
 #                                       ^- new line                           ^-hostname        ^- current branch in git repo
 printf "PS1='\${debian_chroot:+(\$debian_chroot)}\\\n[\\\[\\\e[32m\\\]\\\D{%%Y %%B %%d %%I:%%M %%p} on \\\h\\\[\\\e[0m\\\]] [\\\w] \$(__git_ps1) \\\n$ '\n" >> ~/.bashrc
+# PS1='${debian_chroot:+($debian_chroot)}\n\[\e[31m\]\h \[\e[32m\]\D{%Y %B %d %I:%M %p} \[\e[36m\]\w \[\e[0m\]$(__git_ps1)\n'
 
 # enable color for gcc output
 printf "export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'" >> ~/.bashrc
@@ -52,11 +53,11 @@ then
     sudo apt-get install -y plantuml
     sudo apt-get install -y qtcreator
     sudo apt-get install -y texlive-full
-fi
 
-# lizard needs python-pip, then pip can be run to install lizard
-sudo apt-get install -y python-pip
-sudo pip install lizard
+    # lizard needs python-pip, then pip can be run to install lizard
+    sudo apt-get install -y python-pip
+    sudo pip install lizard
+fi
 # }}}
 
 # configure git {{{
@@ -84,13 +85,13 @@ git config --global core.excludesfile "~/.gitignore"
 # }}}
 
 # checkout my tools repository {{{
-mkdir -p ~/repositories
-git clone git@github.com:brobeson/Tools.git ~/repositories/tools
+#mkdir -p ~/repositories
+#git clone git@github.com:brobeson/Tools.git ~/repositories/tools
 # }}}
 
 # restore my vim configuration {{{
-mkdir -p ~/.vim
-cp ~/repositories/tools/vim/vimrc ~/.vimrc
-cp -r ~/repositories/tools/vim/vim/* ~/.vim/
+#mkdir -p ~/.vim
+#cp ~/repositories/tools/vim/vimrc ~/.vimrc
+#cp -r ~/repositories/tools/vim/vim/* ~/.vim/
 # }}}
 

@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:     C++ STL
 " Maintainer:   brobeson (http://github.com/brobeson/Tools)
-" Last Change:  2016 May 29
+" Last Change:  2016 December 23
 
 " use this variable to control whether object methods should be
 " highlighted.

@@ -1,6 +1,6 @@
 " Vim color file
 " Maintainer:   Brendan Robeson <github.com/brobeson/Tools>
-" Last Change:  2016 May 29
+" Last Change:  2016 December 23
 " License:      Public Domain
 "
 " This color file is based on Visual Studio 2013's C++ highlighting for
@@ -66,6 +66,8 @@ highlight TabLineSel   cterm=none  ctermfg=fg        ctermbg=bg
 " Tooltip
 
 " syntax highlighting
+highlight matlabHeaderComment cterm=none  ctermfg=darkgreen gui=bold guifg=#57a64a
+highlight doxCommand cterm=none  ctermfg=darkgreen gui=underline guifg=#386b30
 highlight Comment      cterm=none  ctermfg=darkgreen                    gui=none       guifg=#57a64a
 highlight Constant     cterm=none  ctermfg=darkyellow                   gui=none       guifg=#d69d85
 highlight Boolean      cterm=none  ctermfg=cyan                         gui=none       guifg=#d69d85

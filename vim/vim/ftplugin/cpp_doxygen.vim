@@ -1,5 +1,5 @@
 " Vim plug-in to manipulate Doxygen comments for C++ source code.
-" Last Change:  2016 August 25
+" Last Change:  2017 January 30
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " check if this plug-in (or one with the same name) has already been loaded
@@ -73,8 +73,8 @@ if !exists('*s:VerifyConfig')
 endif
 " }}}
 
-" create a command to insert doxygen comments {{{
-" map the doxygen comment command
+" create a command to insert Doxygen comments {{{
+" map the Doxygen comment command
 if !exists('no_plugin_maps') && !exists('no_cpp_maps')
     if !hasmapto('<Plug>cpp_doxygenInsert')
         map <buffer> <unique> <Leader>d <Plug>cpp_doxygenInsert
@@ -126,15 +126,14 @@ if !exists('*s:InsertDeletedDoxygen')
     endfunction
 endif
 
-" \brief    This function begins creating the doxygen comment block.
-" \details  It intializes the comment with commands common to all the blocks.
+" \brief    This function begins creating the Doxygen comment block.
+" \details  It initializes the comment with commands common to all the blocks.
 "           This function does not apply to the file comment, or to deleted
 "           functions.
 if !exists('*s:CreateDoxygenComment')
     function s:CreateDoxygenComment()
-        " add the lines which are common to all the doxygen comments
-        let comment =   [ s:line_start . 'brief',
-                        \ s:line_start . 'details' ]
+        " add the lines which are common to all the Doxygen comments
+        let comment =   [ s:line_start . 'brief' ]
         if g:cpp_doxygen_style == 'javadoc' || g:cpp_doxygen_style == 'qt'
             call insert(comment, s:block_open)
         endif
@@ -142,7 +141,7 @@ if !exists('*s:CreateDoxygenComment')
     endfunction
 endif
 
-" \brief    Add tparam commands to the doxygen comment.
+" \brief    Add tparam commands to the Doxygen comment.
 " \details  The template parameter names are also added.
 if !exists('*s:AddTemplateParameters')
     function s:AddTemplateParameters(comment, statement)
@@ -164,7 +163,7 @@ if !exists('*s:AddFunction')
     function s:AddFunction(comment, statement)
         " start with the list of parameters. find the '(' and ')' in the
         " statement. extract the text between them and split it into a list of
-        " parameters. then we can examine each parameter for constness,
+        " parameters. then we can examine each parameter for const,
         " reference, etc. to determine if it's [in] or [in,out], and also
         " extract the parameter name.
         let param_cmd     = s:line_start . 'param'
@@ -203,14 +202,14 @@ if !exists('*s:AddFunction')
 
         " tack on a report about any exceptions
         if match(a:statement, 'noexcept') != -1
-            call add(a:comment, s:line_start . 'exception  None')
+            call add(a:comment, s:line_start . 'throws  None')
         else
-            call add(a:comment, s:line_start . 'exception')
+            call add(a:comment, s:line_start . 'throws')
         endif
     endfunction
 endif
 
-" \brief    Insert a doxygen comment block.
+" \brief    Insert a Doxygen comment block.
 if !exists('*s:InsertDoxygen')
     function s:InsertDoxygen()
         " verify the configuration. anything incorrect should be corrected
@@ -248,6 +247,7 @@ if !exists('*s:InsertDoxygen')
                 endif
 
                 " close the comment
+                call add(comment, s:line_start . 'details')
                 if g:cpp_doxygen_style == 'javadoc' || g:cpp_doxygen_style == 'qt'
                     call add(comment, s:block_close)
                 endif
@@ -266,24 +266,24 @@ endif
 "}}}
 
 " code folding for Doxygen comments {{{
-" \brief    Determine the fold text for a doxygen comment block.
+" \brief    Determine the fold text for a Doxygen comment block.
 " \details  The fold text should present the brief command text as a comment:
 "               /** this is some brief description of the class */
 "               /*! so is this */
 "           If no brief description can be found, the words 'no brief
 "           description' are used.
 " \returns  A string to be used as the fold text.
-" \retval   '' indicates that this folding block is not a doxygen comment.
+" \retval   '' indicates that this folding block is not a Doxygen comment.
 if !exists('*FoldDoxygen')
     function FoldDoxygen()
-        " assume this isn't a doxygen comment
+        " assume this isn't a Doxygen comment
         let fold_text = ''
 
         " get the first line. we need it to determine what type of fold text
         " to create.
         let first_line = getline(v:foldstart)
 
-        " doxygen comment blocks
+        " Doxygen comment blocks
         if match(first_line, '^\s*\/\*[!\*]') == 0
             " put a space between /** and the brief text. also, remove any
             " text after the /**.
@@ -308,7 +308,7 @@ if !exists('*FoldDoxygen')
             " if the brief tag was found...
             if 0 <= brief_start
                 " find the end of the brief description. this occurs when:
-                " 1 - the next doxygen command is found,
+                " 1 - the next Doxygen command is found,
                 " 2 - a blank line occurs after the brief text
                 " then crop the comments array, so we only have the brief text
                 let comments = comments[brief_start : match(comments, '\([@|\\]\|^\s*$\)', brief_start + 1) - 1]
@@ -324,7 +324,7 @@ if !exists('*FoldDoxygen')
             elseif match(first_line, '^\s*\/\*\*') == 0
                 let brief_start = match(comments, '\w.*')
                 if 0 <= brief_start
-                    " this match is a bit tricky. the Javadoc autobrief ends
+                    " this match is a bit tricky. the Javadoc auto brief ends
                     " with the first period. then, in case there are two
                     " periods on the end line, remove the extra words.
                     let comments = comments[brief_start : match(comments, '.', brief_start)]
