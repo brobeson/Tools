@@ -1,0 +1,157 @@
+#!/bin/bash
+
+function PrintHelp {
+    echo "NAME"
+    echo "    git sync"
+    echo
+    echo "SYNOPSIS"
+    echo "    git sync [options] <remote> [<branch>]"
+    echo
+    echo "DESCRIPTION"
+    echo "    Fetch from the specified remote repository, merge to every local branch, and"
+    echo "    push each local branch to your origin remote. If merging to a local branch"
+    echo "    would result in merge conflicts, the merge and push does not occur. <branch>"
+    echo "    is the remote branch you want to merge into your local branches; if omitted,"
+    echo "    it defaults to master."
+    echo
+    echo "OPTIONS"
+    echo "    -h"
+    echo "        Display this help, then exit."
+    echo
+    echo "    --no-color"
+    echo "        Do not use color for the script output. Note that this does not have any"
+    echo "        affect on coloring of output from git commands invoked by this script."
+    echo "        Edit your git configuration for that."
+    echo
+    echo "AUTHOR"
+    echo "    Brendan Robeson (brendan.robeson@sdl.usu.edu)"
+    echo
+    echo "REPORTING BUGS"
+    echo "    Create an issue at https://isrhub.usurf.usu.edu/brobeson/sdl_tools/issues."
+    echo
+}
+
+# defaults
+error_color='\033[1;31m'
+success_color='\033[0;32m'
+no_color='\033[0m'
+
+# parse the options
+options=$(getopt --options "h" --longoptions "no-color" --name $(basename $0) -- "$@")
+eval set -- "${options}"
+while true
+do
+    case "$1" in
+        -h)         PrintHelp
+                    exit 0
+                    ;;
+        --no-color) error_color=""
+                    success_color=""
+                    no_color=""
+                    shift
+                    ;;
+        --)         shift
+                    break
+                    ;;
+        *)          >&2 echo "${error_color}error: unrecognized option: $1${no_color}"
+                    exit 1
+                    ;;
+    esac
+done
+
+# ensure this is a git repository
+git rev-parse &> /dev/null
+if [[ $? != 0 ]]
+then
+    >&2 echo -e "${error_color}error: $(pwd) does not appear to be a git repository${no_color}"
+    exit 1
+fi
+
+#git log --all --graph --color --format=format:'%C(bold blue)%h %C(dim black)(%cr)%C(auto)%d%n        %C(bold black)%an%C(reset)%C(black) %s%C(reset)'
+git log --all --graph --color --format=format:'%C(bold blue)%h %C(dim black)(%cr)%C(auto)%d'
+exit 0
+
+# todo  should I add a form of --decorate?
+#git log --all --graph --color --format=format:'%C(bold blue)%h%C(reset) %C(dim black)(%cr)%C(reset) %C(auto)%d%C(reset)  %n          %C(bold black)%an%C(reset)%C(black): %s%C(reset)'
+logx=$(git log --all --graph --color --format=format:'%C(bold blue)%h %C(dim black)(%cr)%C(auto)%d%n        %C(bold black)%an%C(reset)%C(black) %s%C(reset)')
+#echo ${logx[@]}
+#exit 0
+#while IFS= read -r hash time branch message
+while IFS= read line
+do
+    echo ${line}
+    #echo "${time}, ${message}"
+    #timelength=$(echo \"$time\" | sed -r \"s:[^ ][[]([0-9]{1,2}(;[0-9]{1,2})?)?m::g\");
+    #timelength=$(echo \"16+${#time}-${#timelength}\" | bc);
+    #printf \"%${timelength}s    %s %s %s\n\" \"$time\" \"$hash\" \"$branch\" \"\";
+done <<< "${logx}"
+#done < <(git log --all --graph --color --format=format:'%C(bold blue)%h %C(dim black)(%cr)%C(auto)%d%n        %C(bold black)%an%C(reset)%C(black) %s%C(reset)')
+
+
+exit 0
+
+
+# for each local branch...
+# 1. check if merging remote/remote_branch has conflicts
+# 2. if no conflicts, merge and push
+# 3. append the branch to the appropriate result list
+branches=($(git for-each-ref --format="%(refname:short)" refs/heads/*))
+conflicted_branches=()
+pushed_branches=()
+failed_branches=()
+for branch in ${branches[@]}
+do
+    git checkout ${branch}
+
+    # merge the origin upstream. if this causes conflicts, there's nothing else
+    # to be done
+    git merge --no-edit origin/${branch}
+    conflicts=($(git diff --name-only --diff-filter=U))
+    if [[ ${#conflicts[@]} != 0 ]]
+    then
+        conflicted_branches+=(${branch})
+        git merge --abort
+    else
+        # merge from the specified remote ref. again, if conflicts result,
+        # abandon the update for this branch.
+        git merge --no-edit ${remote_ref}
+        conflicts=($(git diff --name-only --diff-filter=U))
+        if [[ ${#conflicts[@]} != 0 ]]
+        then
+            conflicted_branches+=(${branch})
+            git merge --abort
+        else
+            git push origin ${branch}
+            if [[ $? == 0 ]]
+            then
+                pushed_branches+=(${branch})
+            else
+                failed_branches+=(${branch})
+            fi
+        fi
+    fi
+done
+
+# now go back to the original branch the user was on
+git checkout ${current_branch}
+
+# output results summary
+echo
+echo "these branches were merged & pushed:"
+for branch in ${pushed_branches[@]}
+do
+    echo -e "    ${success_color}${branch}${no_color}"
+done
+echo
+echo "these branches merged, but failed to be pushed"
+for branch in ${failed_branches[@]}
+do
+    echo -e "    ${error_color}${branch}${no_color}"
+done
+echo
+echo "these branches have merge conflicts:"
+for branch in ${conflicted_branches[@]}
+do
+    echo -e "    ${error_color}${branch}${no_color}"
+done
+exit 0
