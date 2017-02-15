@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to C++ development.
-" Last Change:  2016 January 19
+" Last Change:  2017 February 9
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " I don't check if this file is already loaded. I found that if I do, then the
@@ -32,4 +32,40 @@ else
     endif
     noremap  <buffer> <unique> <script> <Plug>CppUncomment :call Uncomment('//')<CR>
 endif
+
+
+"============================================================================
+" define the functions to comment and uncomment a range of lines {{{
+if !exists('*WordComment')
+    function WordComment()
+        " first, insert the leading comment token. move the cursor one character
+        " right. this overcomes the case that the cursor is on the first
+        " character of the word. in that case, the 'b' command would move to the
+        " previous word, instead of the start of this word.
+        execute 'normal lbi/*'
+
+        " jump to the end of the word, and append the closing comment token
+        execute 'normal ea*/'
+    endfunction
+endif
+
+" define the function to uncomment a range of lines
+if !exists('*WordUncomment')
+    function WordUncomment() range
+        execute 'normal F/xx'
+        execute 'normal f*xx'
+    endfunction
+endif
+"}}}
+
+if !hasmapto('<Plug>CppWordComment')
+    map <buffer> <unique> <Leader>wc <Plug>WordComment
+endif
+noremap <buffer> <unique> <script> <Plug>WordComment :call WordComment()<CR>
+
+if !hasmapto('<Plug>CppWordUncomment')
+    map <buffer> <unique> <Leader>wu <Plug>WordUncomment
+endif
+noremap <buffer> <unique> <script> <Plug>WordUncomment :call WordUncomment()<CR>
+
 
