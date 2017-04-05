@@ -1,6 +1,6 @@
 " Vim profile
 " Author:       Brendan Robeson
-" Last Change:  2017 January 30
+" Last Change:  2017 March 20
 " URL:          https://github.com/brobeson/Tools
 "
 " [1]           Some functions are from http://peterodding.com/code/vim/profile/vimrc
@@ -29,7 +29,7 @@ set autoread            " automatically reload if a file is edited outside of Vi
 set incsearch           " highlight search matches as the pattern is typed
 set nojoinspaces        " only add 1 space after punctuation when joining lines
 set hlsearch            " highlight the matches of the last search pattern
-set textwidth=80        " set the text width to 80 characters
+set textwidth=100       " set the text width to 100 characters
 set formatoptions-=l    " automatically format lines initially longer than the text width
 set formatoptions+=j    " delete comment leaders when joining comment lines
 set formatoptions+=n    " automatically format numbered lists
