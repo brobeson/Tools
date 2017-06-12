@@ -49,20 +49,96 @@ let project_name = strcharpart(project_name, 0, strchars(project_name) - 1)
 
 " establish the root directory for the project. it's the prefix directory followed by the project
 " name
-let project_directory = g:cpp_project_prefix . '/' . project_name
+let s:project_directory = g:cpp_project_prefix . '/' . project_name
+
+" establish the root source directory for the project.
+let s:source_directory = strcharpart(path, strchars(s:project_directory) + 1)
+let s:source_directory = matchstr(s:source_directory, '[^\/]\+\/')
+let s:source_directory = strcharpart(s:source_directory, 0, strchars(s:source_directory) - 1)
+let s:source_directory = s:project_directory . '/' . s:source_directory
+
 
 "--------------------------------------------------------------------------------------------------
 "                                                               check for a debug & release
 "                                                               directory
 "--------------------------------------------------------------------------------------------------
-let project_debug_directory   = project_directory . '/debug'
-let project_release_directory = project_directory . '/release'
+let s:project_debug_directory   = s:project_directory . '/debug'
+let s:project_release_directory = s:project_directory . '/release'
 
 " if the debug or release directories don't exist, create them
-if finddir('debug', project_directory) == ""
-    call mkdir(project_debug_directory)
+if finddir('debug', s:project_directory) == ""
+    call mkdir(s:project_debug_directory)
 endif
-if finddir('release', project_directory) == ""
-    call mkdir(project_release_directory)
+if finddir('release', s:project_directory) == ""
+    call mkdir(s:project_release_directory)
 endif
 
+
+"--------------------------------------------------------------------------------------------------
+"                                                               function to set debug or release
+"                                                               build
+"--------------------------------------------------------------------------------------------------
+if !exists('*s:cpp_project_set_build_type')
+    function s:cpp_project_set_build_type(build_type)
+        " verify the value of build_type input. this must be either 'debug' or 'release'
+        if a:build_type != 'release' && a:build_type != 'debug'
+            echoerr 'cannot set a build type of ' . a:build_type
+            echo    'possible values for build type are "release" or "debug"'
+            return
+        endif
+
+        " get the number of processors, and subtract 1. this is the number of processors to use for
+        " parallel building.
+        let processor_count = system('nproc') - 1
+
+        " determine the directory in which to build
+        if a:build_type == 'release'
+            let g:current_build_directory = s:project_release_directory
+        else
+            let g:current_build_directory = s:project_debug_directory
+        endif
+
+        " set the makeprg variable. this is done using :let instead of :set, so that variables are
+        " expanded to generate the makeprg string.
+        let &makeprg = 'make --jobs=' . processor_count . ' --directory=' . g:current_build_directory
+
+        " set the file for which to generate ctags.
+        let &tags = g:current_build_directory . '/tags'
+    endfunction
+endif
+
+
+"--------------------------------------------------------------------------------------------------
+"                                                               function to regenerate C tags
+"--------------------------------------------------------------------------------------------------
+if !exists('*s:cpp_project_regenerate_tags')
+    function s:cpp_project_regenerate_tags()
+        if !exists('g:current_build_directory')
+            echoerr 'current build type has not been defined'
+            echo    'run the command :BuildDebug or :BuildRelease'
+            return
+        endif
+
+        call system('ctags -f ' . &tags . ' -R ' . s:source_directory)
+    endfunction
+endif
+
+
+"--------------------------------------------------------------------------------------------------
+"                                                               commands to invoke the proper
+"                                                               functionality
+"--------------------------------------------------------------------------------------------------
+" switch to a debug build
+if !exists(':BuildDebug')
+    command -buffer BuildDebug :call s:cpp_project_set_build_type('debug')
+endif
+
+" switch to a release build
+if !exists(':BuildRelease')
+    command -buffer BuildRelease :call s:cpp_project_set_build_type('release')
+endif
+
+" regenerate C tags
+if !exists(':Retag')
+    command -buffer Retag :call s:cpp_project_regenerate_tags()
+endif
