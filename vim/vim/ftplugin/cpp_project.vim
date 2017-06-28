@@ -1,3 +1,26 @@
+" Vim file type plug-in for establishing a C++ project.
+" Last Change: 2017 June 28
+" Maintainer:  brobeson <https://github.com/brobeson/tools>
+" License:     MIT license
+"
+" todo
+" 1.    add a menu items to invoke the commands
+" 2.    which global variables can be made script-local?
+
+"--------------------------------------------------------------------------------------------------
+"                                                               set up for proper execution of the
+"                                                               script
+"--------------------------------------------------------------------------------------------------
+if exists('g:loaded_cpp_project')
+    finish
+endif
+let g:loaded_cpp_project = 1
+
+" store the cpoptions so non-compatible script will work
+let s:save_cpo = &cpo
+set cpo&vim
+
+
 "--------------------------------------------------------------------------------------------------
 "                                                               establish the projects directory
 "--------------------------------------------------------------------------------------------------
@@ -78,67 +101,78 @@ endif
 "                                                               function to set debug or release
 "                                                               build
 "--------------------------------------------------------------------------------------------------
-if !exists('*s:cpp_project_set_build_type')
-    function s:cpp_project_set_build_type(build_type)
-        " verify the value of build_type input. this must be either 'debug' or 'release'
-        if a:build_type != 'release' && a:build_type != 'debug'
-            echoerr 'cannot set a build type of ' . a:build_type
-            echo    'possible values for build type are "release" or "debug"'
-            return
-        endif
+function s:set_build_type(build_type)
+    " verify the value of build_type input. this must be either 'debug' or 'release'
+    if a:build_type != 'release' && a:build_type != 'debug'
+        echoerr 'cannot set a build type of ' . a:build_type
+        echo    'possible values for build type are "release" or "debug"'
+        return
+    endif
 
-        " get the number of processors, and subtract 1. this is the number of processors to use for
-        " parallel building.
-        let processor_count = system('nproc') - 1
+    " get the number of processors, and subtract 1. this is the number of processors to use for
+    " parallel building.
+    let processor_count = system('nproc') - 1
 
-        " determine the directory in which to build
-        if a:build_type == 'release'
-            let g:current_build_directory = s:project_release_directory
-        else
-            let g:current_build_directory = s:project_debug_directory
-        endif
+    " determine the directory in which to build
+    if a:build_type == 'release'
+        let g:current_build_directory = s:project_release_directory
+    else
+        let g:current_build_directory = s:project_debug_directory
+    endif
 
-        " set the makeprg variable. this is done using :let instead of :set, so that variables are
-        " expanded to generate the makeprg string.
-        let &makeprg = 'make --jobs=' . processor_count . ' --directory=' . g:current_build_directory
+    " set the makeprg variable. this is done using :let instead of :set, so that variables are
+    " expanded to generate the makeprg string.
+    let &makeprg = 'make --jobs=' . processor_count . ' --directory=' . g:current_build_directory
 
-        " set the file for which to generate ctags.
-        let &tags = g:current_build_directory . '/tags'
-    endfunction
-endif
+    " set the file for which to generate ctags.
+    let &tags = g:current_build_directory . '/tags'
+endfunction
 
 
 "--------------------------------------------------------------------------------------------------
 "                                                               function to regenerate C tags
 "--------------------------------------------------------------------------------------------------
-if !exists('*s:cpp_project_regenerate_tags')
-    function s:cpp_project_regenerate_tags()
-        if !exists('g:current_build_directory')
-            echoerr 'current build type has not been defined'
-            echo    'run the command :BuildDebug or :BuildRelease'
-            return
-        endif
+function s:regenerate_tags()
+    if !exists('g:current_build_directory')
+        echoerr 'current build type has not been defined'
+        echo    'run the command :BuildDebug or :BuildRelease'
+        return
+    endif
 
-        call system('ctags -f ' . &tags . ' -R ' . s:source_directory)
-    endfunction
-endif
+    call system('ctags -f ' . &tags . ' -R ' . s:source_directory)
+endfunction
 
 
 "--------------------------------------------------------------------------------------------------
-"                                                               commands to invoke the proper
-"                                                               functionality
+"                                                               function to list build information
 "--------------------------------------------------------------------------------------------------
-" switch to a debug build
-if !exists(':BuildDebug')
-    command -buffer BuildDebug :call s:cpp_project_set_build_type('debug')
-endif
+function s:build_information()
+    echo 'project directory........ ' . s:project_directory
+    echo 'source directory......... ' . s:source_directory
+    echo 'release build directory.. ' . s:project_release_directory
+    echo 'debug build directory.... ' . s:project_debug_directory
+    "echo '-----------------------------------------------------------------------------------'
+    if exists('g:current_build_directory')
+        echo 'current build directory.. ' . g:current_build_directory
+    else
+        echo 'no build type selected'
+    endif
+endfunction
 
-" switch to a release build
-if !exists(':BuildRelease')
-    command -buffer BuildRelease :call s:cpp_project_set_build_type('release')
-endif
 
-" regenerate C tags
-if !exists(':Retag')
-    command -buffer Retag :call s:cpp_project_regenerate_tags()
-endif
+"--------------------------------------------------------------------------------------------------
+"                                                               commands and menu options to invoke
+"                                                               the proper functionality
+"--------------------------------------------------------------------------------------------------
+" commands to switch to debug build, switch to release build, and to regenerate tags
+command BuildDebug :call s:set_build_type('debug')
+command BuildInformation :call s:build_information()
+command BuildRelease :call s:set_build_type('release')
+command Retag :call s:regenerate_tags()
+
+
+"--------------------------------------------------------------------------------------------------
+"                                                               clean up after the script
+"--------------------------------------------------------------------------------------------------
+let &cpo = s:save_cpo
+unlet s:save_cpo
