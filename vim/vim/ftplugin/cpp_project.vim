@@ -2,10 +2,6 @@
 " Last Change: 2017 July 11
 " Maintainer:  brobeson <https://github.com/brobeson/tools>
 " License:     MIT license
-"
-" todo
-" 1.    add a menu items to invoke the commands
-" 2.    which global variables can be made script-local?
 
 "--------------------------------------------------------------------------------------------------
 "                                                               set up for proper execution of the
@@ -119,17 +115,17 @@ function s:set_build_type(build_type)
 
     " determine the directory in which to build
     if a:build_type == 'release'
-        let g:current_build_directory = s:project_release_directory
+        let s:current_build_directory = s:project_release_directory
     else
-        let g:current_build_directory = s:project_debug_directory
+        let s:current_build_directory = s:project_debug_directory
     endif
 
     " set the makeprg variable. this is done using :let instead of :set, so that variables are
     " expanded to generate the makeprg string.
-    let &makeprg = 'make --jobs=' . processor_count . ' --directory=' . g:current_build_directory
+    let &makeprg = 'make --jobs=' . processor_count . ' --directory=' . s:current_build_directory
 
     " set the file for which to generate ctags.
-    let &tags = g:current_build_directory . '/tags'
+    let &tags = s:current_build_directory . '/tags'
 
     let s:build_type = a:build_type
 endfunction
@@ -139,7 +135,7 @@ endfunction
 "                                                               function to regenerate C tags
 "--------------------------------------------------------------------------------------------------
 function s:regenerate_tags()
-    if !exists('g:current_build_directory')
+    if !exists('s:current_build_directory')
         echoerr 'current build type has not been defined'
         echo    'run the command :BuildDebug or :BuildRelease'
         return
@@ -193,10 +189,10 @@ endfunction
 "                                                               the proper functionality
 "--------------------------------------------------------------------------------------------------
 " commands to switch to debug build, switch to release build, and to regenerate tags
-command BuildDebug :call s:set_build_type('debug')
+command BuildDebug       :call s:set_build_type('debug')
 command BuildInformation :call s:build_information()
-command BuildRelease :call s:set_build_type('release')
-command Retag :call s:regenerate_tags()
+command BuildRelease     :call s:set_build_type('release')
+command BuildRetag       :call s:regenerate_tags()
 
 " default to a debug build
 BuildDebug
