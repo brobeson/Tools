@@ -1,5 +1,5 @@
 " Vim file type plug-in for establishing a C++ project.
-" Last Change: 2017 June 28
+" Last Change: 2017 July 11
 " Maintainer:  brobeson <https://github.com/brobeson/tools>
 " License:     MIT license
 "
@@ -19,6 +19,12 @@ let g:loaded_cpp_project = 1
 " store the cpoptions so non-compatible script will work
 let s:save_cpo = &cpo
 set cpo&vim
+
+
+"--------------------------------------------------------------------------------------------------
+"                                                               establish some script-wide variables
+"--------------------------------------------------------------------------------------------------
+let s:build_type = 'unset'
 
 
 "--------------------------------------------------------------------------------------------------
@@ -64,15 +70,13 @@ endif
 
 " establish the name of the project. remove the prefix, then drop everything including and after the
 " first '/'
-let project_name = strcharpart(path, strchars(g:cpp_project_prefix) + 1)
-let project_name = matchstr(project_name, '[^\/]\+\/')
-let project_name = strcharpart(project_name, 0, strchars(project_name) - 1)
-
-"echo project_name
+let s:project_name = strcharpart(path, strchars(g:cpp_project_prefix) + 1)
+let s:project_name = matchstr(s:project_name, '[^\/]\+\/')
+let s:project_name = strcharpart(s:project_name, 0, strchars(s:project_name) - 1)
 
 " establish the root directory for the project. it's the prefix directory followed by the project
 " name
-let s:project_directory = g:cpp_project_prefix . '/' . project_name
+let s:project_directory = g:cpp_project_prefix . '/' . s:project_name
 
 " establish the root source directory for the project.
 let s:source_directory = strcharpart(path, strchars(s:project_directory) + 1)
@@ -126,6 +130,8 @@ function s:set_build_type(build_type)
 
     " set the file for which to generate ctags.
     let &tags = g:current_build_directory . '/tags'
+
+    let s:build_type = a:build_type
 endfunction
 
 
@@ -147,16 +153,38 @@ endfunction
 "                                                               function to list build information
 "--------------------------------------------------------------------------------------------------
 function s:build_information()
-    echo 'project directory........ ' . s:project_directory
-    echo 'source directory......... ' . s:source_directory
-    echo 'release build directory.. ' . s:project_release_directory
-    echo 'debug build directory.... ' . s:project_debug_directory
-    "echo '-----------------------------------------------------------------------------------'
-    if exists('g:current_build_directory')
-        echo 'current build directory.. ' . g:current_build_directory
+    " determine the modification time of the tags files
+    let t = getftime(s:project_release_directory . '/tags')
+    if t < 0
+        let release_tags_time = "doesn't exist"
     else
-        echo 'no build type selected'
+        let release_tags_time = strftime("%Y %B %d %X", t)
     endif
+    let t = getftime(s:project_debug_directory . '/tags')
+    if t < 0
+        let debug_tags_time = "doesn't exist"
+    else
+        let debug_tags_time = strftime("%Y %B %d %X", t)
+    endif
+
+    " print the basic project information
+    echo 'project'
+    echo '    name           ' . s:project_name
+    echo '    directory      ' . s:project_directory
+    echo '    source         ' . s:source_directory
+    echo '    current build  ' . s:build_type
+
+    " print information related to a release build
+    echo 'release build'
+    echo '    directory      ' . s:project_release_directory
+    echo '    tags file      ' . s:project_release_directory . '/tags'
+    echo '    tags generated ' . release_tags_time
+
+    " print information related to a debug build
+    echo 'debug build'
+    echo '    directory      ' . s:project_debug_directory
+    echo '    tags file      ' . s:project_debug_directory . '/tags'
+    echo '    tags generated ' . debug_tags_time
 endfunction
 
 
@@ -169,6 +197,9 @@ command BuildDebug :call s:set_build_type('debug')
 command BuildInformation :call s:build_information()
 command BuildRelease :call s:set_build_type('release')
 command Retag :call s:regenerate_tags()
+
+" default to a debug build
+BuildDebug
 
 
 "--------------------------------------------------------------------------------------------------
