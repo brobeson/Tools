@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to C++ development.
-" Last Change:  2017 February 9
+" Last Change:  2017 July 29
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " I don't check if this file is already loaded. I found that if I do, then the
@@ -15,6 +15,9 @@ let b:loaded_cpp_tools = 1
 
 " :help ft-c-syntax
 let c_space_errors = 1
+
+" :help cinoptions
+set cinoptions+=g0
 
 " the comment/uncomment plug-in
 if !exists('*Comment') || !exists('*Uncomment')
