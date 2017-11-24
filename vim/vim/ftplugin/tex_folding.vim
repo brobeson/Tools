@@ -1,5 +1,5 @@
 " Vim plug-in to add a LaTeX code folding
-" Last Change:  2016 January 19
+" Last Change:  2017 November 24
 " Maintainer:   Brendan Robeson (https://github.com/brobeson/Tools)
 
 let tex_fold_enabled = 1    " :help tex-folding
@@ -53,5 +53,6 @@ endif
 " function to generate the fold text, and make the fill character a space
 setlocal foldenable
 setlocal foldmethod=marker
+setlocal foldmarker=start_fold_,end_fold
 setlocal foldtext=LatexFoldText()
 
