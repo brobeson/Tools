@@ -1,5 +1,5 @@
 " Vim plug-in to add a LaTeX code folding
-" Last Change:  2017 November 24
+" Last Change:  2017 November 25
 " Maintainer:   Brendan Robeson (https://github.com/brobeson/Tools)
 
 let tex_fold_enabled = 1    " :help tex-folding
@@ -13,7 +13,7 @@ if !exists('*LatexFoldText')
         " if the first line is a comment, then just use the comment text
         if -1 != match(first_line, '^\s*%.\+' . marker_text, '', '')
             let fold_text = substitute(first_line, '%\s*', '', '')
-            let fold_text = substitute(fold_text, marker_text, '', '')
+            let fold_text = substitute(fold_text, marker_text . '.*$', '', '')
             let fold_text .= '...'
 
         " if the first line is not a comment, get the line which starts a LaTeX
