@@ -2,7 +2,7 @@
 " Program:      CMake - Cross-Platform Makefile Generator
 " Language:     CMake
 " Author:       Brendan Robeson (https://github.com/brobeson/Tools)
-" Last Change:  2016 February 19
+" Last Change:  2019 January 8
 
 if exists("b:current_syntax")
    finish
@@ -36,6 +36,7 @@ syntax region cmakeRegistry start=/\[/ end=/]/ contained oneline
 syntax keyword cmakeType    BOOL FILEPATH INTERNAL PATH STATIC STRING UNINITIALIZED contained
 
 syntax region cmakeVariableReference start=/$\(ENV\|CACHE\)\?{/ end=/}/ oneline contained
+syntax region cmakeVariableReference start=/@/ end=/@/ oneline
 
 " these are the variables built in to CMake.
 
@@ -55,7 +56,7 @@ syntax match cmakeVariable  /CMAKE_XCODE_ATTRIBUTE_\i\+/ contained
 " variables with <LANG> in them
 syntax match cmakeVariable  /CMAKE_\i\+_\(ARCHIVE_\(APPEND\|CREATE\|FINISH\)\)/ contained
 syntax match cmakeVariable  /CMAKE_\i\+_COMPILE_OBJECT/ contained
-syntax match cmakeVariable  /CMAKE_\i\+_COMPILER\(_\(ABI\|EXTERNAL_TOOLCHAIN\|ID\|LOADED\|TARGET\|VERSION\)\)\?/ contained
+syntax match cmakeVariable  /CMAKE_\i\+_COMPILER\(_\(ABI\|ARCHITECTURE_ID\|EXTERNAL_TOOLCHAIN\|ID\|LOADED\|TARGET\|VERSION\)\)\?/ contained
 syntax match cmakeVariable  /CMAKE_\i\+_CREATE_\(SHARED_\(LIBRARY\|MODULE\)\|STATIC_LIBRARY\)/ contained
 syntax match cmakeVariable  /CMAKE_\i\+_FLAGS\(_DEBUG\|_MINSIZEREL\|_RELEASE\|_RELWITHDEBINFO\)\?/ contained
 syntax match cmakeVariable  /CMAKE_\i\+_IGNORE_EXTENSIONS/ contained
@@ -302,10 +303,23 @@ syntax keyword cmakeVariable   APPLE
                            \   CMAKE_XCODE_PLATFORM_TOOLSET
                            \   CPACK_ABSOLUTE_DESTINATION_FILES
                            \   CPACK_COMPONENT_INCLUDE_TOPLEVEL_DIRECTORY
+                           \   CPACK_DEBIAN_FILE_NAME
+                           \   CPACK_DEBIAN_PACKAGE_HOMEPAGE
                            \   CPACK_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION
+                           \   CPACK_GENERATOR
                            \   CPACK_INCLUDE_TOPLEVEL_DIRECTORY
                            \   CPACK_INSTALL_SCRIPT
+                           \   CPACK_MONOLITHIC_INSTALL
+                           \   CPACK_PACKAGE_CHECKSUM
+                           \   CPACK_PACKAGE_CONTACT
+                           \   CPACK_PACKAGE_DESCRIPTION_FILE
+                           \   CPACK_PACKAGE_FILE_NAME
+                           \   CPACK_PACKAGE_INSTALL_DIRECTORY
+                           \   CPACK_PACKAGE_NAME
+                           \   CPACK_PACKAGE_VENDOR
                            \   CPACK_PACKAGING_INSTALL_PREFIX
+                           \   CPACK_RESOURCE_FILE_LICENSE
+                           \   CPACK_RESOURCE_FILE_README
                            \   CPACK_SET_DESTDIR
                            \   CPACK_WARN_ON_ABSOLUTE_INSTALL_DESTINATION
                            \   CTEST_BINARY_DIRECTORY
@@ -372,6 +386,7 @@ syntax keyword cmakeVariable   APPLE
                            \   MSVC90
                            \   MSVC_IDE
                            \   MSVC_VERSION
+                           \   PACKAGE_INIT
                            \   PROJECT_BINARY_DIR
                            \   PROJECT_NAME
                            \   PROJECT_SOURCE_DIR
@@ -401,12 +416,14 @@ syntax keyword  cmakeConstant   AVAILABLE_PHYSICAL_MEMORY
                             \   Configure
                             \   Coverage
                             \   CRLF
+                            \   DEFAULT_MSG
                             \   DOS
                             \   ExtraFiles
                             \   FIXED
                             \   FQDN
                             \   FREE
                             \   HOSTNAME
+                            \   IS_64BIT
                             \   LF
                             \   MemCheck
                             \   NEW
@@ -445,6 +462,8 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   BEFORE
                         \   BRIEF_DOCS
                         \   BUILD
+                        \   BUILD_COMMAND
+                        \   BUILD_IN_SOURCE
                         \   BUNDLE
                         \   BYPRODUCTS
                         \   CACHE
@@ -458,6 +477,7 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   COMMAND
                         \   COMMENT
                         \   COMPARE
+                        \   COMPATIBILITY 
                         \   COMPILE_DEFINITIONS
                         \   COMPILE_RESULT_VAR
                         \   COMPILE_OUTPUT_VARIABLE
@@ -470,6 +490,7 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   CONFIGURATION
                         \   CONFIGURATIONS
                         \   CONFIGURE
+                        \   CONFIGURE_COMMAND
                         \   CONTENT
                         \   COPY
                         \   COPY_FILE
@@ -480,11 +501,13 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   DEFINITION
                         \   DEPENDS
                         \   DEPRECATION
+                        \   DESCRIPTION
                         \   DESTINATION
                         \   DIRECTORY
                         \   DIRECTORY_PERMISSIONS
                         \   DOC
                         \   DOWNLOAD
+                        \   DOWNLOAD_COMMAND
                         \   ENCODING
                         \   END
                         \   ENV
@@ -511,6 +534,7 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   FILE_PERMISSIONS
                         \   FILES
                         \   FILES_MATCHING
+                        \   FILTER
                         \   FIND
                         \   FOLLOW_SYMLINKS
                         \   FORCE
@@ -542,6 +566,8 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   INPUT_FILE
                         \   INSERT
                         \   INSTALL
+                        \   INSTALL_COMMAND
+                        \   INSTALL_DESTINATION 
                         \   INTERFACE
                         \   IS_ABSOLUTE
                         \   IS_DIRECTORY
@@ -563,6 +589,7 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   LINK_LIBRARIES
                         \   LINK_PRIVATE
                         \   LINK_PUBLIC
+                        \   LIST_DIRECTORIES
                         \   LISTS
                         \   LOCK
                         \   LOG
@@ -586,6 +613,7 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   NEW_PROCESS
                         \   NEWLINE_CONSUME
                         \   NEWLINE_STYLE
+                        \   NO_CHECK_REQUIRED_COMPONENTS_MACRO
                         \   NO_CMAKE_BUILDS_PATH
                         \   NO_CMAKE_ENVIRONMENT_PATH
                         \   NO_CMAKE_FIND_ROOT_PATH
@@ -597,6 +625,7 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   NO_HEX_CONVERSION
                         \   NO_MODULE
                         \   NO_POLICY_SCOPE
+                        \   NO_SET_AND_CHECK_MACRO
                         \   NO_SOURCE_PERMISSIONS
                         \   NO_SYSTEM_ENVIRONMENT_PATH
                         \   NOT
@@ -623,6 +652,7 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   PATH
                         \   PATHS
                         \   PATH_SUFFIXES
+                        \   PATH_VARS
                         \   PATTERN
                         \   PERMISSIONS
                         \   PLATFORM
@@ -688,6 +718,7 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   SHOW_PROGRESS
                         \   SORT
                         \   SOURCE
+                        \   SOURCE_DIR
                         \   SOURCES
                         \   START
                         \   STATIC
@@ -782,8 +813,10 @@ syntax keyword cmakeCommand add_compile_options
                         \   build_command
                         \   cmake_host_system_information
                         \   cmake_minimum_required
+                        \   cmake_parse_arguments
                         \   cmake_policy
                         \   configure_file
+                        \   configure_package_config_file
                         \   continue
                         \   create_test_sourcelist
                         \   define_property
@@ -798,10 +831,13 @@ syntax keyword cmakeCommand add_compile_options
                         \   endwhile
                         \   execute_process
                         \   export
+                        \   ExternalProject_Add
+                        \   ExternalProject_Get_Property
                         \   file
                         \   find_file
                         \   find_library
                         \   find_package
+                        \   find_package_handle_standard_args
                         \   find_path
                         \   find_program
                         \   fltk_wrap_ui
@@ -837,6 +873,7 @@ syntax keyword cmakeCommand add_compile_options
                         \   return
                         \   separate_arguments
                         \   set
+                        \   set_and_check
                         \   set_directory_properties
                         \   set_property
                         \   set_source_files_properties
@@ -856,6 +893,7 @@ syntax keyword cmakeCommand add_compile_options
                         \   unset
                         \   variable_watch
                         \   while
+                        \   write_basic_package_version_file
 syntax case match
 " }}}
 
