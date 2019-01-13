@@ -1,5 +1,5 @@
 " Vim plug-in to set the fold text of Python code
-" Last Change:  2018 September 28
+" Last Change:  2018 October 1
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " I don't check if this file is already loaded. I found that if I do, then the
@@ -29,4 +29,4 @@ endif
 setlocal foldenable
 setlocal foldmethod=indent
 setlocal foldtext=PythonFoldText()
-
+setlocal foldignore=
