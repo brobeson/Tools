@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to LaTeX development.
-" Last Change:  2017 November 29
+" Last Change:  2019 January 13
 " Maintainer:   Brendan Robeson (https://github.com/brobeson/Tools)
 
 " check if this plug-in (or one with the same name) has already been loaded
@@ -31,5 +31,3 @@ else
     endif
     noremap  <buffer> <unique> <script> <Plug>LatexUncomment :call Uncomment('%')<CR>
 endif
-
-setlocal makeprg=pdflatex\ -file-line-error\ -halt-on-error\ $*\ &&\ bibtex\ -min-crossrefs=0\ $*\ &&\ pdflatex\ -file-line-error\ -halt-on-error\ $*

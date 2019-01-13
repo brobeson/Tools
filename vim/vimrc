@@ -51,9 +51,9 @@ set titlestring=%F
 set spellcapcheck=
 
 " set all tabbing to 4 characters wide and convert tabs to spaces
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 set expandtab
 
 " ensure file type functionality is on

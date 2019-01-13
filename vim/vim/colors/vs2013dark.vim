@@ -1,6 +1,6 @@
 " Vim color file
 " Maintainer:   Brendan Robeson <github.com/brobeson/Tools>
-" Last Change:  2016 December 22
+" Last Change:  2019 January 13
 " License:      Public Domain
 "
 " This color file is based on Visual Studio 2013's C++ highlighting for
@@ -96,7 +96,7 @@ highlight Statement    cterm=bold  ctermfg=darkcyan                     gui=none
 "Label         /
 "Operator     /
 "Repeat      /
-highlight Todo         cterm=none  ctermfg=black       ctermbg=darkcyan gui=none       guifg=#57a64a    guibg=bg
+highlight Todo         cterm=underline ctermfg=darkgreen ctermbg=bg     gui=underline  guifg=#386b30    guibg=bg
 highlight Type         cterm=none  ctermfg=white                        gui=none       guifg=#569cd6
 highlight StorageClass cterm=none  ctermfg=white                        gui=none       guifg=#569cd6
 highlight Structure    cterm=none  ctermfg=cyan                         gui=none       guifg=#4ec9b3

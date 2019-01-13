@@ -2,7 +2,7 @@
 " Program:      CMake - Cross-Platform Makefile Generator
 " Language:     CMake
 " Author:       Brendan Robeson (https://github.com/brobeson/Tools)
-" Last Change:  2019 January 8
+" Last Change:  2019 January 13
 
 if exists("b:current_syntax")
    finish
@@ -19,7 +19,7 @@ syntax case match
 
 " an argument list for commands. most everything in CMake needs to be in the
 " argument list
-syntax region cmakeArgumentList start=/(/ end=/)/ transparent contains=ALL,@Spell,cmakeCommand,cmakeDeprecated,cmakeFormat,ctestCommand
+syntax region cmakeArgumentList start=/(/ end=/)/ transparent fold contains=ALL,@Spell,cmakeCommand,cmakeDeprecated,cmakeFormat,ctestCommand
 
 " strings, and format specifiers for string(TIMESTAMP ...)
 syntax region cmakeString start=/"/ skip=/\\"/ end=/"/ contained contains=cmakeFloat,cmakeFormat,cmakeInteger,cmakeRegistry,cmakeVariableReference,cmakeVersion
@@ -553,6 +553,7 @@ syntax keyword cmakeOption  ABSOLUTE
                         \   GUID
                         \   HEX
                         \   HINTS
+                        \   HOMEPAGE_URL 
                         \   IMPLICIT_DEPENDS
                         \   IMPORTED
                         \   IN
