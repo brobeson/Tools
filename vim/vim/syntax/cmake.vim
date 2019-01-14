@@ -2,7 +2,7 @@
 " Program:      CMake - Cross-Platform Makefile Generator
 " Language:     CMake
 " Author:       Brendan Robeson (https://github.com/brobeson/Tools)
-" Last Change:  2019 January 13
+" Last Change:  2019 January 14
 
 if exists("b:current_syntax")
    finish
@@ -13,7 +13,7 @@ set cpo&vim
 " comments {{{
 syntax case ignore
 syntax keyword cmakeTodo BUG FIXME HACK TODO XXX contained
-syntax region cmakeComment start="#"end="$" contains=@Spell,cmakeTodo
+syntax region cmakeComment start="#" end="$" contains=@Spell,cmakeTodo
 syntax case match
 " }}}
 
