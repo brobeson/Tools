@@ -1,6 +1,6 @@
 " Vim profile
 " Author:       Brendan Robeson
-" Last Change:  2019 January 13
+" Last Change:  2019 March 10
 " URL:          https://github.com/brobeson/Tools
 "
 " [1]           Some functions are from http://peterodding.com/code/vim/profile/vimrc
@@ -139,3 +139,4 @@ endfunction
 " found at home.
 runtime work_env.vim
 
+let python_auto_lint = 1
