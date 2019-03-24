@@ -28,5 +28,9 @@ endif
 
 setlocal makeprg=pylint\ --reports=n\ --output-format=parseable\ %:p
 if exists('python_auto_lint')
-  autocmd BufWritePost,FileWritePost <buffer> silent execute '!black %:p' | normal zv | make | cwin
+  autocmd BufWritePost,FileWritePost <buffer> execute '!black %:p'
+  autocmd BufWritePost,FileWritePost <buffer> normal zv 
+  autocmd BufWritePost,FileWritePost <buffer> make
+  autocmd QuickFixCmdPost [^l]* nested cwindow
+  autocmd QuickFixCmdPost l* nested lwindow
 endif
