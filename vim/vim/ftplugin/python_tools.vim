@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to Python development.
-" Last Change:  2019 March 10
+" Last Change:  2019 March 24
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " check if this plug-in (or one with the same name) has already been loaded
@@ -27,7 +27,6 @@ endif
 "}}}
 
 setlocal makeprg=pylint\ --reports=n\ --output-format=parseable\ %:p
-
 if exists('python_auto_lint')
-  autocmd BufWritePost,FileWritePost <buffer> silent execute '!black %:p' | silent ed | make | cwin
+  autocmd BufWritePost,FileWritePost <buffer> silent execute '!black %:p' | normal zv | make | cwin
 endif
