@@ -2,7 +2,7 @@
 " Program:      CMake - Cross-Platform Makefile Generator
 " Language:     CMake
 " Author:       Brendan Robeson (https://github.com/brobeson/Tools)
-" Last Change:  2019 January 14
+" Last Change:  2019 March 21
 
 if exists("b:current_syntax")
    finish
@@ -59,8 +59,10 @@ syntax match cmakeVariable /CMAKE_XCODE_ATTRIBUTE_\i\+/ contained
 
 " variables with <LANG> in them
 syntax match cmakeVariable /CMAKE_\i\+_\(ARCHIVE_\(APPEND\|CREATE\|FINISH\)\)/ contained
+syntax match cmakeVariable /CMAKE_\i\+_CLANG_TIDY/ contained
 syntax match cmakeVariable /CMAKE_\i\+_COMPILE_OBJECT/ contained
-syntax match cmakeVariable /CMAKE_\i\+_COMPILER\(_\(ABI\|ARCHITECTURE_ID\|EXTERNAL_TOOLCHAIN\|ID\|LOADED\|TARGET\|VERSION\)\)\?/ contained
+syntax match cmakeVariable /CMAKE_\i\+_COMPILER\(_\(ABI\|ARCHITECTURE_ID\|EXTERNAL_TOOLCHAIN\|ID\|LAUNCHER\|LOADED\|TARGET\|VERSION\)\)\?/ contained
+syntax match cmakeVariable /CMAKE_\i\+_CPPCHECK/ contained
 syntax match cmakeVariable /CMAKE_\i\+_CREATE_\(SHARED_\(LIBRARY\|MODULE\)\|STATIC_LIBRARY\)/ contained
 syntax match cmakeVariable /CMAKE_\i\+_FLAGS\(_DEBUG\|_MINSIZEREL\|_RELEASE\|_RELWITHDEBINFO\)\?/ contained
 syntax match cmakeVariable /CMAKE_\i\+_IGNORE_EXTENSIONS/ contained
@@ -749,6 +751,7 @@ syntax keyword cmakeOption ABSOLUTE
       \ TOLOWER
       \ TOUPPER
       \ TRACK
+      \ TRANSFORM
       \ TYPE
       \ UNIX_COMMAND
       \ UNKNOWN
@@ -859,6 +862,7 @@ syntax keyword cmakeCommand add_compile_options
       \ include
       \ include_directories
       \ include_external_msproject
+      \ include_guard
       \ include_regular_expression
       \ install
       \ link_directories
@@ -872,6 +876,7 @@ syntax keyword cmakeCommand add_compile_options
       \ message
       \ option
       \ project
+      \ protobuf_generate_cpp
       \ qt_wrap_cpp
       \ qt_wrap_ui
       \ remove_definitions
