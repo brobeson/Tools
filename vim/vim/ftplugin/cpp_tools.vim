@@ -82,16 +82,30 @@ if !hasmapto('<Plug>Formatter')
 endif
 noremap <buffer> <unique> <script> <Plug>Format :call CppRunFormatter()<CR>
 
+" A function and map to run Cppcheck on the current file.
+function! CppRunCppcheck()
+  if &diff == 0
+    let original_makeprg = &makeprg
+    set makeprg=cppcheck\ --enable=warning\ --enable=style\ --error-exitcode=1\ --inline-suppr\ %:p
+    make
+    let &makeprg = original_makeprg
+  endif
+endfunction
+if !hasmapto('<Plug>Cppcheck')
+  map <buffer> <unique> <Leader>l <Plug>Cppcheck
+endif
+noremap <buffer> <unique> <script> <Plug>Cppcheck :call CppRunCppcheck()<CR>
+
 "      "call system('lizard --CCN 10 --arguments 4 --warnings_only --modified ' . shellescape(expand('%:p')))
 "      "execute '!lizard --CCN 10 --arguments 4 --warnings_only --modified %:p'
 "      cexpr '!lizard --CCN 10 --arguments 4 --warnings_only --modified %:p'
-"      "execute '!cppcheck --enable=warning --enable=style --enable=information --error-exitcode=1 --inline-suppr %:p'
 "    endif
 "  endfunction
 "endif
 
 " On write, run formatting, linters, etc. 'edit!' is required after the
 " formatter; apparently, autoread doesn't work in this specific case.
-autocmd BufWritePost,FileWritePost <buffer> call CppRunFormatter() | edit!
-"autocmd BufWritePost,FileWritePost <buffer> execute '!cppcheck --enable=warning --enable=style --inline-suppr %:p'
+autocmd BufWritePost,FileWritePost <buffer> call CppRunFormatter() 
+  \ | edit!
+  \ | call CppRunCppcheck()
 "autocmd BufWritePost,FileWritePost <buffer> execute '!clang-tidy -fix -fix-errors -format-style=file %:p'
