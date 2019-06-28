@@ -26,25 +26,35 @@ else
 endif
 "}}}
 
-setlocal makeprg=pylint\ --reports=n\ --output-format=parseable\ %:p
-if &diff
-  "autocmd BufWritePost,FileWritePost <buffer> execute '!black %:p'
-  "autocmd BufWritePost,FileWritePost <buffer> normal zv 
-  autocmd BufWritePost,FileWritePost <buffer> make
-  autocmd QuickFixCmdPost [^l]* nested cwindow
-  autocmd QuickFixCmdPost l* nested lwindow
-endif
-
 setlocal colorcolumn=81
 
-" A function, command, and map to run Black on the current file. Black is a
-" formatting tool for Python files.
+" A function and map to run Black on the current file. Black is a formatting
+" tool for Python files.
 function! PythonRunFormatter()
   if &diff == 0
     execute '!black %:p'
   endif
 endfunction
-if !hasmapto('<Plug>PythonRunFormatter')
+if !hasmapto('<Plug>Formatter')
   map <buffer> <unique> <Leader>f <Plug>Format
 endif
 noremap <buffer> <unique> <script> <Plug>Format :call PythonRunFormatter()<CR>
+
+" A function and map to run Python lint tools on the current file.
+compiler pylint
+function! PythonRunLinters()
+  if &diff == 0
+    make %:p
+  endif
+endfunction
+if !hasmapto('<Plug>Lint')
+  map <buffer> <unique> <Leader>l <Plug>Lint
+endif
+noremap <buffer> <unique> <script> <Plug>Lint :call PythonRunLinters()<CR>
+
+" On write, run linters.
+" TODO After finishing PhD research, run formatting on write.
+"autocmd BufWritePost,FileWritePost <buffer> call PythonRunFormatter()
+autocmd BufWritePost,FileWritePost <buffer> call PythonRunLinters()
+autocmd QuickFixCmdPost [^l]* nested cwindow
+autocmd QuickFixCmdPost l* nested lwindow
