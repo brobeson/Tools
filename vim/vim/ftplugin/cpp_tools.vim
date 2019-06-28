@@ -92,20 +92,27 @@ function! CppRunCppcheck()
   endif
 endfunction
 if !hasmapto('<Plug>Cppcheck')
-  map <buffer> <unique> <Leader>l <Plug>Cppcheck
+  map <buffer> <unique> <Leader>C <Plug>Cppcheck
 endif
 noremap <buffer> <unique> <script> <Plug>Cppcheck :call CppRunCppcheck()<CR>
 
-"      "call system('lizard --CCN 10 --arguments 4 --warnings_only --modified ' . shellescape(expand('%:p')))
-"      "execute '!lizard --CCN 10 --arguments 4 --warnings_only --modified %:p'
-"      cexpr '!lizard --CCN 10 --arguments 4 --warnings_only --modified %:p'
-"    endif
-"  endfunction
-"endif
+" A function and map to run Lizard on the current file.
+function! CppRunLizard()
+  if &diff == 0
+    let original_makeprg = &makeprg
+    set makeprg=lizard\ --CCN\ 10\ --arguments\ 4\ --warnings_only\ --modified\ %:p
+    make
+    let &makeprg = original_makeprg
+  endif
+endfunction
+if !hasmapto('<Plug>Cppcheck')
+  map <buffer> <unique> <Leader>l <Plug>Lizard
+endif
+noremap <buffer> <unique> <script> <Plug>Lizard :call CppRunLizard()<CR>
 
 " On write, run formatting, linters, etc. 'edit!' is required after the
 " formatter; apparently, autoread doesn't work in this specific case.
 autocmd BufWritePost,FileWritePost <buffer> call CppRunFormatter() 
   \ | edit!
   \ | call CppRunCppcheck()
-"autocmd BufWritePost,FileWritePost <buffer> execute '!clang-tidy -fix -fix-errors -format-style=file %:p'
+  \ | call CppRunLizard()
