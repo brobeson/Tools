@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to C++ development.
-" Last Change:  2017 July 29
+" Last Change:  2019 June 28
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " I don't check if this file is already loaded. I found that if I do, then the
@@ -71,4 +71,27 @@ if !hasmapto('<Plug>CppWordUncomment')
 endif
 noremap <buffer> <unique> <script> <Plug>WordUncomment :call WordUncomment()<CR>
 
+" A function and map to run Clang-Format on the current file.
+function! CppRunFormatter()
+  if &diff == 0
+    execute '!clang-format -i -style=file %:p'
+  endif
+endfunction
+if !hasmapto('<Plug>Formatter')
+  map <buffer> <unique> <Leader>f <Plug>Format
+endif
+noremap <buffer> <unique> <script> <Plug>Format :call CppRunFormatter()<CR>
 
+"      "call system('lizard --CCN 10 --arguments 4 --warnings_only --modified ' . shellescape(expand('%:p')))
+"      "execute '!lizard --CCN 10 --arguments 4 --warnings_only --modified %:p'
+"      cexpr '!lizard --CCN 10 --arguments 4 --warnings_only --modified %:p'
+"      "execute '!cppcheck --enable=warning --enable=style --enable=information --error-exitcode=1 --inline-suppr %:p'
+"    endif
+"  endfunction
+"endif
+
+" On write, run formatting, linters, etc. 'edit!' is required after the
+" formatter; apparently, autoread doesn't work in this specific case.
+autocmd BufWritePost,FileWritePost <buffer> call CppRunFormatter() | edit!
+"autocmd BufWritePost,FileWritePost <buffer> execute '!cppcheck --enable=warning --enable=style --inline-suppr %:p'
+"autocmd BufWritePost,FileWritePost <buffer> execute '!clang-tidy -fix -fix-errors -format-style=file %:p'
