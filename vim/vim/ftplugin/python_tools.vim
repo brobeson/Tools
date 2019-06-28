@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to Python development.
-" Last Change:  2019 March 24
+" Last Change:  2019 June 28
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " check if this plug-in (or one with the same name) has already been loaded
@@ -27,10 +27,24 @@ endif
 "}}}
 
 setlocal makeprg=pylint\ --reports=n\ --output-format=parseable\ %:p
-if exists('python_auto_lint')
-  autocmd BufWritePost,FileWritePost <buffer> execute '!black %:p'
-  autocmd BufWritePost,FileWritePost <buffer> normal zv 
+if &diff
+  "autocmd BufWritePost,FileWritePost <buffer> execute '!black %:p'
+  "autocmd BufWritePost,FileWritePost <buffer> normal zv 
   autocmd BufWritePost,FileWritePost <buffer> make
   autocmd QuickFixCmdPost [^l]* nested cwindow
   autocmd QuickFixCmdPost l* nested lwindow
 endif
+
+setlocal colorcolumn=81
+
+" A function, command, and map to run Black on the current file. Black is a
+" formatting tool for Python files.
+function! PythonRunFormatter()
+  if &diff == 0
+    execute '!black %:p'
+  endif
+endfunction
+if !hasmapto('<Plug>PythonRunFormatter')
+  map <buffer> <unique> <Leader>f <Plug>Format
+endif
+noremap <buffer> <unique> <script> <Plug>Format :call PythonRunFormatter()<CR>
