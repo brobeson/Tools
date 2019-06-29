@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:     C++ Guideline Support Library
 " Maintainer:   brobeson (http://github.com/brobeson/Tools)
-" Last Change:  2018 July 19
+" Last Change:  2019 June 6
 "
 " TODO
 " gsl_assert - macros
@@ -109,7 +109,7 @@ highlight default link gslEnumerator  Constant
 highlight default link gslError         Error
 highlight default link gslFunction    Function
 highlight default link gslMacroConst  Macro
-highlight default link gslMacroFunc   Macro
+highlight default link gslMacroFunction   Macro
 highlight default link gslMember      gslVariable
 highlight default link gslMethod      Function
 highlight default link gslNamespace   Structure
