@@ -2,7 +2,7 @@
 " Program:      CMake - Cross-Platform Makefile Generator
 " Language:     CMake
 " Author:       Brendan Robeson (https://github.com/brobeson/Tools)
-" Last Change:  2019 March 21
+" Last Change:  2019 April 17
 
 if exists("b:current_syntax")
    finish
@@ -422,6 +422,7 @@ syntax keyword cmakeConstant AVAILABLE_PHYSICAL_MEMORY
       \ Configure
       \ Coverage
       \ CRLF
+      \ CXX
       \ DEFAULT_MSG
       \ DOS
       \ ExtraFiles
@@ -555,6 +556,7 @@ syntax keyword cmakeOption ABSOLUTE
       \ GLOB_RECURSE
       \ GLOBAL
       \ GREATER
+      \ GREATER_EQUAL
       \ GUARD
       \ GUID
       \ HEX
@@ -587,6 +589,7 @@ syntax keyword cmakeOption ABSOLUTE
       \ LENGTH_MAXIMUM
       \ LENGTH_MINIMUM
       \ LESS
+      \ LESS_EQUAL
       \ LIBRARY
       \ LIMIT
       \ LIMIT_COUNT
