@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to C++ development.
-" Last Change:  2019 June 28
+" Last Change:  2019 June 30
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 if exists('b:loaded_cpp_tools')
@@ -68,7 +68,7 @@ noremap <buffer> <unique> <script> <Plug>Format :call CppRunFormatter()<CR>
 function! CppRunCppcheck()
   if &diff == 0
     let original_makeprg = &makeprg
-    set makeprg=cppcheck\ --enable=warning\ --enable=style\ --error-exitcode=1\ --inline-suppr\ %:p
+    set makeprg=cppcheck\ --enable=warning\ --enable=style\ --error-exitcode=1\ --inline-suppr\ --language=c++\ %:p
     make
     let &makeprg = original_makeprg
   endif
@@ -94,9 +94,11 @@ noremap <buffer> <unique> <script> <Plug>Lizard :call CppRunLizard()<CR>
 
 " On write, run formatting, linters, etc. 'edit!' is required after the
 " formatter; apparently, autoread doesn't work in this specific case.
-autocmd BufWritePost,FileWritePost <buffer> call CppRunFormatter() 
-  \ | edit!
-  \ | call CppRunCppcheck()
-  \ | call CppRunLizard()
-autocmd QuickFixCmdPost [^l]* nested cwindow
-autocmd QuickFixCmdPost l* nested lwindow
+augroup LintChecks
+  autocmd BufWritePost,FileWritePost <buffer> call CppRunFormatter() 
+    \ | edit!
+    \ | call CppRunCppcheck()
+    \ | call CppRunLizard()
+  autocmd QuickFixCmdPost [^l]* nested cwindow
+  autocmd QuickFixCmdPost l* nested lwindow
+augroup end
