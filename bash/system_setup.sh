@@ -1,18 +1,5 @@
 #!/bin/bash
 
-if [[ $# != 1 ]]
-then
-    &>2 echo "are you setting up a server or a workstation?"
-    exit 1
-fi
-
-system_type=$1
-if [[ ${system_type} != "server" && ${system_type} != "workstation" ]]
-then
-    &>2 echo "${system_type} is not a server or a workstation?"
-    exit 1
-fi
-    
 # append to my bashrc {{{
 # add a comment to the bashrc
 printf "\n# here be my additions...\n" >> ~/.bashrc
@@ -34,30 +21,25 @@ printf "export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locu
 # }}}
 
 # install packages {{{
-sudo apt-get install -y cifs-utils
-sudo apt-get install -y git
-sudo apt-get install -y graphviz
-sudo apt-get install -y vim-gtk
-sudo apt-get install -y vlc
-sudo apt-get install -y yakuake
-if [[ ${system_type} == "workstation" ]]
-then
-    sudo apt-get install -y cmake
-    sudo apt-get install -y cmake-curses-gui
-    sudo apt-get install -y cppcheck
-    sudo apt-get install -y darktable
-    sudo apt-get install -y doxygen
-    sudo apt-get install -y exuberant-ctags
-    sudo apt-get install -y inkscape
-    sudo apt-get install -y lcov
-    sudo apt-get install -y plantuml
-    sudo apt-get install -y qtcreator
-    sudo apt-get install -y texlive-full
-
-    # lizard needs python-pip, then pip can be run to install lizard
-    sudo apt-get install -y python-pip
-    sudo pip install lizard
-fi
+sudo apt-get install -y \
+  cifs-utils \
+  cmake \
+  cmake-curses-gui \
+  cppcheck \
+  darktable \
+  doxygen \
+  exuberant-ctags \
+  git \
+  graphviz \
+  inkscape \
+  lcov \
+  plantuml \
+  texlive-full \
+  vim-gtk \
+  vlc \
+  yakuake \
+  python-pip
+sudo pip install lizard
 # }}}
 
 # configure git {{{
