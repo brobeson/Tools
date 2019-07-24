@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to Python development.
-" Last Change:  2019 June 28
+" Last Change:  2019 July 18
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " check if this plug-in (or one with the same name) has already been loaded
@@ -53,8 +53,11 @@ endif
 noremap <buffer> <unique> <script> <Plug>Lint :call PythonRunLinters()<CR>
 
 " On write, run linters.
-" TODO After finishing PhD research, run formatting on write.
-"autocmd BufWritePost,FileWritePost <buffer> call PythonRunFormatter()
-autocmd BufWritePost,FileWritePost <buffer> call PythonRunLinters()
-autocmd QuickFixCmdPost [^l]* nested cwindow
-autocmd QuickFixCmdPost l* nested lwindow
+augroup PythonLintChecks
+  " TODO After finishing PhD research, run formatting on write.
+  "autocmd BufWritePost,FileWritePost <buffer> call PythonRunFormatter()
+  "  \ | call PythonRunLinters()
+  autocmd BufWritePost,FileWritePost <buffer> call PythonRunLinters()
+  autocmd QuickFixCmdPost [^l]* nested cwindow
+  autocmd QuickFixCmdPost l* nested lwindow
+augroup end

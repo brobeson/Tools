@@ -6,6 +6,9 @@ highlight default link cppError Error
 syntax keyword cppPrettyFunc __PRETTY_FUNCTION__
 highlight default link cppPrettyFunc Macro
 
+" highlight C++20 keywords not yet shipped with Vim
+syn keyword cppStatement concept requires
+
 " override some highlight linking
 highlight! default link cStructure   Statement
 highlight! default link cppStructure Statement

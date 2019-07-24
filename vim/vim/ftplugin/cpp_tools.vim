@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to C++ development.
-" Last Change:  2019 June 30
+" Last Change:  2019 July 24
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 if exists('b:loaded_cpp_tools')
@@ -11,7 +11,8 @@ let b:loaded_cpp_tools = 1
 let c_space_errors = 1
 
 " :help cinoptions
-set cinoptions+=g0
+setlocal cinoptions+=g0
+setlocal colorcolumn=81
 
 " Set up key mappings to comment and uncomment lines of code.
 if !exists('*Comment') || !exists('*Uncomment')
@@ -68,7 +69,7 @@ noremap <buffer> <unique> <script> <Plug>Format :call CppRunFormatter()<CR>
 function! CppRunCppcheck()
   if &diff == 0
     let original_makeprg = &makeprg
-    set makeprg=cppcheck\ --enable=warning\ --enable=style\ --error-exitcode=1\ --inline-suppr\ --language=c++\ %:p
+    setlocal makeprg=cppcheck\ --template=gcc\ --enable=warning\ --enable=style\ --error-exitcode=1\ --suppress=syntaxError\ --inline-suppr\ --language=c++\ %:p
     make
     let &makeprg = original_makeprg
   endif
@@ -82,8 +83,10 @@ noremap <buffer> <unique> <script> <Plug>Cppcheck :call CppRunCppcheck()<CR>
 function! CppRunLizard()
   if &diff == 0
     let original_makeprg = &makeprg
-    set makeprg=lizard\ --CCN\ 10\ --arguments\ 4\ --warnings_only\ --modified\ %:p
+    setlocal makeprg=lizard\ --CCN\ 10\ --arguments\ 4\ --warnings_only\ --modified\ %:p
+    let qf_list = getqflist()
     make
+    call setqflist(qf_list, 'a')
     let &makeprg = original_makeprg
   endif
 endfunction
@@ -94,11 +97,10 @@ noremap <buffer> <unique> <script> <Plug>Lizard :call CppRunLizard()<CR>
 
 " On write, run formatting, linters, etc. 'edit!' is required after the
 " formatter; apparently, autoread doesn't work in this specific case.
-augroup LintChecks
+augroup CppLintChecks
   autocmd BufWritePost,FileWritePost <buffer> call CppRunFormatter() 
-    \ | edit!
     \ | call CppRunCppcheck()
     \ | call CppRunLizard()
   autocmd QuickFixCmdPost [^l]* nested cwindow
-  autocmd QuickFixCmdPost l* nested lwindow
+  "autocmd QuickFixCmdPost l* nested lwindow
 augroup end
