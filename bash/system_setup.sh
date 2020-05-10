@@ -18,28 +18,46 @@ printf "PS1='\${debian_chroot:+(\$debian_chroot)}\\\n[\\\[\\\e[32m\\\]\\\D{%%Y %
 
 # enable color for gcc output
 printf "export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'" >> ~/.bashrc
+printf "shopt -s globstar" >> ~/.bashrc
 # }}}
 
 # install packages {{{
-sudo apt-get install -y \
+sudo apt-get install --yes \
   cifs-utils \
+  clang-7.0 \
+  clang-8.0 \
+  clang-9.0 \
+  clang-10.0 \
   cmake \
   cmake-curses-gui \
   cppcheck \
   darktable \
   doxygen \
   exuberant-ctags \
+  g++-7 \
+  g++-8 \
+  g++-10 \
   git \
   graphviz \
   inkscape \
-  lcov \
+  libasan5 \
+  libasan6 \
+  libubsan1 \
   plantuml \
   texlive-full \
+  valgrind \
   vim-gtk \
   vlc \
   yakuake \
-  python-pip
-sudo pip install lizard
+  python3-pip
+sudo pip install \
+  black \
+  coverage \
+  gcovr \
+  got10k \
+  lizard \
+  PyYAML \
+  Sphinx
 # }}}
 
 # configure git {{{
