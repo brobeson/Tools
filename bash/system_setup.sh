@@ -24,10 +24,10 @@ printf "shopt -s globstar" >> ~/.bashrc
 # install packages {{{
 sudo apt-get install --yes \
   cifs-utils \
-  clang-7.0 \
-  clang-8.0 \
-  clang-9.0 \
-  clang-10.0 \
+  clang-7 \
+  clang-8 \
+  clang-9 \
+  clang-10 \
   cmake \
   cmake-curses-gui \
   cppcheck \
@@ -50,7 +50,7 @@ sudo apt-get install --yes \
   vlc \
   yakuake \
   python3-pip
-sudo pip install \
+sudo pip3 install \
   black \
   coverage \
   gcovr \
@@ -58,6 +58,26 @@ sudo pip install \
   lizard \
   PyYAML \
   Sphinx
+sudo snap install --classic code
+code --force --install-extension ms-vscode.cpptools
+code --force --install-extension xaver.clang-format
+code --force --install-extension twxs.cmake
+code --force --install-extension ms-vscode.cmake-tools
+code --force --install-extension streetsidesoftware.code-spell-checker
+code --force --install-extension cschlosser.doxdocgen
+code --force --install-extension dbaeumer.vscode-eslint
+code --force --install-extension eamodio.gitlens
+code --force --install-extension pokowaka.pokowaka-iwyu
+code --force --install-extension james-yu.latex-workshop
+code --force --install-extension davidanson.vscode-markdownlint
+code --force --install-extension ibm.output-colorizer
+code --force --install-extension ms-python.python
+code --force --install-extension marvhen.reflow-markdown
+code --force --install-extension lextudio.restructuredtext
+code --force --install-extension gruntfuggly.todo-tree
+code --force --install-extension vscodevim.vim
+code --force --install-extension denniskempin.vscode-include-fixer
+code --force --install-extension notskm.clang-tidy
 # }}}
 
 # configure git {{{
