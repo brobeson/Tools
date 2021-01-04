@@ -59,25 +59,38 @@ sudo pip3 install \
   PyYAML \
   Sphinx
 sudo snap install --classic code
-code --force --install-extension ms-vscode.cpptools
-code --force --install-extension xaver.clang-format
-code --force --install-extension twxs.cmake
-code --force --install-extension ms-vscode.cmake-tools
-code --force --install-extension streetsidesoftware.code-spell-checker
-code --force --install-extension cschlosser.doxdocgen
-code --force --install-extension dbaeumer.vscode-eslint
-code --force --install-extension eamodio.gitlens
-code --force --install-extension pokowaka.pokowaka-iwyu
-code --force --install-extension james-yu.latex-workshop
-code --force --install-extension davidanson.vscode-markdownlint
-code --force --install-extension ibm.output-colorizer
-code --force --install-extension ms-python.python
-code --force --install-extension marvhen.reflow-markdown
-code --force --install-extension lextudio.restructuredtext
-code --force --install-extension gruntfuggly.todo-tree
-code --force --install-extension vscodevim.vim
-code --force --install-extension denniskempin.vscode-include-fixer
-code --force --install-extension notskm.clang-tidy
+
+#code --force --install-extension cschlosser.doxdocgen
+#code --force --install-extension davidanson.vscode-markdownlint
+#code --force --install-extension dbaeumer.vscode-eslint
+#code --force --install-extension denniskempin.vscode-include-fixer
+#code --force --install-extension eamodio.gitlens
+#code --force --install-extension gruntfuggly.todo-tree
+#code --force --install-extension ibm.output-colorizer
+#code --force --install-extension james-yu.latex-workshop
+#code --force --install-extension lextudio.restructuredtext
+#code --force --install-extension marvhen.reflow-markdown
+#code --force --install-extension ms-python.python
+#code --force --install-extension ms-vscode.cmake-tools
+#code --force --install-extension ms-vscode.cpptools
+#code --force --install-extension notskm.clang-tidy
+#code --force --install-extension pokowaka.pokowaka-iwyu
+#code --force --install-extension streetsidesoftware.code-spell-checker
+#code --force --install-extension twxs.cmake
+#code --force --install-extension vscodevim.vim
+#code --force --install-extension xaver.clang-format
+
+code --force --install-extension brunnerh.insert-unicode
+code --force --install-extension cadenas.vscode-glsllint
+code --force --install-extension fizzybreezy.gnuplot
+code --force --install-extension github.vscode-pull-request-github
+code --force --install-extension jebbs.plantuml
+code --force --install-extension mhutchie.git-graph
+code --force --install-extension ms-python.vscode-pylance
+code --force --install-extension njpwerner.autodocstring
+code --force --install-extension slevesque.shader
+code --force --install-extension tonka3000.qtvsctools
+
 # }}}
 
 # configure git {{{
