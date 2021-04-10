@@ -13,6 +13,8 @@ endif
 let s:keepcpo= &cpo
 set cpo&vim
 
+syntax region jp_fold start="{" end="}" transparent fold
+
 " comments {{{
 syntax keyword jp_todo    contained TODO FIXME XXX BUG HACK
 syntax region  jp_comment start="//" skip="\\$" end="$" keepend contains=jp_todo,@Spell
@@ -45,22 +47,30 @@ syntax keyword jp_section agent post stages steps
 syntax keyword jp_directive environment options parameters triggers stage tools input when
 syntax keyword jp_parallel parallel
 
+syntax keyword jp_parameter_options booleanParam
+
 " all the available steps {{{
 syntax keyword jp_block_step
     \   dir
     \   node
     \   script
+    \   warnError
 syntax keyword jp_step
+    \   archive
+    \   archiveArtifacts
     \   bat
+    \   catchError
     \   checkout
     \   cleanWs
     \   deleteDir
     \   echo
     \   error
     \   fileExists
+    \   getContext
     \   isUnix
     \   mail
     \   powershell
+    \   publishCoverage
     \   pwd
     \   readFile
     \   retry
@@ -69,48 +79,67 @@ syntax keyword jp_step
     \   stash
     \   timeout
     \   tool
+    \   unarchive
     \   unstash
     \   waitUntil
+    \   withContext
     \   withEnv
     \   wrap
     \   writeFile
-    \   archive
-    \   catchError
-    \   getContext
-    \   unarchive
-    \   withContext
     \   ws
+    \   xunit
     "\   script
 " }}}
 
 " options {{{
 syntax keyword jp_option
     \   buildDiscarder
+    \   checkoutToSubdirectory
     \   disableConcurrentBuilds
     \   overrideIndexTriggers
+    \   retry
     \   skipDefaultCheckout
     \   skipStagesAfterUnstable
-    \   checkoutToSubdirectory
     \   timeout
-    \   retry
     \   timestamps
 " }}}
 
 " conditions available for the post section
-syntax keyword jp_condition aborted always changed failure success unstable
+syntax keyword jp_condition
+  \ aborted
+  \ always
+  \ changed
+  \ cleanup
+  \ expression
+  \ failure
+  \ return
+  \ success
+  \ unstable
 
 " various step parameters {{{
 syntax keyword jp_parameter
+    \   adapters
     \   any
+    \   catchInterruptions
     \   customWorkspace
+    \   defaultValue
+    \   deleteOutputFiles
+    \   description
     \   docker
     \   dockerfile
+    \   failIfNotNew
     \   label
+    \   message
+    \   name
     \   none
     \   notFailBuild
+    \   pattern
     \   reuseNode
     \   returnStdout
     \   scm
+    \   skipNoTestFiles
+    \   sourceFileResolver
+    \   stopProcessingIfError
 syntax match jp_parameter /script:/
 " }}}
 
@@ -136,6 +165,7 @@ highlight default link jp_todo todo
 highlight default link jp_special SpecialChar
 highlight default link jp_step statement
 highlight default link jp_block_step structure
+highlight default link jp_parameter_options structure
 
 let b:current_syntax = "jenkins-pipeline"
 let &cpo = s:keepcpo
