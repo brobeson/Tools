@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to Python development.
-" Last Change:  2019 July 18
+" Last Change:  2020 January 20
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " check if this plug-in (or one with the same name) has already been loaded
@@ -26,7 +26,8 @@ else
 endif
 "}}}
 
-setlocal colorcolumn=81
+setlocal colorcolumn=101
+setlocal textwidth=100
 
 " A function and map to run Black on the current file. Black is a formatting
 " tool for Python files.
@@ -61,3 +62,12 @@ augroup PythonLintChecks
   autocmd QuickFixCmdPost [^l]* nested cwindow
   autocmd QuickFixCmdPost l* nested lwindow
 augroup end
+
+function! RunPython()
+  new | read !python3 %:p
+endfunction
+if !hasmapto('<Plug>PythonRunner')
+  map <buffer> <unique> <Leader>R <Plug>PythonRunner
+endif
+noremap <buffer> <unique> <script> <Plug>PythonRunner :call RunPython()<CR>
+
