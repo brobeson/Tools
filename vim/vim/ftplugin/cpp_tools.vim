@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to C++ development.
-" Last Change:  2019 July 24
+" Last Change:  2020 January 18
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 if exists('b:loaded_cpp_tools')
@@ -83,14 +83,14 @@ noremap <buffer> <unique> <script> <Plug>Cppcheck :call CppRunCppcheck()<CR>
 function! CppRunLizard()
   if &diff == 0
     let original_makeprg = &makeprg
-    setlocal makeprg=lizard\ --CCN\ 10\ --arguments\ 4\ --warnings_only\ --modified\ %:p
+    setlocal makeprg=lizard\ --CCN\ 10\ --arguments\ 5\ --length\ 100\ --warnings_only\ --modified\ %:p
     let qf_list = getqflist()
     make
     call setqflist(qf_list, 'a')
     let &makeprg = original_makeprg
   endif
 endfunction
-if !hasmapto('<Plug>Cppcheck')
+if !hasmapto('<Plug>Lizard')
   map <buffer> <unique> <Leader>l <Plug>Lizard
 endif
 noremap <buffer> <unique> <script> <Plug>Lizard :call CppRunLizard()<CR>
