@@ -2,7 +2,7 @@
 " Program:      CMake - Cross-Platform Makefile Generator
 " Language:     CMake
 " Author:       Brendan Robeson (https://github.com/brobeson/Tools)
-" Last Change:  2019 April 17
+" Last Change:  2020 March 2
 
 if exists("b:current_syntax")
    finish
@@ -23,7 +23,8 @@ syntax region cmakeArgumentList start=/(/ end=/)/ transparent fold
       \ contains=ALL,@Spell,cmakeCommand,cmakeDeprecated,cmakeFormat,ctestCommand
 
 " strings, and format specifiers for string(TIMESTAMP ...)
-syntax region cmakeString start=/"/ skip=/\\"/ end=/"/ contained
+"syntax region cmakeString start=/[^\\]\?"/ skip=/\\"/ end=/"/ contained
+syntax region cmakeString start=/[ (]\?"/ skip=/\\"/ end=/"/ contained
       \ contains=cmakeFloat,cmakeFormat,cmakeInteger,cmakeRegistry,cmakeVariableReference,cmakeVersion
 syntax match cmakeFormat "%[dHIjmMSUwyY]" contained
 
@@ -900,6 +901,7 @@ syntax keyword cmakeCommand add_compile_options
       \ target_compile_options
       \ target_include_directories
       \ target_link_libraries
+      \ target_link_options
       \ target_sources
       \ try_compile
       \ try_run
