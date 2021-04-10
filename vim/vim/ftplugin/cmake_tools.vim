@@ -1,5 +1,5 @@
 " Vim plug-in to add a bunch of functionality related to CMake development.
-" Last Change:  2019 July 16
+" Last Change:  2019 September 25
 " Maintainer:   Brendan Robeson (github.com/brobeson/Tools.git)
 
 " check if this plug-in (or one with the same name) has already been loaded
@@ -42,20 +42,20 @@ else
   noremap  <buffer> <unique> <script> <Plug>CmakeUncomment :call Uncomment('#')<CR>
 endif
 
-" A function to run cmakelint on the current file.
-setlocal makeprg=cmakelint\ --spaces=2\ %:p
-function! CmakeRunCmakelint()
+" A function to run cmake-format on the current file.
+setlocal makeprg=cmake-format\ --in-place\ %:p
+function! CmakeRunCmakeFormat()
   if &diff == 0
     make
   endif
 endfunction
-if !hasmapto('<Plug>CMakelint')
-  map <buffer> <unique> <Leader>l <Plug>CMakelint
+if !hasmapto('<Plug>CMakeFormat')
+  map <buffer> <unique> <Leader>l <Plug>CMakeFormat
 endif
-noremap <buffer> <unique> <script> <Plug>CMakelint :call CmakeRunCmakelint()<CR>
+noremap <buffer> <unique> <script> <Plug>CMakeFormat :call CmakeRunCmakeFormat()<CR>
 
-augroup CMakeLintChecks
-  autocmd BufWritePost,FileWritePost <buffer> call CmakeRunCmakelint()
-  autocmd QuickFixCmdPost [^l]* nested cwindow
-  autocmd QuickFixCmdPost l* nested lwindow
-augroup end
+"augroup CMakeFormatChecks
+"  autocmd BufWritePost,FileWritePost <buffer> call CmakeRunCmakeFormat()
+"  autocmd QuickFixCmdPost [^l]* nested cwindow
+"  autocmd QuickFixCmdPost l* nested lwindow
+"augroup end
