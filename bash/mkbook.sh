@@ -1,10 +1,11 @@
 #!/bin/bash
 
+# cspell:ignore EPUB
+
 error=0
 version="2015.01.12"
 
-function print_help
-{
+function print_help {
 	echo "NAME"
 	echo "    $script_name - compile an EPUB file from content"
 	echo
@@ -22,25 +23,19 @@ function print_help
 	echo "        Print the script version and exit."
 }
 
-
-function print_error
-{
+function print_error {
 	echo "error - " $1
 }
 
-function check_exists
-{
-	if [[ ! -e $1 ]]
-	then
+function check_exists {
+	if [[ ! -e $1 ]]; then
 		print_error "cannot find $1"
 		error=1
 	fi
 }
 
-function check_is_directory
-{
-	if [[ ! -d $1 ]]
-	then
+function check_is_directory {
+	if [[ ! -d $1 ]]; then
 		print_error "$1 is not a directory"
 		error=1
 	fi
@@ -52,18 +47,20 @@ function check_is_directory
 script_name=$(basename --suffix=.sh "$0")
 options=$(getopt --options hv --longoptions help,version --name ${script_name} -- "$@")
 eval set -- "$options"
-while [[ $1 != "--" ]]
-do
+while [[ $1 != "--" ]]; do
 	case "$1" in
-		-h|--help)		print_help
-						exit 0
-						;;
-		-v|--version)	echo $version
-						exit 0
-						;;
-		*)				print_error "unknown argument $1"
-						exit 1
-						;;
+	-h | --help)
+		print_help
+		exit 0
+		;;
+	-v | --version)
+		echo $version
+		exit 0
+		;;
+	*)
+		print_error "unknown argument $1"
+		exit 1
+		;;
 	esac
 done
 
@@ -77,8 +74,7 @@ directory=${directory%%/}
 check_is_directory $directory
 check_is_directory $directory/META-INF
 check_exists $directory/META-INF/container.xml
-if [[ $error != 0 ]]
-then
+if [[ $error != 0 ]]; then
 	exit 1
 fi
 
@@ -86,14 +82,11 @@ epubFile=${directory}.epub
 
 # if the mimetype is not present, we can attempt to create it
 customMimetype=0
-if [[ ! -e $directory/mimetype ]]
-then
+if [[ ! -e $directory/mimetype ]]; then
 	customMimetype=1
-	echo "application/epub+zip" > $directory/mimetype
+	echo "application/epub+zip" >$directory/mimetype
 	check_exists $directory/mimetype
-	if [[ error != 0 ]]
-	then
+	if [[ error != 0 ]]; then
 		exit 1
 	fi
 fi
-

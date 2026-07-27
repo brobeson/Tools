@@ -15,19 +15,15 @@ clean=${cleanLevels[0]}
 
 # print messages
 Error() { echo "$cmd  error   $1"; }
-Info()
-{
-	if [[ $verbosity != "-quiet" ]]
-   	then
-	   	echo "$cmd  info    $1"
+Info() {
+	if [[ $verbosity != "-quiet" ]]; then
+		echo "$cmd  info    $1"
 	fi
 }
 
-
 # this function is called when an error is detected in the command line
 # or the user requests it with the option --help
-PrintHelp()
-{
+PrintHelp() {
 	echo "Name"
 	echo "    $cmd - render documentation from a specified LaTeX file"
 	echo
@@ -37,8 +33,8 @@ PrintHelp()
 	echo "Description"
 	echo
 	echo "Options"
-	echo "    -c  Clean the auxilliary and output directories."
-	echo "    -C  Remove the auxilliary and output directories. Implies -c."
+	echo "    -c  Clean the auxiliary and output directories."
+	echo "    -C  Remove the auxiliary and output directories. Implies -c."
 	echo "    -h  Print this help and exit."
 	echo "    -s  The path to the LaTeX file to render. If -c, -C, or -h are"
 	echo "        supplied, -s is not required. If -c or -C, and -s are supplied"
@@ -51,64 +47,55 @@ PrintHelp()
 	echo
 }
 
-
 # test for a directory's existence, and make it if needed
-TestAndMakeDir()
-{
-	if [[ ! -e $1 ]]
-	then
-		if [[ $testMode == false ]]
-		then
-		Info "Making $1"
+TestAndMakeDir() {
+	if [[ ! -e $1 ]]; then
+		if [[ $testMode == false ]]; then
+			Info "Making $1"
 			mkdir -p $1
 		fi
-	elif [[ ! -d $1 ]]
-	then
+	elif [[ ! -d $1 ]]; then
 		Error "$1 exists, but is not a directory."
 		exit 1
 	fi
 }
 
-
 # parse the options
-while getopts "cChs:tv" option
-do
+while getopts "cChs:tv" option; do
 	case "$option" in
-		c)	clean=${cleanLevels[1]};;
-		C)  clean=${cleanLevels[2]};;
-		h)	PrintHelp
-			exit 0;;
-		s)	sourceFile=$OPTARG;;
-		t)  testMode=true
-			verbosity="";;
-		v)  verbosity="";;
+	c) clean=${cleanLevels[1]} ;;
+	C) clean=${cleanLevels[2]} ;;
+	h)
+		PrintHelp
+		exit 0
+		;;
+	s) sourceFile=$OPTARG ;;
+	t)
+		testMode=true
+		verbosity=""
+		;;
+	v) verbosity="" ;;
 	esac
 done
 
 # clean up, if necessary
-if [[ $clean == ${cleanLevels[1]} ]]
-then
+if [[ $clean == ${cleanLevels[1]} ]]; then
 	Info "Cleaning $auxDir and $docDir..."
-	if [[ $testMode == false ]]
-	then
+	if [[ $testMode == false ]]; then
 		rm -rf $auxDir/*
 		rm -rf $docDir/*
 	fi
-elif [[ $clean == ${cleanLevels[2]} ]]
-then
+elif [[ $clean == ${cleanLevels[2]} ]]; then
 	Info "Nuking $auxDir and $docDir..."
-	if [[ $testMode == false ]]
-	then
+	if [[ $testMode == false ]]; then
 		rm -rf $auxDir
 		rm -rf $docDir
 	fi
 fi
 
 # if the user did not specify an input file, print an error
-if [[ -z ${sourceFile+set} ]]
-then
-	if [[ $clean == ${cleanLevels[0]} ]]
-	then
+if [[ -z ${sourceFile+set} ]]; then
+	if [[ $clean == ${cleanLevels[0]} ]]; then
 		Error "You must specify an input file with -s. Use $cmd -h for details."
 		exit 1
 	fi
@@ -129,6 +116,7 @@ TestAndMakeDir $docDir
 #do
 #	outputFilepath=${inputFilepath##*/}			# strip the leading ./
 #	outputFilepath=${outputFilepath%dia}eps		# change the extension from dia to eps
+# # cspell:ignore nosplash pdflatex
 #	dia --nosplash -e "$auxDir/$outputFilepath" -t eps $inputFilepath
 #done
 
@@ -136,12 +124,9 @@ TestAndMakeDir $docDir
 renderCmd="pdflatex -aux-directory=$auxDir -c-style-errors -disable-installer -output-directory=$docDir $verbosity $sourceFile"
 
 Info "rendering pass 1..."
-if $renderCmd
-then
+if $renderCmd; then
 	Info "rendering pass 2..."
-	if $renderCmd
-	then
+	if $renderCmd; then
 		echo "The render is complete."
 	fi
 fi
-

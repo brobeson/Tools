@@ -1,0 +1,10 @@
+name: Code Quality
+on:
+  push:
+  pull_request:
+  workflow_call:
+
+jobs:
+  projectFiles:
+    name: Project File Quality
+    uses: brobeson/SupportFileQuality/.github/workflows/support_files.yaml@v1

@@ -1,0 +1,20 @@
+version: 0.2
+dictionaries: [bash, custom-bash]
+dictionaryDefinitions:
+  - name: custom-bash
+    path: .ci/dictionaries/bash.txt
+ignorePaths:
+  - .github
+  - .gitignore
+  - gitHooks
+  - vim
+  - MicrosoftPowerShell_profile.ps1
+  - readme.md
+  - vs2013dark.xml
+words:
+  - brobeson
+  - cppcheck
+  - getopt
+  - longoptions
+  - funcdef
+  - docbook
